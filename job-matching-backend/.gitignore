@@ -1,0 +1,5 @@
+job-matching-backend/firebase-service-account.json
+job-matching-backend/jobmatchingapp-*.json
+# Firebase 서비스 계정 키 (보안 이슈)
+job-matching-backend/firebase-service-account.json
+job-matching-backend/jobmatchingapp-383da-firebase-adminsdk-fbsvc-e278bbf0d9.json

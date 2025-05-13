@@ -1,0 +1,32 @@
+[33m847c097[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33m847c097[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{1}: commit: 2025.03.13_3
+[33m360aaf9[m HEAD@{2}: commit: 2025.03.13_2
+[33mfb8b26c[m HEAD@{3}: commit: 2025.03.13_1
+[33m2d78db2[m HEAD@{4}: commit: 2025.03.12_1
+[33mcf5eeca[m HEAD@{5}: commit: 2025.03.07_1
+[33m140901a[m HEAD@{6}: commit: 2025.03.06_1
+[33mb0069be[m HEAD@{7}: commit: 2025.03.05_1
+[33m5f82c27[m HEAD@{8}: commit: 2025.02.18_1
+[33m7306953[m HEAD@{9}: commit: 2025.02.17_5
+[33m6b61e4a[m HEAD@{10}: commit: 2025.02.17_4
+[33md02596a[m HEAD@{11}: commit: 2025.02.17_3
+[33mf8c1eaa[m HEAD@{12}: commit: 2025.02.17_2
+[33mfd15fe7[m HEAD@{13}: filter-branch: rewrite
+[33m6c10d41[m HEAD@{14}: commit: 🛑 Added Firebase service account files to .gitignore
+[33m9fcfe85[m HEAD@{15}: commit: 2025.02.17_1
+[33m05a2fee[m HEAD@{16}: commit: 2025.02.17_1
+[33m4e5142c[m HEAD@{17}: commit: 2025.02.13_1
+[33m64e6875[m HEAD@{18}: commit: 2025.02.12_2
+[33m58cf4b8[m HEAD@{19}: commit: 2025.02.12_1
+[33m5f9766d[m HEAD@{20}: commit: 2025.02.11_3
+[33m77a7ff4[m HEAD@{21}: commit: 2025.02.11_2
+[33m4de9ebd[m HEAD@{22}: commit: 2025.02.11_1
+[33mf494192[m HEAD@{23}: commit: 7th commit
+[33mb0ea742[m HEAD@{24}: commit: 7th commit
+[33m081664f[m HEAD@{25}: commit: 여섯번번째 커밋
+[33mac495a3[m HEAD@{26}: commit: 다섯번번째 커밋
+[33m24e187a[m HEAD@{27}: commit: 네번번째 커밋
+[33mc7d9ef8[m HEAD@{28}: commit: 세번째 커밋
+[33m99d2f81[m HEAD@{29}: commit: 두번쨰 커밋
+[33m87b515b[m HEAD@{30}: Branch: renamed refs/heads/master to refs/heads/main
+[33m87b515b[m HEAD@{32}: commit (initial): 첫 commit

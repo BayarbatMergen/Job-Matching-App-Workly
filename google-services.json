@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "937100963582",
+    "firebase_url": "https://jobmatchingapp-383da-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "jobmatchingapp-383da",
+    "storage_bucket": "jobmatchingapp-383da.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937100963582:android:a52ce17c52303099b73faf",
+        "android_client_info": {
+          "package_name": "com.jobmatchingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5OPtyXtvSSjdOTzqz5Q6HgbEooBkI0gw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

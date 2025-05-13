@@ -1,0 +1,16 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20",
+    "region": "us-central1",
+    "platform": "gcfv2",
+    "memory": "512MB",
+    "timeoutSeconds": 60,
+    "minInstances": 0,
+    "maxInstances": 2
+  }
+}
