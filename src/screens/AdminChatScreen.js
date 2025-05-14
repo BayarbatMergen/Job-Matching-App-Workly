@@ -105,7 +105,7 @@ export default function AdminChatScreen({ route }) {
 
         const namePromises = participantIds.map(async (uid) => {
           try {
-            const res = await fetch(`${API_BASE_URL}/chats/users/${uid}`, {
+            const res = await fetch(`${API_BASE_URL}/chat/users/${uid}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) {
