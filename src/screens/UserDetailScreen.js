@@ -11,7 +11,7 @@ export default function UserDetailScreen({ route }) {
   const fetchUserDetails = async () => {
     try {
       
-      const response = await fetch(`${API_BASE_URL}/api/admin/user/${userId}`);
+      const response = await fetch(`${API_BASE_URL}/admin/user/${userId}`);
       if (!response.ok) {
         throw new Error('사용자 정보를 가져오는 데 실패했습니다.');
       }
