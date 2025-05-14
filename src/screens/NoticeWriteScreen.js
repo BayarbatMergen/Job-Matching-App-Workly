@@ -1,43 +1,49 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { API_BASE_URL } from "../config/apiConfig";
+import API_BASE_URL from "../config/apiConfig";
+import * as SecureStore from 'expo-secure-store';
 
 export default function NoticeWriteScreen({ navigation }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
-  const handlePostNotice = async () => {
-    if (!title.trim()) {
-      Alert.alert('입력 오류', '제목을 입력하세요.');
-      return;
-    }
-    if (!content.trim()) {
-      Alert.alert('입력 오류', '공지사항 내용을 입력하세요.');
-      return;
+const handlePostNotice = async () => {
+  if (!title.trim()) {
+    Alert.alert('입력 오류', '제목을 입력하세요.');
+    return;
+  }
+  if (!content.trim()) {
+    Alert.alert('입력 오류', '공지사항 내용을 입력하세요.');
+    return;
+  }
+
+  const token = await SecureStore.getItemAsync('token');
+console.log('🔑 토큰:', token); 
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notice`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title,
+        content,
+        author: '갱이',
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('공지사항 등록 실패');
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/admin/notice`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          content,
-          author: '갱이', // 필요 시 SecureStore에서 가져오도록 수정 가능
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('공지사항 등록 실패');
-      }
-
-      Alert.alert('성공', '공지사항이 등록되었습니다.');
-      navigation.goBack();
-    } catch (error) {
-      console.error(' 공지사항 등록 오류:', error);
-      Alert.alert('오류', '공지사항 등록 중 오류가 발생했습니다.');
-    }
-  };
+    Alert.alert('성공', '공지사항이 등록되었습니다.');
+    navigation.goBack();
+  } catch (error) {
+    console.error(' 공지사항 등록 오류:', error);
+    Alert.alert('오류', '공지사항 등록 중 오류가 발생했습니다.');
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -86,7 +92,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 15,
-    textAlignVertical: 'top',
+    textAlignVertical: 'top', 
     marginBottom: 20,
     fontSize: 16,
   },

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { API_BASE_URL } from "../config/apiConfig";
+import API_BASE_URL from "../config/apiConfig";
 
 export default function UserDetailScreen({ route }) {
   const { userId } = route.params;

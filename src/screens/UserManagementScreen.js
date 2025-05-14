@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
-import { API_BASE_URL } from "../config/apiConfig";
+import API_BASE_URL from "../config/apiConfig";
 
 const UserManagementScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
