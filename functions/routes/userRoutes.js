@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-module.exports = ({ db, admin, cloudinary }) => {
+module.exports = ({ db, admin, storage }) => {
 
 // 🔹 전체 사용자 목록 반환
 router.get('/', async (req, res) => {

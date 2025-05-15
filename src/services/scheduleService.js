@@ -22,7 +22,8 @@ export const fetchUserSchedules = async () => {
       return [];
     }
 
-    const requestUrl = `${API_BASE_URL}/schedules/user/${userId}`;
+const requestUrl = `${API_BASE_URL}/jobs/schedules/user/${userId}`;
+
     
 
     const response = await fetch(requestUrl, {

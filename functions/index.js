@@ -33,7 +33,7 @@ const routes = [
   { path: '/chat', file: './routes/chatRoutes' },
   { path: '/jobs', file: './routes/jobRoutes' },
   { path: '/jobseeker', file: './routes/jobSeekerRoutes' },
-  { path: '/schedule', file: './routes/scheduleRoutes' },
+{ path: '/schedules', file: './routes/scheduleRoutes' },
   { path: '/user', file: './routes/userRoutes' },
 ];
 

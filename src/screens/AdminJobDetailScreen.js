@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
-import { API_BASE_URL } from "../config/apiConfig";
+import API_BASE_URL from "../config/apiConfig";
 
 export default function AdminJobDetailScreen({ route, navigation }) {
   const { job, updateJob } = route.params;

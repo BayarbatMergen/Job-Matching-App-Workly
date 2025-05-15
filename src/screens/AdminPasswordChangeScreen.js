@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import { API_BASE_URL } from "../config/apiConfig";
+import API_BASE_URL from "../config/apiConfig";
 
 export default function AdminPasswordChangeScreen({ navigation }) {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -42,7 +42,7 @@ export default function AdminPasswordChangeScreen({ navigation }) {
 
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/admin/change-password`, {
+      const response = await fetch(`${API_BASE_URL}/admin/change-password`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

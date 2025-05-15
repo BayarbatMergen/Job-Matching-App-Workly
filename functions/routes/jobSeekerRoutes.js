@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-module.exports = ({ db, admin, cloudinary }) => {
+module.exports = ({ db, admin, storage }) => {
 //  2. 구직자 목록 조회 API
 router.get('/', async (req, res) => {
   try {

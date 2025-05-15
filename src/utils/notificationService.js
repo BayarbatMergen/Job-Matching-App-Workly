@@ -53,7 +53,7 @@ export const sendUserApplicationApprovalNotification = async (userEmail, jobTitl
     
 
     await addDoc(collection(db, "notifications"), {
-      recipientEmail: userEmail,
+      recipientEmail: userEmail, 
       message: `당신이 지원한 '${jobTitle}' 공고가 승인되었습니다.`,
       status: "unread",
       createdAt: new Date(),

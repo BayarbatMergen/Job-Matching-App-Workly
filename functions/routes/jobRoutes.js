@@ -1,17 +1,9 @@
 const express = require('express');
+const functions = require("firebase-functions");
 const router = express.Router();
-const nodemailer = require('nodemailer');
-module.exports = ({ db, admin, cloudinary }) => {
-
-//  Nodemailer 설정 (이메일 알림 전송)
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
+const { verifyToken } = require("../middlewares/authMiddleware");
+module.exports = ({ db, admin, storage }) => {
+  
 //  구인 공고 등록 API (startDate, endDate 포함 & 특정 유저 알림 전송)
 router.post('/add', async (req, res) => {
   try {
@@ -256,14 +248,6 @@ router.post('/apply', async (req, res) => {
       status: 'pending'
     });
 
-    // 이메일 알림
-    const mailOptions = {
-      from: `"Job Matching Support" <${process.env.SMTP_USER}>`,
-      to: process.env.ADMIN_EMAIL,
-      subject: '새로운 구직 지원 알림',
-      text: `지원자: ${userEmail} 가 ${jobData.title} 공고에 지원했습니다.`
-    };
-    await transporter.sendMail(mailOptions);
 
     
     res.status(200).json({ message: ' 지원 요청이 완료되었습니다.' });
@@ -296,7 +280,7 @@ router.get('/applications/:jobId', async (req, res) => {
   }
 });
 
-router.get("/user/:userId", async (req, res) => {
+router.get("/schedules/user/:userId", async (req, res) => {
   try {
     let { userId } = req.params;
     
@@ -386,7 +370,6 @@ router.post('/notifications/global/:notificationId/read', async (req, res) => {
     res.status(500).json({ message: "서버 오류", error: error.message });
   }
 });
-
 
   return router;
 };

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../middlewares/authMiddleware');
 const adminOnlyMiddleware = require('../middlewares/adminOnlyMiddleware');
 
-module.exports = ({ db, admin, cloudinary }) => {
+module.exports = ({ db, admin, storage  }) => {
 //  관리자 로그인 API (users 컬렉션 사용)
 router.post('/login', async (req, res) => {
   try {
@@ -318,7 +318,7 @@ router.patch('/change-password', async (req, res) => {
 
     const userDoc = userSnapshot.docs[0];
     const userData = userDoc.data();
-    
+
     const isMatch = await bcrypt.compare(currentPassword, userData.password);
     if (!isMatch) {
       return res.status(400).json({ message: '현재 비밀번호가 일치하지 않습니다.' });

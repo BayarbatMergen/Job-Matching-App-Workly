@@ -4,7 +4,7 @@ const { verifyToken } = require("../middlewares/authMiddleware");
 const scheduleController = require("../controllers/scheduleController"); 
 const { sendAdminNotification } = require("../utils/notificationService"); 
 
-module.exports = ({ db, admin, cloudinary }) => {
+module.exports = ({ db, admin, storage }) => {
 
 router.get("/", verifyToken, scheduleController.getAllSchedules);
 router.get("/user/:userId", verifyToken, scheduleController.getUserSchedules);

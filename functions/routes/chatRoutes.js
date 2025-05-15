@@ -15,7 +15,7 @@ const {
   getLastMessageTime
 } = require("../controllers/chatController");
 const { verifyToken } = require("../middlewares/authMiddleware");
-module.exports = ({ db, admin, cloudinary }) => {
+module.exports = ({ db, admin, storage }) => {
 //  채팅방 목록 가져오기
 router.get("/rooms", verifyToken, getChatRooms);
 

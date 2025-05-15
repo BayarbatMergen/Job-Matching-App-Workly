@@ -63,27 +63,33 @@ export default function ApplicationApprovalScreen() {
   useEffect(() => {
     fetchApplicationRequests();
   }, []);
-
+const [isProcessing, setIsProcessing] = useState(false); 
   //  서버 API 호출로 승인 처리
-  const handleApprove = async (applicationId) => {
-    
-    
-    try {
-      const res = await axios.post(`${API_BASE_URL}/applications/${applicationId}/approve`);
-      
-      Alert.alert(" 승인 완료", res.data.message || "승인이 완료되었습니다.");
-      fetchApplicationRequests();
-    } catch (error) {
-      console.error(" 승인 처리 오류:", {
-        message: error.message,
-        url: error.config?.url,
-        method: error.config?.method,
-        baseURL: error.config?.baseURL,
-        headers: error.config?.headers,
-      });
-      Alert.alert(" 승인 실패", error.response?.data?.message || "오류 발생");
-    }
-  };
+const handleApprove = async (applicationId) => {
+  if (isProcessing) return;
+  setIsProcessing(true); // 🔒 버튼 잠금
+
+  try {
+    const res = await axios.post(`${API_BASE_URL}/application/applications/${applicationId}/approve`);
+    console.log('🔥 요청 URL:', `${API_BASE_URL}/application/applications/${applicationId}/approve`);
+    console.log("📦 승인 API 응답:", res.status, res.data);
+    Alert.alert(" 승인 완료", res.data.message || "승인이 완료되었습니다.");
+
+    fetchApplicationRequests();
+  } catch (error) {
+    console.error(" 승인 처리 오류:", {
+      message: error.message,
+      url: error.config?.url,
+      method: error.config?.method,
+      baseURL: error.config?.baseURL,
+      headers: error.config?.headers,
+    });
+    Alert.alert(" 승인 실패", error.response?.data?.message || "오류 발생");
+  } finally {
+    setIsProcessing(false); // 🔓 버튼 재활성화
+  }
+};
+
 
   const handleReject = async (id) => {
     try {

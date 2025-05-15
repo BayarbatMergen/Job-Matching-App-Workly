@@ -160,7 +160,7 @@ export default function AdminScheduleScreen() {
           style={styles.button}
           onPress={() => navigation.navigate('ApprovedApplicationsScreen')}
         >
-          <Text style={styles.buttonText}>승인 내역 보기</Text>
+          <Text style={styles.buttonText}>공고 승인 내역 보기</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
