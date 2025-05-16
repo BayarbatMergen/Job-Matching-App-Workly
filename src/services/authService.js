@@ -146,17 +146,27 @@ export const resetPasswordWithFirebase = async (email) => {
 //  로그아웃
 export const logout = async () => {
   try {
+    if (!auth) {
+      console.error("❌ auth 인스턴스가 정의되지 않았습니다.");
+      return;
+    }
+
     await signOut(auth);
+    console.log("✅ Firebase 로그아웃 완료");
+
     await SecureStore.deleteItemAsync("token");
     await SecureStore.deleteItemAsync("userId");
     await SecureStore.deleteItemAsync("userEmail");
     await SecureStore.deleteItemAsync("userPassword");
     await SecureStore.deleteItemAsync("userRole");
-    
+    await SecureStore.deleteItemAsync("userName");
+    console.log("✅ SecureStore 로그아웃 정보 삭제 완료");
+
   } catch (error) {
-    console.error(" 로그아웃 오류:", error.message);
+    console.error("🚨 로그아웃 오류:", error.message);
   }
 };
+
 
 //  Firebase 인증 상태 리스너
 export const authStateListener = (callback) => {

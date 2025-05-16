@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../middlewares/authMiddleware');
 
-module.exports = ({ db, admin }) => {
+module.exports = ({ db, admin, storage }) => {
 
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 
@@ -29,35 +29,44 @@ const formatPhoneNumber = (phone) => {
 
 router.post('/register', async (req, res) => {
   try {
-    console.log('📥 요청 바디 전체:', JSON.stringify(req.body, null, 2));
+    console.log('📥 [1] 요청 바디 전체:', JSON.stringify(req.body, null, 2));
+
     let { email, password, name, phone, gender, bank, accountNumber, role, idImageUrl } = req.body;
 
     if (!email || !password || !name || !phone || !gender) {
+      console.log('❌ [2] 필수 항목 누락');
       return res.status(400).json({ message: '모든 필드를 입력하세요.' });
     }
 
-    console.log('🔍 전화번호 입력값:', phone);
+    console.log('🔍 [3] 전화번호 입력값:', phone);
     const onlyDigits = phone.replace(/[^\d]/g, '');
-    console.log('🔢 숫자만 추출:', onlyDigits);
+    console.log('🔢 [4] 숫자만 추출된 전화번호:', onlyDigits);
 
     const isValidPhoneFormat = onlyDigits.length === 11 && onlyDigits.startsWith('010');
     if (!isValidPhoneFormat) {
-      console.error('❌ 전화번호 형식 오류:', onlyDigits);
-      return res.status(400).json({ 
-        message: "올바른 전화번호 형식이 아닙니다.", 
-        details: `입력된 번호: ${phone}, 추출된 숫자: ${onlyDigits}` 
+      console.error('❌ [5] 전화번호 형식 오류:', onlyDigits);
+      return res.status(400).json({
+        message: "올바른 전화번호 형식이 아닙니다.",
+        details: `입력된 번호: ${phone}, 추출된 숫자: ${onlyDigits}`
       });
     }
 
     const formattedPhone = `+82${onlyDigits.slice(1)}`;
-    console.log('✅ 최종 변환된 번호:', formattedPhone);
+    console.log('✅ [6] 최종 변환된 번호:', formattedPhone);
 
+    console.log('🔒 [7] 비밀번호 해싱 시작');
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('✅ [8] 해싱된 비밀번호:', hashedPassword);
+    console.log('🧪 [8.1] typeof hashedPassword:', typeof hashedPassword);
+    console.log('🧪 [8.2] hashedPassword 값:', hashedPassword);
+
+    console.log('📤 [9] Firebase 사용자 생성 시작');
     const userRecord = await admin.auth().createUser({
       email,
-      password,
       displayName: name,
-      phoneNumber: formattedPhone, // phoneNumber로 변경
+      phoneNumber: formattedPhone,
     });
+    console.log('✅ [10] Firebase 사용자 생성 성공:', userRecord.uid);
 
     const imageUrl = idImageUrl || 'https://your-default-profile-url.com';
 
@@ -71,24 +80,46 @@ router.post('/register', async (req, res) => {
       accountNumber: accountNumber || "0000-0000-0000",
       role,
       idImage: imageUrl,
+      password: hashedPassword,
       createdAt: new Date(),
     };
 
-    await db.collection('users').doc(userRecord.uid).set(userData);
+    console.log('🧪 [11.3] Firestore 저장 직전 데이터:', JSON.stringify(userData, null, 2));
+    if (!userData.password) {
+      console.warn('🚨 [WARN] password 필드가 비어있거나 undefined입니다.');
+    }
 
-    res.status(201).json({ message: "회원가입 성공!", userId: userRecord.uid });
-  } catch (error) {
-    console.error("🔥 회원가입 중 오류:", {
-      code: error.code, 
-      message: error.message, 
-      fullError: JSON.stringify(error, null, 2)
+    // ✅ 강제 병합 방식으로 저장
+    await db.collection('users').doc(userRecord.uid).set(
+      {
+        ...userData,
+        password: hashedPassword,
+      },
+      { merge: true }
+    );
+
+    console.log('✅ [12] Firestore 저장 성공');
+
+    res.status(201).json({ 
+      message: "회원가입 성공!", 
+      userId: userRecord.uid,
+      user: {
+        ...userData,
+        password: undefined, // 클라이언트 응답에 password 포함 X
+      }
     });
 
-    // Firebase Auth 특정 오류 처리
+  } catch (error) {
+    console.error("🔥 [ERROR] 회원가입 중 오류 발생:", {
+      code: error.code,
+      message: error.message,
+      stack: error.stack,
+    });
+
     if (error.code === 'auth/phone-number-already-exists') {
       return res.status(400).json({ message: "이미 사용 중인 전화번호입니다." });
     }
-    
+
     if (error.code === 'auth/invalid-phone-number') {
       return res.status(400).json({ message: "유효하지 않은 전화번호 형식입니다." });
     }
@@ -96,6 +127,7 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: error.message || '서버 오류' });
   }
 });
+
 
 router.post('/login', async (req, res) => {
   try {
