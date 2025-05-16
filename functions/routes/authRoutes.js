@@ -251,20 +251,48 @@ router.put('/update', verifyToken, async (req, res) => {
 
 router.put('/change-password', verifyToken, async (req, res) => {
   try {
-    const { newPassword } = req.body;
-    if (!newPassword) {
-      return res.status(400).json({ message: "새 비밀번호를 입력하세요." });
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "현재 비밀번호와 새 비밀번호를 입력하세요." });
     }
 
     const userId = req.user.userId;
-    await admin.auth().updateUser(userId, { password: newPassword });
+    const userRef = db.collection('users').doc(userId);
+    const userSnap = await userRef.get();
 
-    res.status(200).json({ message: "비밀번호 변경 성공!" });
+    if (!userSnap.exists) {
+      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+    }
+
+    const userData = userSnap.data();
+
+    // 현재 비밀번호 확인
+    const isMatch = await bcrypt.compare(currentPassword, userData.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "현재 비밀번호가 일치하지 않습니다." });
+    }
+
+    // 새 비밀번호 유효성 검사
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    if (newPassword.length < 6 || !specialCharRegex.test(newPassword)) {
+      return res.status(400).json({ message: '비밀번호는 6자 이상이며 특수문자를 포함해야 합니다.' });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    await userRef.update({
+      password: hashedNewPassword,
+      passwordChangedAt: new Date()
+    });
+
+    res.status(200).json({ message: "비밀번호 변경이 완료되었습니다." });
   } catch (error) {
-    console.error("비밀번호 변경 오류:", error);
+    console.error("🔴 비밀번호 변경 오류:", error);
     res.status(500).json({ message: "서버 오류 발생" });
   }
 });
+
 
 router.post("/validate-token", (req, res) => {
   const token = req.body.token;

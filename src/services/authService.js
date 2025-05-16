@@ -144,26 +144,24 @@ export const resetPasswordWithFirebase = async (email) => {
 };
 
 //  로그아웃
+// services/authService.js
+
 export const logout = async () => {
   try {
-    if (!auth) {
-      console.error("❌ auth 인스턴스가 정의되지 않았습니다.");
-      return;
-    }
+    // ❌ Firebase signOut은 생략
+    // await signOut(auth);
 
-    await signOut(auth);
-    console.log("✅ Firebase 로그아웃 완료");
-
+    // ✅ SecureStore 정보만 삭제
     await SecureStore.deleteItemAsync("token");
     await SecureStore.deleteItemAsync("userId");
     await SecureStore.deleteItemAsync("userEmail");
     await SecureStore.deleteItemAsync("userPassword");
     await SecureStore.deleteItemAsync("userRole");
-    await SecureStore.deleteItemAsync("userName");
-    console.log("✅ SecureStore 로그아웃 정보 삭제 완료");
+    await SecureStore.deleteItemAsync("userName"); // 혹시 이름도 저장하고 있다면
 
+    console.log("🧼 SecureStore 사용자 정보 초기화 완료");
   } catch (error) {
-    console.error("🚨 로그아웃 오류:", error.message);
+    console.error("❌ logout 오류:", error.message);
   }
 };
 
@@ -175,38 +173,15 @@ export const authStateListener = (callback) => {
   });
 };
 
-/*  Firebase 자동 로그인 함수 (앱 실행 시 호출)
-export const firebaseAutoLogin = async () => {
-  try {
-    const storedEmail = await SecureStore.getItemAsync('userEmail');
-    const storedPassword = await SecureStore.getItemAsync('userPassword');
-
-    
-    
-
-    if (storedEmail && storedPassword) {
-      await signInWithEmailAndPassword(auth, storedEmail, storedPassword);
-      
-    } else {
-      console.warn(" 자동 로그인 실패: 저장된 이메일 또는 비밀번호 없음");
-    }
-  } catch (error) {
-    console.error(" Firebase 자동 로그인 오류:", error);
-  }
-};
-*/
-
-
 //  디버깅용 SecureStore 값 확인
 export const testAsyncStorage = async () => {
   try {
     const token = await SecureStore.getItemAsync("token");
     const userId = await SecureStore.getItemAsync("userId");
     const userEmail = await SecureStore.getItemAsync("userEmail");
+    const userRole = await SecureStore.getItemAsync("userRole");
+    const userName = await SecureStore.getItemAsync("userName");
 
-    
-    
-    
   } catch (error) {
     console.error(" SecureStore 테스트 오류:", error.message);
   }

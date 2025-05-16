@@ -24,21 +24,29 @@ const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [autoLoginChecked, setAutoLoginChecked] = useState(false);
 
-  useEffect(() => {
-    const tryAutoLogin = async () => {
+useEffect(() => {
+  const tryAutoLogin = async () => {
+    try {
       const shouldAutoLogin = await AsyncStorage.getItem("autoLogin");
+
       if (shouldAutoLogin === "true") {
+        setAutoLoginChecked(true); // ✅ 체크박스도 체크 상태로
         const storedEmail = await AsyncStorage.getItem("email");
         const storedPassword = await AsyncStorage.getItem("password");
+
         if (storedEmail && storedPassword) {
           setEmail(storedEmail);
           setPassword(storedPassword);
           handleLogin(storedEmail, storedPassword, true);
         }
       }
-    };
-    tryAutoLogin();
-  }, []);
+    } catch (error) {
+      console.error("자동 로그인 시도 중 오류:", error);
+    }
+  };
+
+  tryAutoLogin();
+}, []);
 
   const handleLogin = async (overrideEmail, overridePassword, autoTrigger = false) => {
     const loginEmail = overrideEmail || email;
