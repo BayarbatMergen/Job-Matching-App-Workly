@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert 
 import API_BASE_URL from "../config/apiConfig";
 
 export default function AdminJobDetailScreen({ route, navigation }) {
-  const { job, updateJob } = route.params;
+  const { job } = route.params;
 
   const initialJob = {
     ...job,
@@ -23,11 +23,7 @@ export default function AdminJobDetailScreen({ route, navigation }) {
           for (const uid of editedJob.visibleTo) {
             const response = await fetch(`${API_BASE_URL}/users/${uid}`);
             const data = await response.json();
-            if (data && data.name) {
-              names.push(data.name);
-            } else {
-              names.push('(이름 없음)');
-            }
+            names.push(data?.name || '(이름 없음)');
           }
           setVisibleUserNames(names);
         } catch (error) {
@@ -49,25 +45,39 @@ export default function AdminJobDetailScreen({ route, navigation }) {
     }
   };
 
-  const handleSave = () => {
-    for (let key in editedJob) {
-      if (editedJob[key] === '') {
-        Alert.alert('입력 오류', '모든 항목을 입력해주세요.');
-        return;
-      }
+ const handleSave = async () => {
+  for (let key in editedJob) {
+    if (editedJob[key] === '') {
+      Alert.alert('입력 오류', '모든 항목을 입력해주세요.');
+      return;
+    }
+  }
+
+  const updatedJob = {
+    ...editedJob,
+    workDays: editedJob.workDays.split(',').map((day) => day.trim()),
+  };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/jobs/${editedJob.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedJob),
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      console.error('수정 실패:', err);
+      throw new Error('수정 실패');
     }
 
-    const updatedJob = {
-      ...editedJob,
-      workDays: editedJob.workDays
-        .split(',')
-        .map((day) => day.trim()),
-    };
-
-    updateJob(updatedJob);
     Alert.alert('수정 완료', '공고가 성공적으로 수정되었습니다.');
     navigation.goBack();
-  };
+  } catch (error) {
+    console.error('공고 수정 오류:', error);
+    Alert.alert('오류', '공고 수정에 실패했습니다.');
+  }
+};
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>

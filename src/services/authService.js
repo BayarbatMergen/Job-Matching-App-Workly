@@ -143,15 +143,10 @@ export const resetPasswordWithFirebase = async (email) => {
   }
 };
 
-//  로그아웃
-// services/authService.js
-
 export const logout = async () => {
   try {
-    // ❌ Firebase signOut은 생략
-    // await signOut(auth);
 
-    // ✅ SecureStore 정보만 삭제
+    //  SecureStore 정보만 삭제
     await SecureStore.deleteItemAsync("token");
     await SecureStore.deleteItemAsync("userId");
     await SecureStore.deleteItemAsync("userEmail");
@@ -159,9 +154,9 @@ export const logout = async () => {
     await SecureStore.deleteItemAsync("userRole");
     await SecureStore.deleteItemAsync("userName"); // 혹시 이름도 저장하고 있다면
 
-    console.log("🧼 SecureStore 사용자 정보 초기화 완료");
+    console.log("SecureStore 사용자 정보 초기화 완료");
   } catch (error) {
-    console.error("❌ logout 오류:", error.message);
+    console.error("logout 오류:", error.message);
   }
 };
 

@@ -13,18 +13,18 @@ export default {
     newArchEnabled: true,
     
     ios: {
-      bundleIdentifier: "com.company.jobmatchapp", // ✅ Firebase에서 등록한 iOS 번들 ID
+      bundleIdentifier: "com.company.jobmatchapp", 
       supportsTablet: true,
-      googleServicesFile: "./GoogleService-Info.plist" // ✅ iOS용 Firebase 파일 경로
+      googleServicesFile: "./GoogleService-Info.plist" 
     },
 
     android: {
-      package: "com.anonymous.jobmatchingapp", // ✅ Firebase에서 등록한 Android 패키지명
+      package: "com.anonymous.jobmatchingapp", 
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
       },
-      googleServicesFile: "./google-services.json" // ✅ Android용 Firebase 파일 경로
+      googleServicesFile: "./google-services.json" 
     },
 
     web: {

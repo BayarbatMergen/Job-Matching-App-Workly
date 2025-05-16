@@ -42,6 +42,7 @@ function HomeStack({ hasNotifications }) {
         )}
         options={({ navigation }) => ({
           headerTitle: '모집 공고',
+          headerLeft: () => null,
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.navigate('Notification')}
@@ -100,15 +101,14 @@ export default function BottomTabNavigator() {
     let unsubscribePersonal;
     let unsubscribeGlobal;
     let userId = null;
-  
+
     const setupNotificationListeners = async () => {
       userId = await SecureStore.getItemAsync('userId');
       if (!userId) return;
-  
+
       let personalUnread = false;
       let globalUnread = false;
-  
-      // 🔹 개인 알림
+
       const personalQuery = query(
         collection(db, `notifications/${userId}/userNotifications`),
         where('read', '==', false)
@@ -117,8 +117,7 @@ export default function BottomTabNavigator() {
         personalUnread = snapshot.size > 0;
         updateCombinedStatus();
       });
-  
-      // 🔹 글로벌 알림
+
       const globalQuery = collection(db, 'globalNotifications');
       unsubscribeGlobal = onSnapshot(globalQuery, (snapshot) => {
         globalUnread = false;
@@ -130,23 +129,20 @@ export default function BottomTabNavigator() {
         });
         updateCombinedStatus();
       });
-  
-      // 🔄 상태 통합
+
       const updateCombinedStatus = () => {
         setHasNotifications(personalUnread || globalUnread);
       };
     };
-  
+
     setupNotificationListeners();
-  
+
     return () => {
       if (unsubscribePersonal) unsubscribePersonal();
       if (unsubscribeGlobal) unsubscribeGlobal();
     };
   }, []);
-  
 
-  // 💬 채팅 읽지 않은 메시지 감지
   useEffect(() => {
     let unsubscribers = [];
 

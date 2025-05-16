@@ -20,7 +20,7 @@ const firebaseConfig = {
   appId: Constants.expoConfig?.extra?.firebaseAppId || process.env.FIREBASE_APP_ID,
   measurementId: Constants.expoConfig?.extra?.firebaseMeasurementId || process.env.FIREBASE_MEASUREMENT_ID,
 };
-console.log("🔥 Constants.expoConfig.extra:", Constants.expoConfig?.extra);
+console.log("Constants.expoConfig.extra:", Constants.expoConfig?.extra);
 
 // Firebase App Initialization
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();

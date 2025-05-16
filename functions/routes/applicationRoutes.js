@@ -93,15 +93,15 @@ module.exports = ({ db, admin, storage }) => {
             createdAt: admin.firestore.Timestamp.now(),
           });
 
-        console.log("✅ 사용자 알림 전송 완료");
+        console.log(" 사용자 알림 전송 완료");
       } catch (err) {
-        console.error("❌ 사용자 알림 전송 실패:", err);
+        console.error("사용자 알림 전송 실패:", err);
       }
 
       return res.status(200).json({ message: '지원 승인 및 알림 전송 완료' });
 
     } catch (error) {
-      console.error('❌ 지원 승인 오류:', error);
+      console.error('지원 승인 오류:', error);
       return res.status(500).json({ message: '서버 오류 발생', error: error.message });
     }
   });

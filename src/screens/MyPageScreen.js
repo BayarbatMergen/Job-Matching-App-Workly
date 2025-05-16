@@ -8,7 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import { logout } from "../services/authService";
 import API_BASE_URL from "../config/apiConfig";
 
-// ✅ 기본 이미지 처리 함수
+//  기본 이미지 처리 함수
 const getValidImageUrl = (url) => {
   if (!url || url === 'null') {
     return 'https://via.placeholder.com/100x100?text=No+Image';

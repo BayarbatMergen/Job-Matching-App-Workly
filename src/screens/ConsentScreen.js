@@ -73,24 +73,6 @@ const ConsentScreen = ({ navigation }) => {
           - 필수 항목의 동의를 거부할 경우 회원가입 및 서비스 이용이 제한될 수 있습니다.{"\n\n"}
         </Text>
 
-        {/* 마케팅 정보 수신 동의 */}
-        <Text style={styles.title}>마케팅 정보 수신 동의 (선택)</Text>
-        <Text style={styles.section}>
-          회사는 이벤트, 할인 혜택, 서비스 안내 등의 정보를 전달하기 위해 아래와 같은 방식으로 마케팅 정보를 수신합니다.{"\n\n"}
-
-          1. 수신 항목{"\n"}
-          - 이메일, 문자메시지(SMS), 푸시 알림{"\n\n"}
-
-          2. 수신 목적{"\n"}
-          - 신상품 정보, 프로모션 및 이벤트 안내{"\n"}
-          - 고객 맞춤형 서비스 제공{"\n\n"}
-
-          3. 수신 동의 철회{"\n"}
-          - 이용자는 언제든지 설정에서 수신 동의를 철회할 수 있으며, 철회 시 이후부터 마케팅 정보는 제공되지 않습니다.{"\n\n"}
-
-          ※ 마케팅 수신 동의는 선택사항이며, 미동의 시에도 기본 서비스 이용에는 제한이 없습니다.
-        </Text>
-
         {/* 뒤로가기 버튼 */}
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.button}>
           <Text style={styles.buttonText}>뒤로가기</Text>
@@ -107,7 +89,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
-    paddingBottom: 60, // ✅ 버튼이 짤리지 않도록 여유 확보
+    paddingBottom: 60, //  버튼이 짤리지 않도록 여유 확보
   },
   title: {
     fontSize: 20,

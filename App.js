@@ -33,6 +33,7 @@ import NoticeWriteScreen from './src/screens/NoticeWriteScreen';
 import CustomerInquiryScreen from './src/screens/CustomerInquiryScreen';
 import NoticeDetailScreen from './src/screens/NoticeDetailScreen';
 import ApprovedApplicationsScreen from './src/screens/ApprovedApplicationsScreen';
+import SettlementApprovalScreen from './src/screens/SettlementApprovalScreen';
 
 // 사용자 기능
 import BankInfoScreen from './src/screens/BankInfoScreen';
@@ -54,7 +55,6 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   useEffect(() => {
-    // ✅ Firebase Auth 안전 초기화 (Hermes 대응)
     try {
       initializeAuth(app, {
         persistence: getReactNativePersistence(AsyncStorage),
@@ -71,7 +71,7 @@ export default function App() {
         await registerForPushNotificationsAsync(userId);
       }
 
-      sendTestNotification("🔥 앱 실행됨", "이건 에뮬레이터 확인용 테스트 알림입니다.");
+      sendTestNotification("앱 실행됨", "이건 에뮬레이터 확인용 테스트 알림입니다.");
     };
 
     setupPush();
@@ -105,17 +105,28 @@ export default function App() {
         <Stack.Screen name="NoticeWriteScreen" component={NoticeWriteScreen} options={{ headerShown: true, title: '공지사항 작성' }} />
         <Stack.Screen name="CustomerInquiryScreen" component={CustomerInquiryScreen} options={{ headerShown: true, title: '고객 문의 관리' }} />
         <Stack.Screen name="NoticeDetailScreen" component={NoticeDetailScreen} options={{ headerShown: true, title: '공지사항 상세' }} />
-<Stack.Screen
-  name="ApprovedApplicationsScreen"
-  component={ApprovedApplicationsScreen}
-  options={{
-    headerShown: true,
-    title: '승인 내역 보기',
-    headerStyle: { backgroundColor: '#007AFF' },
-    headerTintColor: '#fff',
-    headerTitleStyle: { fontWeight: 'bold' },
-  }}
-/>
+        <Stack.Screen
+          name="ApprovedApplicationsScreen"
+          component={ApprovedApplicationsScreen}
+          options={{
+            headerShown: true,
+            title: '승인 내역 보기',
+            headerStyle: { backgroundColor: '#007AFF' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        />
+        <Stack.Screen
+          name="SettlementApprovalScreen"
+          component={SettlementApprovalScreen}
+          options={{
+            headerShown: true,
+            title: '정산 승인 요청',
+            headerStyle: { backgroundColor: '#007AFF' },
+            headerTintColor: '#fff',
+            headerTitleAlign: 'center'
+          }}
+        />
 
         {/* 사용자 기능 */}
         <Stack.Screen name="BankInfo" component={BankInfoScreen} options={{ headerShown: true, title: '계좌 정보 변경' }} />

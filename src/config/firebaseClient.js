@@ -1,4 +1,4 @@
-// ✅ Expo Go에서만 사용 가능한 최소한의 Firebase Auth 초기화
+//  Expo Go에서만 사용 가능한 최소한의 Firebase Auth 초기화
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import Constants from 'expo-constants';
@@ -15,6 +15,6 @@ const firebaseConfig = {
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app); // ✅ persistence 없음
+const auth = getAuth(app); //  persistence 없음
 
 export { auth };

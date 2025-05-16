@@ -54,7 +54,7 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
     let { email, password, name, phone, gender, bank, accountNumber, role } = req.body;
 
     if (!email || !password || !name || !phone || !gender) {
-      console.warn('❌ [3] 필수 입력값 누락됨');
+      console.warn('[3] 필수 입력값 누락됨');
       return res.status(400).json({ message: '모든 필드를 입력하세요.' });
     }
 
@@ -62,17 +62,17 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
     role = role === 'admin' ? 'admin' : 'user';
 
     const formattedPhone = formatPhoneNumber(phone);
-    console.log('📞 [4] 변환된 전화번호:', formattedPhone);
+    console.log('[4] 변환된 전화번호:', formattedPhone);
 
     if (!formattedPhone) {
-      console.error('❌ [5] 전화번호 형식 오류:', phone);
+      console.error('[5] 전화번호 형식 오류:', phone);
       return res.status(400).json({ message: "올바른 전화번호 형식이 아닙니다." });
     }
 
     // 🔒 비밀번호 해싱
     console.log('🔐 [6] 비밀번호 해싱 시작');
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('✅ [7] 해싱된 비밀번호:', hashedPassword);
+    console.log(' [7] 해싱된 비밀번호:', hashedPassword);
 
     // 🧪 추가 확인
     console.log('🧪 [7.1] hashedPassword typeof:', typeof hashedPassword);
@@ -80,7 +80,7 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
       console.warn('🚨 [7.2] hashedPassword가 비어있음!');
     }
 
-    // ✅ Firebase Auth에 사용자 생성
+    //  Firebase Auth에 사용자 생성
     console.log('🚀 [8] Firebase 사용자 생성 요청');
     const userRecord = await admin.auth().createUser({
       email,
@@ -88,14 +88,14 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
       displayName: name,
       phoneNumber: formattedPhone,
     });
-    console.log('✅ [9] Firebase 사용자 생성 완료:', userRecord.uid);
+    console.log(' [9] Firebase 사용자 생성 완료:', userRecord.uid);
 
     // 📸 이미지 업로드
     let imageUrl = req.body.idImageUrl || 'https://your-default-profile-url.com';
     if (req.file) {
       console.log('🖼️ [10] 이미지 업로드 시작');
       imageUrl = await uploadFileToStorage(req.file);
-      console.log('✅ [11] 이미지 업로드 완료:', imageUrl);
+      console.log(' [11] 이미지 업로드 완료:', imageUrl);
     }
 
     const userData = {
@@ -117,12 +117,12 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
     if (!userData.password) {
       console.warn('🚨 [13.1] password 필드가 undefined입니다.');
     } else {
-      console.log('✅ [13.2] password 필드가 존재합니다.');
+      console.log(' [13.2] password 필드가 존재합니다.');
     }
 
     // Firestore 저장
     await db.collection('users').doc(userRecord.uid).set(userData);
-    console.log('✅ [14] Firestore 저장 성공');
+    console.log(' [14] Firestore 저장 성공');
 
     // 응답
     res.status(201).json({
@@ -135,7 +135,7 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
     });
 
   } catch (error) {
-    console.error("🔥 [ERROR] 회원가입 실패:", {
+    console.error("[ERROR] 회원가입 실패:", {
       code: error.code,
       message: error.message,
       stack: error.stack,
@@ -205,7 +205,7 @@ router.post('/login', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('🔥 로그인 오류:', error);
+    console.error('로그인 오류:', error);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
 });

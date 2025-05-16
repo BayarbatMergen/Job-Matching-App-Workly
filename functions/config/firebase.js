@@ -10,7 +10,7 @@ function initializeFirebase() {
       credential: admin.credential.applicationDefault(),
       storageBucket: "jobmatchingapp-383da.appspot.com",
     });
-    console.log("✅ Firebase Functions 환경: applicationDefault()로 Firebase 초기화");
+    console.log(" Firebase Functions 환경: applicationDefault()로 Firebase 초기화");
   }
 
   initialized = true;

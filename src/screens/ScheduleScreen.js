@@ -38,8 +38,8 @@ export default function ScheduleScreen({ navigation }) {
           navigation.replace("Login");
           return;
         }
-        const storedUserId = await fetchUserData();
-        setUserId(storedUserId);
+        const user = await fetchUserData();
+        setUserId(user?.userId); // 수정된 부분
       } catch (error) {
         Alert.alert("오류", "인증이 필요합니다.", [
           { text: "확인", onPress: () => navigation.navigate("Login") },
@@ -65,14 +65,13 @@ export default function ScheduleScreen({ navigation }) {
       const pending = snapshot.docs.find(doc => doc.data().userId === uid && doc.data().status === "pending");
       setHasPendingSettlement(!!pending);
     } catch (error) {
-      console.error(" 정산 대기 상태 확인 오류:", error);
+      console.error("정산 대기 상태 확인 오류:", error);
     }
   };
 
   const fetchSchedules = async (uid) => {
     try {
       const schedulesArray = await fetchUserSchedules(uid);
-      console.log("불러온 schedule 목록:", schedulesArray);
       const formattedSchedules = {};
       let totalWageSum = 0;
 
@@ -81,7 +80,7 @@ export default function ScheduleScreen({ navigation }) {
         const end = new Date(schedule.endDate);
 
         const diffDays = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
-        const dailyWage = Number(schedule.wage); // ✅ 하루 급여 그대로 사용
+        const dailyWage = Number(schedule.wage);
 
         for (let i = 0; i < diffDays; i++) {
           const date = new Date(start);
@@ -99,7 +98,7 @@ export default function ScheduleScreen({ navigation }) {
           });
         }
 
-        totalWageSum += dailyWage * diffDays; // ✅ 전체 합산
+        totalWageSum += dailyWage * diffDays;
       });
 
       setScheduleData(formattedSchedules);
@@ -117,7 +116,7 @@ export default function ScheduleScreen({ navigation }) {
 
       setMarkedDates(marks);
     } catch (error) {
-      console.error(" 일정 데이터 로딩 오류:", error);
+      console.error("일정 데이터 로딩 오류:", error);
     }
   };
 
@@ -138,7 +137,6 @@ export default function ScheduleScreen({ navigation }) {
 
     try {
       const token = await SecureStore.getItemAsync("token");
-      console.log("✅ 보낼 토큰:", token);
       const response = await fetch(`${API_BASE_URL}/schedules/request-settlement`, {
         method: "POST",
         headers: {

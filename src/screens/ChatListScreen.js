@@ -38,7 +38,7 @@ export default function ChatListScreen({ navigation }) {
 
       setUnreadRoomIds(unreadIds);
     } catch (err) {
-      console.error("❌ 읽지 않은 상태 불러오기 실패:", err.message);
+      console.error("읽지 않은 상태 불러오기 실패:", err.message);
     }
   };
 
@@ -73,20 +73,20 @@ export default function ChatListScreen({ navigation }) {
 
             return { ...room, lastMessageTime: dateObj };
           } catch (err) {
-            console.error("❌ 메시지 시간 가져오기 실패:", err.message);
+            console.error(" 메시지 시간 가져오기 실패:", err.message);
             return { ...room, lastMessageTime: new Date(0) };
           }
         })
       );
 
-      console.log("📦 roomsWithTime before sort:", roomsWithTime.map(r => ({
+      console.log("roomsWithTime before sort:", roomsWithTime.map(r => ({
         name: r.name,
         lastMessageTime: r.lastMessageTime.toISOString(),
       })));
 
       roomsWithTime.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
 
-      console.log("✅ roomsWithTime after sort:", roomsWithTime.map(r => ({
+      console.log(" roomsWithTime after sort:", roomsWithTime.map(r => ({
         name: r.name,
         lastMessageTime: r.lastMessageTime.toISOString(),
       })));
@@ -94,7 +94,7 @@ export default function ChatListScreen({ navigation }) {
       setChatRooms(roomsWithTime);
       await fetchUnreadStatus(uid);
     } catch (error) {
-      console.error("❌ 채팅방 목록 오류:", error);
+      console.error("채팅방 목록 오류:", error);
       Alert.alert("오류", "채팅방 목록을 불러오지 못했습니다.");
     } finally {
       setLoading(false);
@@ -139,7 +139,7 @@ try {
 
   if (!response.ok) {
     const errorHtml = await response.text();
-    console.error("❌ 관리자 채팅 응답 HTML:", errorHtml);
+    console.error("관리자 채팅 응답 HTML:", errorHtml);
     Alert.alert("에러", "채팅방 생성 실패\n" + errorHtml);
     return;
   }
@@ -151,7 +151,7 @@ try {
     roomType: "inquiry",
   });
 } catch (error) {
-  console.error("❌ 관리자 채팅 오류:", error);
+  console.error("관리자 채팅 오류:", error);
   Alert.alert("에러", "네트워크 오류 또는 서버 문제 발생");
 }
   };

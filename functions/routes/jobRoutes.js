@@ -111,7 +111,7 @@ router.post('/add', async (req, res) => {
 
 
 
-//  2️⃣ 구인 공고 목록 조회 API
+// 구인 공고 목록 조회 API
 router.get('/list', async (req, res) => {
   try {
     const userId = req.query.userId;  // 쿼리로 사용자 ID 받기
@@ -127,7 +127,7 @@ router.get('/list', async (req, res) => {
   }
 });
 
-//  3️⃣ 특정 구인 공고 상세 조회 API
+// 특정 구인 공고 상세 조회 API
 router.get('/:jobId', async (req, res) => {
   try {
     const { jobId } = req.params;
@@ -145,7 +145,7 @@ router.get('/:jobId', async (req, res) => {
   }
 });
 
-//  4️⃣ 구인 공고 수정 API
+// 구인 공고 수정 API
 router.put('/:jobId', async (req, res) => {
   try {
     const { jobId } = req.params;
@@ -170,7 +170,7 @@ router.put('/:jobId', async (req, res) => {
   }
 });
 
-//  5️⃣ 구인 공고 삭제 API
+// 구인 공고 삭제 API
 router.delete('/:jobId', async (req, res) => {
   try {
     const { jobId } = req.params;
@@ -258,7 +258,7 @@ router.post('/apply', async (req, res) => {
   }
 });
 
-//  7️⃣ 관리자 지원자 목록 조회 API
+// 관리자 지원자 목록 조회 API
 router.get('/applications/:jobId', async (req, res) => {
   const { jobId } = req.params;
 
@@ -370,6 +370,5 @@ router.post('/notifications/global/:notificationId/read', async (req, res) => {
     res.status(500).json({ message: "서버 오류", error: error.message });
   }
 });
-
   return router;
 };

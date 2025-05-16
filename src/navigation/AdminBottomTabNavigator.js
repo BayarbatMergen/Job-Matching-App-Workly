@@ -142,6 +142,7 @@ function AdminHomeStack() {
       <Stack.Screen name="ApprovalScreen" component={ApprovalScreen} options={{ headerTitle: '승인 대기 목록' }} />
       <Stack.Screen name="UserSelectionScreen" component={UserSelectionScreen} options={{ headerTitle: '사용자 선택' }} />
       <Stack.Screen name="AdminNotificationScreen" component={AdminNotificationScreen} options={{ headerTitle: '알림' }} />
+      <Stack.Screen name="SettlementApprovalScreen" component={SettlementApprovalScreen} options={{ headerTitle: '정산 승인 관리' }} />
     </Stack.Navigator>
   );
 }
@@ -191,6 +192,7 @@ function AdminMyPageStack() {
       <Stack.Screen name="CustomerInquiryScreen" component={CustomerInquiryScreen} options={{ headerTitle: '고객센터 문의 확인' }} />
       <Stack.Screen name="AdminPasswordChangeScreen" component={AdminPasswordChangeScreen} options={{ headerTitle: '비밀번호 변경' }} />
       <Stack.Screen name="AdminNotificationScreen" component={AdminNotificationScreen} options={{ headerTitle: '알림' }} />
+      <Stack.Screen name="SettlementApprovalScreen" component={SettlementApprovalScreen} options={{ headerTitle: '정산 승인 관리' }} />
     </Stack.Navigator>
   );
 }
@@ -224,7 +226,19 @@ export default function AdminBottomTabNavigator() {
             </View>
           );
         },
+        // 언제나 탭을 활성화하도록 설정
+        tabBarActiveTintColor: '#007AFF',
+        tabBarInactiveTintColor: '#999',
+        // 화면이 숨겨져 있어도 탭이 항상 보이도록 설정
+        tabBarVisible: true,
+        // 이 옵션을 추가하여 탭 클릭 이벤트가 항상 작동하도록 함
+        tabBarButton: (props) => <TouchableOpacity {...props} activeOpacity={0.7} />
       })}
+      // 알림 화면에서 SettlementApprovalScreen으로 이동했을 때도 스케줄 탭을 활성화
+      tabBarOptions={{
+        keyboardHidesTabBar: false,
+        allowFontScaling: false,
+      }}
     >
       <Tab.Screen name="AdminHome" component={AdminHomeStack} />
       <Tab.Screen name="AdminSchedule" component={AdminScheduleStack} />

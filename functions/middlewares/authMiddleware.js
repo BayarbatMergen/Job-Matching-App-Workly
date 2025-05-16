@@ -13,7 +13,7 @@ const verifyToken = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
     const decodedToken = jwt.verify(token, SECRET_KEY);
 
-    // ✅ userId가 없으면 uid를 대신 사용
+    //  userId가 없으면 uid를 대신 사용
     req.user = {
       ...decodedToken,
       userId: decodedToken.userId || decodedToken.uid,

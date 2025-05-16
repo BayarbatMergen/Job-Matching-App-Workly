@@ -97,19 +97,19 @@ const formatPhoneNumber = (phone) => {
 
 const uploadImageToFirebase = async (image) => {
   try {
-    console.log("📦 Firebase Storage 업로드 시작");
+    console.log("Firebase Storage 업로드 시작");
 
     const response = await fetch(image.uri);
-    const blob = await response.blob(); // 🔥 여기서 실패하는 경우 많음
+    const blob = await response.blob();
     const filename = `idImages/${uuid.v4()}.jpg`;
     const storageRef = ref(storage, filename);
     await uploadBytes(storageRef, blob);
     const downloadURL = await getDownloadURL(storageRef);
 
-    console.log("✅ 업로드 성공 URL:", downloadURL);
+    console.log(" 업로드 성공 URL:", downloadURL);
     return downloadURL;
   } catch (error) {
-    console.error("❌ Firebase 업로드 전체 에러:", JSON.stringify(error));
+    console.error("Firebase 업로드 전체 에러:", JSON.stringify(error));
     throw new Error('이미지 업로드 실패');
   }
 };
@@ -195,7 +195,7 @@ const formattedPhone = `+82${cleanedPhone.slice(1)}`;
     }
 
   } catch (error) {
-    console.error("🔥 등록 실패:", error);
+    console.error("등록 실패:", error);
     Alert.alert("회원가입 실패", error.message || "알 수 없는 오류가 발생했습니다.");
   } finally {
     setLoading(false);

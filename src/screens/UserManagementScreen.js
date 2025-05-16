@@ -24,7 +24,7 @@ const UserManagementScreen = ({ navigation }) => {
   const fetchUsers = async () => {
     try {
       const token = await SecureStore.getItemAsync("token"); // ⬅️ 토큰 가져오기
-      console.log("🔑 토큰:", token); // ✅ 이 줄 추가
+      console.log("🔑 토큰:", token); //  이 줄 추가
       const response = await fetch(`${API_BASE_URL}/admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`, // ⬅️ 토큰 포함

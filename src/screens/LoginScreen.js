@@ -30,7 +30,7 @@ useEffect(() => {
       const shouldAutoLogin = await AsyncStorage.getItem("autoLogin");
 
       if (shouldAutoLogin === "true") {
-        setAutoLoginChecked(true); // ✅ 체크박스도 체크 상태로
+        setAutoLoginChecked(true); //  체크박스도 체크 상태로
         const storedEmail = await AsyncStorage.getItem("email");
         const storedPassword = await AsyncStorage.getItem("password");
 
