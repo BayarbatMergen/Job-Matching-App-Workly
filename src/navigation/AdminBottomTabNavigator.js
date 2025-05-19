@@ -37,98 +37,66 @@ const Stack = createStackNavigator();
 // ✅ 알림 감지 훅
 function useUnreadNotificationCount() {
   const [count, setCount] = useState(0);
-
   useEffect(() => {
-    const q = query(
-      collection(db, 'notifications'),
-      where('status', '==', 'unread')
-    );
-
+    const q = query(collection(db, 'notifications'), where('status', '==', 'unread'));
     const unsubscribe = onSnapshot(q, snapshot => {
       setCount(snapshot.size);
     });
-
     return () => unsubscribe();
   }, []);
-
   return count;
 }
 
 // ✅ 채팅 감지 훅
 function useUnreadChatCount() {
   const [hasUnread, setHasUnread] = useState(false);
-
   useEffect(() => {
     let unsubscribers = [];
-
     const listen = async () => {
       const adminId = await SecureStore.getItemAsync("userId");
       if (!adminId) return;
-
-      const roomSnap = await getDocs(
-        query(collection(db, "chats"), where("participants", "array-contains", adminId))
-      );
-
+      const roomSnap = await getDocs(query(collection(db, "chats"), where("participants", "array-contains", adminId)));
       const allRooms = roomSnap.docs;
       if (allRooms.length === 0) {
         setHasUnread(false);
         return;
       }
-
       const unsubArray = [];
       const unreadMap = {};
-
       allRooms.forEach((doc) => {
         const roomId = doc.id;
         const messagesRef = collection(db, `chats/${roomId}/messages`);
-
         const unsub = onSnapshot(messagesRef, (snapshot) => {
           const hasUnreadInRoom = snapshot.docs.some((msgDoc) => {
             const data = msgDoc.data();
             return !(data.readBy || []).includes(adminId);
           });
-
           unreadMap[roomId] = hasUnreadInRoom;
-
           const isAnyUnread = Object.values(unreadMap).some(Boolean);
           setHasUnread(isAnyUnread);
         });
-
         unsubArray.push(unsub);
       });
-
       unsubscribers = unsubArray;
     };
-
     listen();
     return () => unsubscribers.forEach((unsub) => unsub());
   }, []);
-
   return hasUnread;
 }
 
 // 모집 공고 관리 스택
 function AdminHomeStack() {
   const unreadCount = useUnreadNotificationCount();
-
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: '#007AFF' },
-        headerTintColor: '#fff',
-        headerTitleAlign: 'center',
-      }}
-    >
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#007AFF' }, headerTintColor: '#fff', headerTitleAlign: 'center' }}>
       <Stack.Screen
         name="AdminJobList"
         component={AdminJobListScreen}
         options={({ navigation }) => ({
           headerTitle: '모집 공고',
           headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('AdminNotificationScreen')}
-              style={{ marginRight: 15 }}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate('AdminNotificationScreen')} style={{ marginRight: 15 }}>
               <View>
                 <Ionicons name="notifications-outline" size={24} color="white" />
                 {unreadCount > 0 && <View style={styles.redDot} />}
@@ -142,7 +110,6 @@ function AdminHomeStack() {
       <Stack.Screen name="ApprovalScreen" component={ApprovalScreen} options={{ headerTitle: '승인 대기 목록' }} />
       <Stack.Screen name="UserSelectionScreen" component={UserSelectionScreen} options={{ headerTitle: '사용자 선택' }} />
       <Stack.Screen name="AdminNotificationScreen" component={AdminNotificationScreen} options={{ headerTitle: '알림' }} />
-      <Stack.Screen name="SettlementApprovalScreen" component={SettlementApprovalScreen} options={{ headerTitle: '정산 승인 관리' }} />
     </Stack.Navigator>
   );
 }
@@ -150,13 +117,8 @@ function AdminHomeStack() {
 // 일정 관리 스택
 function AdminScheduleStack() {
   return (
-    <Stack.Navigator screenOptions={{
-      headerStyle: { backgroundColor: '#007AFF' },
-      headerTintColor: '#fff',
-      headerTitleAlign: 'center'
-    }}>
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#007AFF' }, headerTintColor: '#fff', headerTitleAlign: 'center' }}>
       <Stack.Screen name="AdminScheduleScreen" component={AdminScheduleScreen} options={{ headerTitle: '일정 관리' }} />
-      <Stack.Screen name="SettlementApprovalScreen" component={SettlementApprovalScreen} options={{ headerTitle: '정산 승인 관리' }} />
     </Stack.Navigator>
   );
 }
@@ -164,11 +126,7 @@ function AdminScheduleStack() {
 // 채팅 스택
 function AdminChatStack() {
   return (
-    <Stack.Navigator screenOptions={{
-      headerStyle: { backgroundColor: '#007AFF' },
-      headerTintColor: '#fff',
-      headerTitleAlign: 'center'
-    }}>
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#007AFF' }, headerTintColor: '#fff', headerTitleAlign: 'center' }}>
       <Stack.Screen name="AdminChatList" component={AdminChatListScreen} options={{ headerTitle: '채팅 목록' }} />
       <Stack.Screen name="AdminChatScreen" component={AdminChatScreen} options={({ route }) => ({
         headerTitle: route.params?.roomName || '채팅방'
@@ -180,11 +138,7 @@ function AdminChatStack() {
 // 마이페이지 스택
 function AdminMyPageStack() {
   return (
-    <Stack.Navigator screenOptions={{
-      headerStyle: { backgroundColor: '#007AFF' },
-      headerTintColor: '#fff',
-      headerTitleAlign: 'center'
-    }}>
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#007AFF' }, headerTintColor: '#fff', headerTitleAlign: 'center' }}>
       <Stack.Screen name="AdminMyPageMain" component={AdminMyPageScreen} options={{ headerTitle: '마이페이지' }} />
       <Stack.Screen name="UserManagementScreen" component={UserManagementScreen} options={{ headerTitle: '전체 사용자 관리' }} />
       <Stack.Screen name="UserDetailScreen" component={UserDetailScreen} options={{ headerTitle: '사용자 상세 정보' }} />
@@ -192,6 +146,14 @@ function AdminMyPageStack() {
       <Stack.Screen name="CustomerInquiryScreen" component={CustomerInquiryScreen} options={{ headerTitle: '고객센터 문의 확인' }} />
       <Stack.Screen name="AdminPasswordChangeScreen" component={AdminPasswordChangeScreen} options={{ headerTitle: '비밀번호 변경' }} />
       <Stack.Screen name="AdminNotificationScreen" component={AdminNotificationScreen} options={{ headerTitle: '알림' }} />
+    </Stack.Navigator>
+  );
+}
+
+// ✅ 전역 스택: 중복 등록 제거
+function AdminGlobalStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#007AFF' }, headerTintColor: '#fff', headerTitleAlign: 'center' }}>
       <Stack.Screen name="SettlementApprovalScreen" component={SettlementApprovalScreen} options={{ headerTitle: '정산 승인 관리' }} />
     </Stack.Navigator>
   );
@@ -214,6 +176,7 @@ export default function AdminBottomTabNavigator() {
           else if (route.name === 'AdminSchedule') iconName = 'calendar-outline';
           else if (route.name === 'AdminChat') iconName = 'chatbubble-outline';
           else if (route.name === 'AdminMyPage') iconName = 'person-outline';
+          else if (route.name === 'AdminGlobal') iconName = 'document-text-outline';
 
           const showRedDot =
             (route.name === 'AdminChat' && hasUnreadChat) ||
@@ -226,24 +189,16 @@ export default function AdminBottomTabNavigator() {
             </View>
           );
         },
-        // 언제나 탭을 활성화하도록 설정
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: '#999',
-        // 화면이 숨겨져 있어도 탭이 항상 보이도록 설정
-        tabBarVisible: true,
-        // 이 옵션을 추가하여 탭 클릭 이벤트가 항상 작동하도록 함
         tabBarButton: (props) => <TouchableOpacity {...props} activeOpacity={0.7} />
       })}
-      // 알림 화면에서 SettlementApprovalScreen으로 이동했을 때도 스케줄 탭을 활성화
-      tabBarOptions={{
-        keyboardHidesTabBar: false,
-        allowFontScaling: false,
-      }}
     >
       <Tab.Screen name="AdminHome" component={AdminHomeStack} />
       <Tab.Screen name="AdminSchedule" component={AdminScheduleStack} />
       <Tab.Screen name="AdminChat" component={AdminChatStack} />
       <Tab.Screen name="AdminMyPage" component={AdminMyPageStack} />
+      <Tab.Screen name="AdminGlobal" component={AdminGlobalStack} />
     </Tab.Navigator>
   );
 }

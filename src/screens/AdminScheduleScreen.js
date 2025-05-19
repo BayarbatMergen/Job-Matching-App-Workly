@@ -150,12 +150,7 @@ export default function AdminScheduleScreen() {
           </ScrollView>
         </View>
 
-        <TouchableOpacity
-          style={styles.approvalButton}
-          onPress={() => navigation.navigate("SettlementApprovalScreen")}
-        >
-          <Text style={styles.approvalButtonText}>정산 승인 관리</Text>
-        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('ApprovedApplicationsScreen')}
@@ -212,23 +207,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#AAA',
   },
-  approvalButton: {
+  button: {
     backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
     marginVertical: 20,
     marginHorizontal: 20,
-  },
-  approvalButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginHorizontal: 20,
-    elevation: 4,
   },
   buttonText: {
     color: '#fff',

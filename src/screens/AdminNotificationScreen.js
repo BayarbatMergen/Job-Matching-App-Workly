@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { db } from '../config/firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { format } from 'date-fns';
-import { doc, updateDoc } from "firebase/firestore"; // 추가
-
+import { collection, onSnapshot, query, orderBy, doc, updateDoc } from 'firebase/firestore';
 
 export default function AdminNotificationScreen({ navigation }) {
   const [notifications, setNotifications] = useState([]);
@@ -31,27 +28,28 @@ export default function AdminNotificationScreen({ navigation }) {
 
     return () => unsubscribe();
   }, []);
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       onPress={async () => {
         try {
           // 상태를 'read'로 변경
-          await updateDoc(doc(db, "notifications", item.id), {
-            status: "read",
+          await updateDoc(doc(db, 'notifications', item.id), {
+            status: 'read',
           });
         } catch (error) {
-          console.error("알림 상태 업데이트 실패:", error);
+          console.error('알림 상태 업데이트 실패:', error);
         }
-  
+
         // 알림 타입에 따라 이동
-        if (item.type === "settlement") {
-          navigation.navigate("AdminSchedule", { screen: "SettlementApprovalScreen" });
-        } else if (item.type === "application") {
-          navigation.navigate("AdminHome", { screen: "ApprovalScreen" });
-        } else if (item.type === "inquiry") {
-          navigation.navigate("AdminMyPage", { screen: "CustomerInquiryScreen" });
+        if (item.type === 'settlement') {
+          navigation.navigate('AdminGlobal', { screen: 'SettlementApprovalScreen' }); // ✅ 수정된 부분
+        } else if (item.type === 'application') {
+          navigation.navigate('AdminHome', { screen: 'ApprovalScreen' });
+        } else if (item.type === 'inquiry') {
+          navigation.navigate('AdminMyPage', { screen: 'CustomerInquiryScreen' });
         } else {
-          console.warn("알 수 없는 알림 타입:", item.type);
+          console.warn('알 수 없는 알림 타입:', item.type);
         }
       }}
       style={styles.notificationItem}
@@ -59,21 +57,19 @@ export default function AdminNotificationScreen({ navigation }) {
       <Text style={styles.message}>{item.message}</Text>
       <Text style={styles.time}>
         {item.createdAt?.toDate
-          ? item.createdAt.toDate().toLocaleString("ko-KR", {
-              timeZone: "Asia/Seoul",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
+          ? item.createdAt.toDate().toLocaleString('ko-KR', {
+              timeZone: 'Asia/Seoul',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
             })
-          : "날짜 없음"}
+          : '날짜 없음'}
       </Text>
-      {item.status === "unread" && <Text style={styles.badge}>● 새 알림</Text>}
+      {item.status === 'unread' && <Text style={styles.badge}>● 새 알림</Text>}
     </TouchableOpacity>
   );
-  
-  
 
   return (
     <View style={styles.container}>
