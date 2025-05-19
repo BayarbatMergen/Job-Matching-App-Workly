@@ -185,10 +185,31 @@ export const testAsyncStorage = async () => {
 // 기존: resetPasswordWithFirebase
 export const resetPasswordWithBackend = async (email) => {
   try {
-    await sendPasswordResetEmail(auth, email);
-    
+    const response = await fetch(`${API_BASE_URL}/auth/request-reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const text = await response.text();
+    let result;
+
+    try {
+      result = JSON.parse(text);
+    } catch (parseError) {
+      console.error("응답이 JSON이 아님. 원문:", text);
+      throw new Error("서버 오류가 발생했습니다.");
+    }
+
+    if (!response.ok) {
+      throw new Error(result.message || "비밀번호 재설정 실패");
+    }
+
+    // ✅ 보안상 링크는 반환하지 않고 message만 반환
+    return { message: result.message || "비밀번호 재설정 메일이 전송되었습니다." };
   } catch (error) {
     console.error("비밀번호 재설정 오류:", error.message);
     throw error;
   }
 };
+

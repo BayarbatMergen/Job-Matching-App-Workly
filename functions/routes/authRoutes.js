@@ -5,10 +5,19 @@ const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../middlewares/authMiddleware');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() }); // 메모리에 저장
+const admin = require('firebase-admin');
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 module.exports = ({ db, admin }) => {
 
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
+const smtpConfig = {
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT),
+  user: process.env.SMTP_USER,
+  pass: process.env.SMTP_PASS,
+};
 
 const formatPhoneNumber = (phone) => {
   if (!phone) return null;
@@ -48,56 +57,45 @@ const formatPhoneNumber = (phone) => {
 
 router.post('/register', upload.single('idImage'), async (req, res) => {
   try {
-    console.log('📥 [1] 요청 바디:', req.body);
-    console.log('📎 [2] 업로드된 파일:', req.file);
+    let { email, password, name, phone, gender, bank, accountNumber, role, idImageUrl } = req.body;
 
-    let { email, password, name, phone, gender, bank, accountNumber, role } = req.body;
-
+    // [1] 필수 입력값 확인
     if (!email || !password || !name || !phone || !gender) {
-      console.warn('[3] 필수 입력값 누락됨');
       return res.status(400).json({ message: '모든 필드를 입력하세요.' });
     }
 
     email = email.toLowerCase().trim();
     role = role === 'admin' ? 'admin' : 'user';
-
     const formattedPhone = formatPhoneNumber(phone);
-    console.log('[4] 변환된 전화번호:', formattedPhone);
 
-    if (!formattedPhone) {
-      console.error('[5] 전화번호 형식 오류:', phone);
-      return res.status(400).json({ message: "올바른 전화번호 형식이 아닙니다." });
+    // [2] 같은 이름 중복 확인
+    const existingName = await db.collection('users').where('name', '==', name).get();
+    if (!existingName.empty) {
+      return res.status(400).json({ message: '이미 존재하는 이름입니다. 다른 이름을 사용하세요.' });
     }
 
-    // 🔒 비밀번호 해싱
-    console.log('🔐 [6] 비밀번호 해싱 시작');
+    // [3] 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log(' [7] 해싱된 비밀번호:', hashedPassword);
 
-    // 🧪 추가 확인
-    console.log('🧪 [7.1] hashedPassword typeof:', typeof hashedPassword);
-    if (!hashedPassword) {
-      console.warn('🚨 [7.2] hashedPassword가 비어있음!');
-    }
-
-    //  Firebase Auth에 사용자 생성
-    console.log('🚀 [8] Firebase 사용자 생성 요청');
+    // [4] Firebase 사용자 생성
     const userRecord = await admin.auth().createUser({
       email,
       password,
       displayName: name,
       phoneNumber: formattedPhone,
     });
-    console.log(' [9] Firebase 사용자 생성 완료:', userRecord.uid);
 
-    // 📸 이미지 업로드
-    let imageUrl = req.body.idImageUrl || 'https://your-default-profile-url.com';
+    // [5] 이미지 업로드 (신분증 확인은 여기서)
+    let imageUrl = idImageUrl || '';
     if (req.file) {
-      console.log('🖼️ [10] 이미지 업로드 시작');
       imageUrl = await uploadFileToStorage(req.file);
-      console.log(' [11] 이미지 업로드 완료:', imageUrl);
     }
 
+    if (!imageUrl) {
+      return res.status(400).json({ message: '신분증 사진이 필요합니다.' });
+    }
+
+    // [6] Firestore 저장
     const userData = {
       userId: userRecord.uid,
       name,
@@ -112,46 +110,30 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
       createdAt: new Date(),
     };
 
-    console.log('🧾 [12] Firestore 저장 전 userData:', JSON.stringify(userData, null, 2));
-    console.log('🗝️ [13] userData 필드 목록:', Object.keys(userData));
-    if (!userData.password) {
-      console.warn('🚨 [13.1] password 필드가 undefined입니다.');
-    } else {
-      console.log(' [13.2] password 필드가 존재합니다.');
-    }
-
-    // Firestore 저장
     await db.collection('users').doc(userRecord.uid).set(userData);
-    console.log(' [14] Firestore 저장 성공');
 
-    // 응답
     res.status(201).json({
       message: "회원가입 성공!",
       userId: userRecord.uid,
       user: {
         ...userData,
-        password: undefined, // 프론트로 password 안 보냄
+        password: undefined, // 보안상 프론트로 전송하지 않음
       }
     });
 
   } catch (error) {
-    console.error("[ERROR] 회원가입 실패:", {
-      code: error.code,
-      message: error.message,
-      stack: error.stack,
-    });
-
     if (error.code === 'auth/phone-number-already-exists') {
       return res.status(400).json({ message: "이미 사용 중인 전화번호입니다." });
     }
-
     if (error.code === 'auth/invalid-phone-number') {
       return res.status(400).json({ message: "유효하지 않은 전화번호 형식입니다." });
     }
 
+    console.error('[회원가입 오류]', error);
     res.status(500).json({ message: error.message || '서버 오류' });
   }
 });
+
 
 
 router.post('/login', async (req, res) => {
@@ -288,7 +270,7 @@ router.put('/change-password', verifyToken, async (req, res) => {
 
     res.status(200).json({ message: "비밀번호 변경이 완료되었습니다." });
   } catch (error) {
-    console.error("🔴 비밀번호 변경 오류:", error);
+    console.error("비밀번호 변경 오류:", error);
     res.status(500).json({ message: "서버 오류 발생" });
   }
 });
@@ -321,6 +303,91 @@ router.get("/me", verifyToken, async (req, res) => {
   } catch (error) {
     console.error(" 사용자 정보 조회 오류:", error);
     res.status(500).json({ message: " 서버 오류 발생" });
+  }
+});
+
+router.post('/request-reset-password', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const userSnap = await db.collection('users').where('email', '==', email).limit(1).get();
+    if (userSnap.empty) return res.status(404).json({ message: '해당 이메일을 가진 사용자가 없습니다.' });
+
+    const userDoc = userSnap.docs[0];
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpire = Date.now() + 1000 * 60 * 60;
+
+    await userDoc.ref.update({ resetToken, resetTokenExpire });
+
+const resetLink = `https://jobmatchingapp-383da.web.app/reset-password?token=${resetToken}&uid=${userDoc.id}`;
+
+
+    // ✅ 환경변수에서 smtp 설정 읽기
+
+    const transporter = nodemailer.createTransport({
+      host: smtpConfig.host,
+      port: parseInt(smtpConfig.port),
+      secure: false,
+      auth: {
+        user: smtpConfig.user,
+        pass: smtpConfig.pass,
+      },
+    });
+
+    const mailOptions = {
+      from: smtpConfig.user,
+      to: email,
+      subject: "비밀번호 재설정 안내",
+      html: `
+        <p>안녕하세요,</p>
+        <p>아래 버튼을 클릭하여 비밀번호를 재설정하세요. 유효시간은 1시간입니다.</p>
+        <a href="${resetLink}" style="padding: 10px 20px; background-color: #007AFF; color: white; text-decoration: none; border-radius: 5px;">비밀번호 재설정</a>
+        <p>만약 요청하지 않았다면 이 이메일을 무시하셔도 됩니다.</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("✅ 이메일 전송 완료:", resetLink);
+
+    res.status(200).json({ message: "비밀번호 재설정 링크가 이메일로 전송되었습니다." });
+
+  } catch (err) {
+    console.error("비밀번호 재설정 링크 생성 오류:", err.message, err.stack);
+    res.status(500).json({ message: "서버 오류 발생" });
+  }
+});
+
+// ✅ 최종 권장 버전
+router.post('/reset-password', async (req, res) => {
+  const { token, uid, newPassword } = req.body;
+
+  if (!uid || !token || !newPassword) {
+    return res.status(400).json({ message: "필수 항목 누락" });
+  }
+
+  try {
+    const userRef = db.collection('users').doc(uid);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) return res.status(404).json({ message: "사용자 없음" });
+
+    const userData = userDoc.data();
+
+    if (userData.resetToken !== token || Date.now() > userData.resetTokenExpire) {
+      return res.status(400).json({ message: "유효하지 않거나 만료된 토큰" });
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+
+    await userRef.update({
+      password: hashed,
+      resetToken: admin.firestore.FieldValue.delete(),
+      resetTokenExpire: admin.firestore.FieldValue.delete()
+    });
+
+    return res.status(200).json({ message: "비밀번호가 성공적으로 변경되었습니다." });
+  } catch (err) {
+    console.error("비밀번호 재설정 오류:", err);
+    return res.status(500).json({ message: "서버 오류가 발생했습니다." });
   }
 });
 

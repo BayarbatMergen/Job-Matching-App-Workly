@@ -19,34 +19,32 @@ import Checkbox from 'expo-checkbox';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [resetEmail, setResetEmail] = useState("");
-  const [isResetMode, setIsResetMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [autoLoginChecked, setAutoLoginChecked] = useState(false);
 
-useEffect(() => {
-  const tryAutoLogin = async () => {
-    try {
-      const shouldAutoLogin = await AsyncStorage.getItem("autoLogin");
+  useEffect(() => {
+    const tryAutoLogin = async () => {
+      try {
+        const shouldAutoLogin = await AsyncStorage.getItem("autoLogin");
 
-      if (shouldAutoLogin === "true") {
-        setAutoLoginChecked(true); //  체크박스도 체크 상태로
-        const storedEmail = await AsyncStorage.getItem("email");
-        const storedPassword = await AsyncStorage.getItem("password");
+        if (shouldAutoLogin === "true") {
+          setAutoLoginChecked(true);
+          const storedEmail = await AsyncStorage.getItem("email");
+          const storedPassword = await AsyncStorage.getItem("password");
 
-        if (storedEmail && storedPassword) {
-          setEmail(storedEmail);
-          setPassword(storedPassword);
-          handleLogin(storedEmail, storedPassword, true);
+          if (storedEmail && storedPassword) {
+            setEmail(storedEmail);
+            setPassword(storedPassword);
+            handleLogin(storedEmail, storedPassword, true);
+          }
         }
+      } catch (error) {
+        console.error("자동 로그인 시도 중 오류:", error);
       }
-    } catch (error) {
-      console.error("자동 로그인 시도 중 오류:", error);
-    }
-  };
+    };
 
-  tryAutoLogin();
-}, []);
+    tryAutoLogin();
+  }, []);
 
   const handleLogin = async (overrideEmail, overridePassword, autoTrigger = false) => {
     const loginEmail = overrideEmail || email;
@@ -109,24 +107,6 @@ useEffect(() => {
     }
   };
 
-  const handleResetPassword = async () => {
-    if (!resetEmail) {
-      Alert.alert("입력 오류", "이메일을 입력하세요.");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const message = await resetPasswordWithBackend(resetEmail);
-      Alert.alert("비밀번호 재설정", message);
-      setIsResetMode(false);
-    } catch (error) {
-      Alert.alert("오류", error.message || "서버 오류");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -135,86 +115,55 @@ useEffect(() => {
       <View style={styles.innerContainer}>
         <Image source={require("../../assets/images/thechingu.png")} style={styles.logo} />
 
-        {!isResetMode ? (
-          <>
-            <Text style={styles.title}>로그인</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="이메일"
-              placeholderTextColor="#aaa"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="비밀번호"
-              placeholderTextColor="#aaa"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
+        <Text style={styles.title}>로그인</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="이메일"
+          placeholderTextColor="#aaa"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="비밀번호"
+          placeholderTextColor="#aaa"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
 
-<View style={styles.checkboxContainer}>
-  <Checkbox
-    value={autoLoginChecked}
-    onValueChange={setAutoLoginChecked}
-    color={autoLoginChecked ? '#007AFF' : undefined}
-  />
-  <Text style={styles.checkboxLabel}>자동 로그인</Text>
-</View>
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            value={autoLoginChecked}
+            onValueChange={setAutoLoginChecked}
+            color={autoLoginChecked ? '#007AFF' : undefined}
+          />
+          <Text style={styles.checkboxLabel}>자동 로그인</Text>
+        </View>
 
+        <TouchableOpacity
+          style={[styles.loginButton, loading && styles.disabledButton]}
+          onPress={() => handleLogin()}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.loginButtonText}>로그인</Text>
+          )}
+        </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.loginButton, loading && styles.disabledButton]}
-              onPress={() => handleLogin()}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <Text style={styles.loginButtonText}>로그인</Text>
-              )}
-            </TouchableOpacity>
-
-            <View style={styles.footerContainer}>
-              <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                <Text style={styles.registerText}>회원가입</Text>
-              </TouchableOpacity>
-              <Text style={styles.separator}> | </Text>
-              <TouchableOpacity onPress={() => setIsResetMode(true)}>
-                <Text style={styles.forgotPasswordText}>비밀번호 찾기</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        ) : (
-          <>
-            <Text style={styles.title}>비밀번호 찾기</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="이메일 입력"
-              placeholderTextColor="#aaa"
-              value={resetEmail}
-              onChangeText={setResetEmail}
-              keyboardType="email-address"
-            />
-            <TouchableOpacity
-              style={[styles.resetButton, loading && styles.disabledButton]}
-              onPress={handleResetPassword}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <Text style={styles.resetButtonText}>비밀번호 재설정 요청</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setIsResetMode(false)}>
-              <Text style={styles.backToLoginText}>로그인으로 돌아가기</Text>
-            </TouchableOpacity>
-          </>
-        )}
+        <View style={styles.footerContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Text style={styles.registerText}>회원가입</Text>
+          </TouchableOpacity>
+          <Text style={styles.separator}> | </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("ResetPasswordRequest")}>
+            <Text style={styles.forgotPasswordText}>비밀번호 찾기</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -239,12 +188,6 @@ const styles = StyleSheet.create({
   registerText: { color: "#007AFF", fontSize: 16, fontWeight: "500" },
   forgotPasswordText: { color: "#FF5733", fontSize: 16, fontWeight: "500" },
   separator: { fontSize: 16, color: "#333", marginHorizontal: 10 },
-  resetButton: {
-    backgroundColor: "#FF5733", width: "100%", height: 50,
-    justifyContent: "center", alignItems: "center", borderRadius: 8, marginTop: 10,
-  },
-  resetButtonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
-  backToLoginText: { color: "#007AFF", fontSize: 16, marginTop: 15, fontWeight: "500" },
   checkboxContainer: { flexDirection: "row", alignItems: "center", alignSelf: "flex-start", marginTop: 5 },
   checkboxLabel: { marginLeft: 8, fontSize: 15, color: "#555" },
 });

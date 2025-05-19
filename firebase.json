@@ -12,5 +12,19 @@
     "timeoutSeconds": 60,
     "minInstances": 0,
     "maxInstances": 2
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }
