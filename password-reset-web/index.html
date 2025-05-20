@@ -76,7 +76,7 @@
         messageEl.textContent = '비밀번호는 6자 이상이고 특수문자를 포함해야 합니다.';
         messageEl.className = 'error';
         return;
-      }
+      } 
 
       try {
         const response = await fetch('https://api-px34jwzcpq-uc.a.run.app/auth/reset-password', {

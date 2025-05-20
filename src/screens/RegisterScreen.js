@@ -400,7 +400,7 @@ const formattedPhone = `+82${cleanedPhone.slice(1)}`;
             <Text style={styles.checkboxLabel}>
               [필수]{' '}
               <Text onPress={() => navigation.navigate("ConsentScreen")} style={styles.linkText}>
-                이용약관 및 개인정보 수집 동의
+                이용약관 및 개인정보 처리방침
               </Text>
             </Text>
           </View>

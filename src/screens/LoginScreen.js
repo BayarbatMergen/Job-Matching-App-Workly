@@ -127,7 +127,7 @@ const LoginScreen = ({ navigation }) => {
         />
         <TextInput
           style={styles.input}
-          placeholder="비밀번호"
+          placeholder="비밀번호" 
           placeholderTextColor="#aaa"
           secureTextEntry
           value={password}

@@ -38,8 +38,6 @@ export const saveUserData = async (token, userId, email, password, role, name) =
 //  백엔드 로그인 및 Firebase 세션 동기화
 export const loginWithBackend = async (email, password) => {
   try {
-    
-
     const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -49,28 +47,43 @@ export const loginWithBackend = async (email, password) => {
     if (!response.ok) throw new Error("백엔드 로그인 실패");
 
     const result = await response.json();
-    
 
-    //  여기서 반드시 분리해서 콘솔로 확인!
-    const userName = result.user?.name;
-    
-
-    // Firebase 커스텀 토큰 로그인
+    // 🔐 Firebase 커스텀 토큰으로 로그인
     await signInWithCustomToken(auth, result.firebaseToken);
 
-    //  saveUserData에 name 명시적으로 전달
+    // 🔄 커스텀 클레임이 반영될 때까지 최대 5회 재시도
+    let retries = 0;
+    let claims = null;
+
+    while (retries < 5) {
+      const idTokenResult = await auth.currentUser.getIdTokenResult(true);
+      claims = idTokenResult.claims;
+
+      console.log("🔍 현재 클레임:", claims);
+
+      if (claims.role) break;
+
+      await new Promise(res => setTimeout(res, 1000)); // 1초 대기 후 재시도
+      retries++;
+    }
+
+    if (!claims?.role) {
+      console.warn("❗ role 클레임이 끝내 반영되지 않았습니다.");
+      throw new Error("로그인 토큰에 role 정보가 없습니다. 잠시 후 다시 시도하세요.");
+    }
+
     await saveUserData(
       result.token,
       result.user.userId,
       result.user.email,
       password,
       result.user.role,
-      userName //  여기!
+      result.user.name
     );
 
     return result;
   } catch (error) {
-    console.error(" loginWithBackend 오류:", error.message);
+    console.error("❌ loginWithBackend 오류:", error.message);
     throw error;
   }
 };

@@ -84,7 +84,7 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
       displayName: name,
       phoneNumber: formattedPhone,
     });
-
+    await admin.auth().setCustomUserClaims(userRecord.uid, { role });
     // [5] 이미지 업로드 (신분증 확인은 여기서)
     let imageUrl = idImageUrl || '';
     if (req.file) {

@@ -1,4 +1,3 @@
-// src/screens/ResetPasswordRequestScreen.js
 import React, { useState } from "react";
 import {
   View,
@@ -8,6 +7,9 @@ import {
   Alert,
   StyleSheet,
   ActivityIndicator,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { resetPasswordWithBackend } from "../services/authService";
 
@@ -25,17 +27,12 @@ const ResetPasswordRequestScreen = ({ navigation }) => {
     try {
       const { message } = await resetPasswordWithBackend(email);
 
-      // ✅ 보안상 앱에서 직접 이동하지 않음
-      Alert.alert(
-        "재설정 안내",
-        message || "비밀번호 재설정 링크가 이메일로 발송되었습니다.",
-        [
-          {
-            text: "확인",
-            onPress: () => navigation.replace("Login"),
-          },
-        ]
-      );
+      Alert.alert("재설정 안내", message, [
+        {
+          text: "확인",
+          onPress: () => navigation.replace("Login"),
+        },
+      ]);
     } catch (error) {
       Alert.alert("오류", error.message || "서버 오류");
     } finally {
@@ -44,54 +41,61 @@ const ResetPasswordRequestScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>비밀번호 재설정 요청</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="이메일 입력"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleReset}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>재설정 링크 받기</Text>
-        )}
-      </TouchableOpacity>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <View style={styles.innerContainer}>
+        <Image
+          source={require("../../assets/images/thechingu.png")}
+          style={styles.logo}
+        />
+        <Text style={styles.title}>비밀번호 재설정</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="이메일 입력"
+          placeholderTextColor="#aaa"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <TouchableOpacity
+          style={[styles.resetButton, loading && styles.disabledButton]}
+          onPress={handleReset}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.resetButtonText}>재설정 링크 받기</Text>
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.backText}>← 로그인 화면으로 돌아가기</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
+  container: { flex: 1, backgroundColor: "#fff", alignItems: "center", paddingHorizontal: 30 },
+  innerContainer: { width: "100%", alignItems: "center", marginTop: 200 },
+  logo: { width: 180, height: 180, marginBottom: 50 },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, color: "#333" },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    height: 50,
-    marginBottom: 15,
+    width: "100%", height: 50, borderWidth: 1, borderColor: "#ddd",
+    borderRadius: 8, paddingHorizontal: 15, marginBottom: 15, fontSize: 16,
   },
-  button: {
-    backgroundColor: "#FF5733",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
+  resetButton: {
+    backgroundColor: "#FF5733", width: "100%", height: 50,
+    justifyContent: "center", alignItems: "center", borderRadius: 8, marginBottom: 15,
   },
-  buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  disabledButton: { backgroundColor: "#FFB199" },
+  resetButtonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+  backText: { fontSize: 14, color: "#007AFF", marginTop: 10 },
 });
 
 export default ResetPasswordRequestScreen;
