@@ -8,6 +8,7 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import {
   collection,
@@ -28,6 +29,13 @@ export default function SettlementApprovalScreen() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+const [refreshing, setRefreshing] = useState(false);
+
+const onRefresh = async () => {
+  setRefreshing(true);
+  await fetchSettlementRequests();
+  setRefreshing(false);
+};
 
   const fetchSettlementRequests = async () => {
     try {
@@ -113,9 +121,15 @@ export default function SettlementApprovalScreen() {
     );
   }
 
-  return (
-    <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 30 }}>
-      <View style={styles.container}>
+return (
+  <ScrollView
+    style={styles.scrollContainer}
+    contentContainerStyle={{ paddingBottom: 30 }}
+    refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#007AFF" />
+    }
+  >
+    <View style={styles.container}>
         <Text style={styles.header}>정산 승인 요청 목록</Text>
 
         {requests.length === 0 ? (
