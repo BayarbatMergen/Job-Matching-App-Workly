@@ -10,7 +10,7 @@ import {
   query,
   where,
   getDocs,
-} from 'firebase/firestore';
+} from 'firebase/firestore'; 
 import * as SecureStore from 'expo-secure-store';
 
 // 화면 import
@@ -20,6 +20,10 @@ import NotificationScreen from '../screens/NotificationScreen';
 import MyPageScreen from '../screens/MyPageScreen';
 import ChatListScreen from '../screens/ChatListScreen';
 import ChatScreen from '../screens/ChatScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import BankInfoScreen from '../screens/BankInfoScreen';
+import NoticeScreen from '../screens/NoticeScreen';
+import CustomerSupportScreen from '../screens/CustomerSupportScreen';
 import MyInquiriesScreen from '../screens/MyInquiriesScreen';
 import ScheduleNavigator from './ScheduleNavigator';
 
@@ -79,19 +83,15 @@ function MyPageNavigator() {
   return (
     <Stack.Navigator screenOptions={defaultScreenOptions}>
       <Stack.Screen name="MyPageScreen" component={MyPageScreen} options={{ headerTitle: '마이페이지' }} />
-      <Stack.Screen
-        name="MyInquiriesScreen"
-        component={MyInquiriesScreen}
-        options={{
-          headerTitle: '내 문의 내역',
-          headerStyle: { backgroundColor: '#fff' },
-          headerTintColor: '#000',
-          headerTitleAlign: 'center',
-        }}
-      />
+      <Stack.Screen name="MyInquiriesScreen" component={MyInquiriesScreen} options={{ headerTitle: '내 문의 내역 보기' }} />
+      <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} options={{ headerTitle: '비밀번호 변경', }} />
+      <Stack.Screen name="BankInfoScreen" component={BankInfoScreen} options={{ headerTitle: '계좌 정보 변경' }} />
+      <Stack.Screen name="NoticeScreen" component={NoticeScreen} options={{ headerTitle: '공지사항' }} />
+      <Stack.Screen name="CustomerSupportScreen" component={CustomerSupportScreen} options={{ headerTitle: '고객센터 문의' }} />
     </Stack.Navigator>
   );
 }
+
 
 export default function BottomTabNavigator() {
   const [hasNotifications, setHasNotifications] = useState(false);

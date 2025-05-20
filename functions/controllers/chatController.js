@@ -37,9 +37,14 @@ const addMessageToChat = async (req, res) => {
     const roomDoc = await db.collection("chats").doc(roomId).get();
     const roomData = roomDoc.data();
 
-    if (roomData && roomData.roomType === "notice" && senderId !== process.env.ADMIN_UID) {
-      return res.status(403).json({ message: "공지방에는 관리자만 메시지를 보낼 수 있습니다." });
-    }
+if (roomData && roomData.roomType === "notice") {
+  const senderDoc = await db.collection("users").doc(senderId).get();
+  const senderRole = senderDoc.exists ? senderDoc.data().role : null;
+
+  if (senderRole !== "admin") {
+    return res.status(403).json({ message: "공지방에는 관리자만 메시지를 보낼 수 있습니다." });
+  }
+}
 
     const createdAt = admin.firestore.Timestamp.now();
     const messageRef = db.collection("chats").doc(roomId).collection("messages").doc();
@@ -91,10 +96,10 @@ const getChatRooms = async (req, res) => {
 const createOrGetAdminChatRoom = async (req, res) => {
   try {
     const { userId } = req.user;
-    const adminUid = process.env.ADMIN_UID;
 
     const userDoc = await db.collection("users").doc(userId).get();
-    if (!userDoc.exists) return res.status(404).json({ message: " 사용자 정보를 찾을 수 없습니다." });
+    if (!userDoc.exists) return res.status(404).json({ message: "사용자 정보를 찾을 수 없습니다." });
+
     const userName = userDoc.data().name || "사용자";
 
     const existingRoomSnapshot = await db.collection("chats")
@@ -111,9 +116,16 @@ const createOrGetAdminChatRoom = async (req, res) => {
       });
     }
 
+    // ✅ 여러 관리자 불러오기
+    const adminSnapshot = await db.collection("users").where("role", "==", "admin").get();
+    const adminUids = adminSnapshot.docs.map(doc => doc.id);
+    if (adminUids.length === 0) {
+      return res.status(500).json({ message: "등록된 관리자 계정이 없습니다." });
+    }
+
     const newRoom = {
       name: `관리자 상담 (${userName})`,
-      participants: [userId, adminUid],
+      participants: [userId, ...adminUids], // ✅ 관리자 전원 참여
       createdAt: admin.firestore.Timestamp.now(),
       type: "admin",
       roomType: "admin",
@@ -126,10 +138,11 @@ const createOrGetAdminChatRoom = async (req, res) => {
       roomType: newRoom.roomType,
     });
   } catch (error) {
-    console.error(" 관리자 채팅방 생성 오류:", error);
-    res.status(500).json({ message: " 서버 오류 발생" });
+    console.error("관리자 채팅방 생성 오류:", error);
+    res.status(500).json({ message: "서버 오류 발생" });
   }
 };
+
 
 //  공지방 생성
 const createNoticeRoom = async (req, res) => {

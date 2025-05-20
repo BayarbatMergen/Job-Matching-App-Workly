@@ -98,10 +98,6 @@ export default function AdminChatScreen({ route }) {
         const roomList = await roomRes.json();
         const currentRoom = roomList.find((room) => room.id === roomId);
         const participantIds = currentRoom?.participants || [];
-        
-        
-        
-        
 
         const namePromises = participantIds.map(async (uid) => {
           try {

@@ -124,7 +124,6 @@ const init = async () => {
   }, []);
 
   const startAdminChat = async () => {
-    const adminId = "1WUKTfOuaXVuiHmhitOJVGZzAhO2";
     const token = await SecureStore.getItemAsync("token");
 
 try {
@@ -134,7 +133,7 @@ try {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ participantId: adminId }),
+    body: JSON.stringify({})
   });
 
   if (!response.ok) {
@@ -218,7 +217,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#ccc",
-    marginBottom: 10,
+marginTop: 10,
     position: "relative",
   },
   roomName: { fontSize: 18, fontWeight: "bold", marginLeft: 10, color: "#333" },
@@ -229,7 +228,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20,
+    marginTop: 10,
   },
   adminChatText: { color: "#fff", marginLeft: 8, fontSize: 16, fontWeight: "bold" },
   unreadDot: {

@@ -90,15 +90,19 @@ router.post('/add', async (req, res) => {
     }
 
     // 단톡방 생성
-    const chatRoomRef = db.collection('chats').doc();
-    await chatRoomRef.set({
-      name: `알바생 단톡방 (${title})`,
-      participants: [],
-      jobId: jobRef.id,
-      createdAt: admin.firestore.Timestamp.now(),
-      roomType: 'notice',
-      type: 'group',
-    });
+const adminSnapshot = await db.collection('users').where('role', '==', 'admin').get();
+const adminUids = adminSnapshot.docs.map(doc => doc.id);
+
+const chatRoomRef = db.collection('chats').doc();
+console.log("📢 관리자 UID 리스트:", adminUids); // 여기에 뭐가 나오는지 확인
+await chatRoomRef.set({
+  name: `알바생 단톡방 (${title})`,
+  participants: adminUids, // ✅ 관리자 여러 명 추가
+  jobId: jobRef.id,
+  createdAt: admin.firestore.Timestamp.now(),
+  roomType: 'notice',
+  type: 'group',
+});
 
     
 

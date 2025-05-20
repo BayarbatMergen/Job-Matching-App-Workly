@@ -72,6 +72,7 @@ export default function ChangePasswordScreen() {
         value={currentPassword}
         onChangeText={setCurrentPassword}
         placeholder="현재 비밀번호"
+        placeholderTextColor="#999"
       />
 
       <Text style={styles.label}>새 비밀번호</Text>
@@ -81,6 +82,7 @@ export default function ChangePasswordScreen() {
         value={newPassword}
         onChangeText={setNewPassword}
         placeholder="새 비밀번호"
+        placeholderTextColor="#999"
       />
 
       <Text style={styles.label}>새 비밀번호 확인</Text>
@@ -90,6 +92,7 @@ export default function ChangePasswordScreen() {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         placeholder="새 비밀번호 확인"
+        placeholderTextColor="#999"
       />
 
       <TouchableOpacity

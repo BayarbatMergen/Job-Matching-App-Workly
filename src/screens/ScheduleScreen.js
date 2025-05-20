@@ -184,7 +184,7 @@ export default function ScheduleScreen({ navigation }) {
     >
       <View style={styles.container}>
         <Calendar
-          monthFormat={'yyyy MM'}
+          monthFormat={'yyyy . MM'}
           onDayPress={handleDayPress}
           markingType={'custom'}
           markedDates={markedDates}

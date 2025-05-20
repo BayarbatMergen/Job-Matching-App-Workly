@@ -131,10 +131,41 @@ export default function App() {
         />
 
         {/* 사용자 기능 */}
-        <Stack.Screen name="BankInfo" component={BankInfoScreen} options={{ headerShown: true, title: '계좌 정보 변경' }} />
-        <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ headerShown: true, title: '비밀번호 변경' }} />
-        <Stack.Screen name="Notice" component={NoticeScreen} options={{ headerShown: true, title: '공지사항' }} />
-        <Stack.Screen name="CustomerSupport" component={CustomerSupportScreen} options={{ headerShown: true, title: '고객센터 문의' }} />
+        <Stack.Screen name="BankInfo" component={BankInfoScreen}   options={{
+    headerShown: true,
+    title: '계좌 정보 변경',
+    headerStyle: { backgroundColor: '#007AFF' }, // ✅ 파란색으로 지정
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center',
+  }}
+/>
+<Stack.Screen
+  name="ChangePassword"
+  component={ChangePasswordScreen}
+  options={{
+    headerShown: true,
+    title: '비밀번호 변경',
+    headerStyle: { backgroundColor: '#007AFF' }, // ✅ 파란색으로 지정
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center',
+  }}
+/>
+        <Stack.Screen name="Notice" component={NoticeScreen}   options={{
+    headerShown: true,
+    title: '공지사항',
+    headerStyle: { backgroundColor: '#007AFF' }, // ✅ 파란색으로 지정
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center',
+  }}
+/>
+        <Stack.Screen name="CustomerSupport" component={CustomerSupportScreen}   options={{
+    headerShown: true,
+    title: '고객센터 문의하기',
+    headerStyle: { backgroundColor: '#007AFF' }, // ✅ 파란색으로 지정
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center',
+  }}
+/>
 
         {/* 채팅 */}
         <Stack.Screen name="ChatList" component={ChatListScreen} options={{ headerShown: true, title: '채팅방 목록' }} />
