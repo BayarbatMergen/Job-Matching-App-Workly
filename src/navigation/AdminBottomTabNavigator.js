@@ -50,19 +50,28 @@ function useUnreadNotificationCount() {
 // ✅ 채팅 감지 훅
 function useUnreadChatCount() {
   const [hasUnread, setHasUnread] = useState(false);
+
   useEffect(() => {
     let unsubscribers = [];
-    const listen = async () => {
+    let isMounted = true;
+
+    const fetchAndSubscribe = async () => {
       const adminId = await SecureStore.getItemAsync("userId");
-      if (!adminId) return;
-      const roomSnap = await getDocs(query(collection(db, "chats"), where("participants", "array-contains", adminId)));
+      if (!adminId || !isMounted) return;
+
+      const roomSnap = await getDocs(
+        query(collection(db, "chats"), where("participants", "array-contains", adminId))
+      );
+
       const allRooms = roomSnap.docs;
       if (allRooms.length === 0) {
-        setHasUnread(false);
+        if (isMounted) setHasUnread(false);
         return;
       }
+
       const unsubArray = [];
       const unreadMap = {};
+
       allRooms.forEach((doc) => {
         const roomId = doc.id;
         const messagesRef = collection(db, `chats/${roomId}/messages`);
@@ -73,15 +82,22 @@ function useUnreadChatCount() {
           });
           unreadMap[roomId] = hasUnreadInRoom;
           const isAnyUnread = Object.values(unreadMap).some(Boolean);
-          setHasUnread(isAnyUnread);
+          if (isMounted) setHasUnread(isAnyUnread);
         });
         unsubArray.push(unsub);
       });
+
       unsubscribers = unsubArray;
     };
-    listen();
-    return () => unsubscribers.forEach((unsub) => unsub());
+
+    fetchAndSubscribe();
+
+    return () => {
+      isMounted = false;
+      unsubscribers.forEach((unsub) => unsub());
+    };
   }, []);
+
   return hasUnread;
 }
 

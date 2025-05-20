@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CustomerInquiryScreen() {
   const [inquiries, setInquiries] = useState([]);
@@ -76,39 +77,48 @@ export default function CustomerInquiryScreen() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={inquiries}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.inquiryBox}>
-            <Text style={styles.userText}>{item.user || '사용자'}:</Text>
-            <Text style={styles.messageText}>{item.message}</Text>
+     <FlatList
+  data={inquiries}
+  keyExtractor={(item) => item.id}
+  renderItem={({ item }) => (
+    <View style={styles.inquiryBox}>
+      <Text style={styles.userText}>{item.user || '사용자'}:</Text>
+      <Text style={styles.messageText}>{item.message}</Text>
 
-            {item.reply ? (
-              <View style={styles.replyBox}>
-                <Text style={styles.replyText}>답변:</Text>
-                <Text style={styles.replyContent}>{item.reply}</Text>
-              </View>
-            ) : (
-              <>
-                <TextInput
-                  style={styles.input}
-                  placeholder="답장을 입력하세요"
-                  value={replyText[item.id] || ''}
-                  onChangeText={(text) => handleReplyChange(item.id, text)}
-                />
-                <TouchableOpacity
-                  style={styles.sendButton}
-                  onPress={() => handleSendReply(item.id)}
-                >
-                  <Text style={styles.sendButtonText}>전송</Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-        )}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        showsVerticalScrollIndicator={false}
+      {item.reply ? (
+        <View style={styles.replyBox}>
+          <Text style={styles.replyText}>답변:</Text>
+          <Text style={styles.replyContent}>{item.reply}</Text>
+        </View>
+      ) : (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="답장을 입력하세요"
+            value={replyText[item.id] || ''}
+            onChangeText={(text) => handleReplyChange(item.id, text)}
+          />
+          <TouchableOpacity
+            style={styles.sendButton}
+            onPress={() => handleSendReply(item.id)}
+          >
+            <Text style={styles.sendButtonText}>전송</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  )}
+  ListEmptyComponent={
+    <View style={styles.emptyContainer}>
+      <Ionicons name="chatbox-ellipses-outline" size={60} color="#ccc" />
+      <Text style={styles.emptyText}>문의 내역이 없습니다</Text>
+    </View>
+  }
+  contentContainerStyle={{
+    paddingBottom: 20,
+    paddingTop: inquiries.length === 0 ? 100 : 0,
+  }}
+  showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -160,4 +170,15 @@ const styles = StyleSheet.create({
   },
   replyText: { fontWeight: 'bold', color: '#007AFF', fontSize: 15 },
   replyContent: { fontSize: 15, marginTop: 5, color: '#333' },
+  emptyContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginTop: 100,
+},
+emptyText: {
+  marginTop: 15,
+  fontSize: 16,
+  color: '#888',
+},
 });

@@ -55,6 +55,7 @@ console.log('🔑 토큰:', token);
         placeholder="제목을 입력하세요"
         value={title}
         onChangeText={setTitle}
+        placeholderTextColor="#999"
       />
 
       <Text style={styles.label}>내용</Text>
@@ -64,6 +65,7 @@ console.log('🔑 토큰:', token);
         multiline
         value={content}
         onChangeText={setContent}
+        placeholderTextColor="#999"
       />
 
       <TouchableOpacity style={styles.button} onPress={handlePostNotice}>

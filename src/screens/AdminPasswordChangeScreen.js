@@ -80,6 +80,7 @@ export default function AdminPasswordChangeScreen({ navigation }) {
         secureTextEntry
         value={currentPassword}
         onChangeText={setCurrentPassword}
+        placeholderTextColor="#999"
       />
 
       <Text style={styles.label}>새 비밀번호</Text>
@@ -89,6 +90,7 @@ export default function AdminPasswordChangeScreen({ navigation }) {
         secureTextEntry
         value={newPassword}
         onChangeText={setNewPassword}
+        placeholderTextColor="#999"
       />
 
       <Text style={styles.label}>새 비밀번호 확인</Text>
@@ -98,6 +100,7 @@ export default function AdminPasswordChangeScreen({ navigation }) {
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
+        placeholderTextColor="#999"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleChangePassword} disabled={loading}>
