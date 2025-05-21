@@ -30,6 +30,51 @@ const RegisterScreen = ({ navigation, route }) => {
   const isPasswordValid = (password) => /^(?=.*[!@#$%^&*()]).{6,}$/.test(password);
   const isKoreanOnly = (text) => /^[\uAC00-\uD7A3]+$/.test(text);
   const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const checkNameDuplication = async (name) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/check-name`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+
+    const data = await res.json();
+    return res.ok && data.available; // true: 사용 가능, false: 중복
+  } catch (error) {
+    console.error("이름 중복 확인 실패:", error);
+    throw new Error("이름 중복 확인 중 오류 발생");
+  }
+};
+const checkPhoneDuplication = async (phone) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/check-phone`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone }),
+    });
+
+    const data = await res.json();
+    return res.ok && data.available;
+  } catch (error) {
+    console.error("전화번호 중복 확인 실패:", error);
+    throw new Error("전화번호 중복 확인 중 오류 발생");
+  }
+};
+const checkEmailDuplication = async (email) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/check-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+    return res.ok && data.available;
+  } catch (error) {
+    console.error("이메일 중복 확인 실패:", error);
+    throw new Error("이메일 중복 확인 중 오류 발생");
+  }
+};
 const formatPhoneNumber = (phone) => {
   if (!phone) return null;
 
@@ -121,20 +166,16 @@ const handleRegister = async () => {
     return;
   }
 
-const cleanedPhone = phone.replace(/\D/g, '');
-if (cleanedPhone.length !== 11 || !cleanedPhone.startsWith('010')) {
-  Alert.alert("전화번호 오류", "010으로 시작하는 11자리 숫자를 입력하세요.");
-  return;
-}
-const formattedPhone = `+82${cleanedPhone.slice(1)}`;
-
-  if (!email || !password || !confirmPassword || !name || !phone || !gender || !bank || !accountNumber) {
-    Alert.alert('입력 오류', '모든 필드를 입력하세요.');
+  const cleanedPhone = phone.replace(/\D/g, '');
+  if (cleanedPhone.length !== 11 || !cleanedPhone.startsWith('010')) {
+    Alert.alert("전화번호 오류", "010으로 시작하는 11자리 숫자를 입력하세요.");
     return;
   }
 
-  if (!cleanedPhone) {
-    Alert.alert("전화번호 오류", "올바른 010 번호를 입력하세요.");
+  const formattedPhone = `+82${cleanedPhone.slice(1)}`;
+
+  if (!email || !password || !confirmPassword || !name || !phone || !gender || !bank || !accountNumber) {
+    Alert.alert('입력 오류', '모든 필드를 입력하세요.');
     return;
   }
 
@@ -159,12 +200,34 @@ const formattedPhone = `+82${cleanedPhone.slice(1)}`;
   }
 
   setLoading(true);
-  let imageUrl = '';
+  let imageUrl = "";
 
-  try {
-    if (idImage && idImage.uri) {
-      imageUrl = await uploadImageToFirebase(idImage);
-    }
+try {
+    const isEmailAvailable = await checkEmailDuplication(email);
+  if (!isEmailAvailable) {
+    Alert.alert("중복 이메일", "이미 사용 중인 이메일입니다.");
+    setLoading(false);
+    return;
+  }
+
+  const isNameAvailable = await checkNameDuplication(name);
+  if (!isNameAvailable) {
+    Alert.alert("중복 이름", "이미 사용 중인 이름입니다.");
+    setLoading(false);
+    return;
+  }
+
+const isPhoneAvailable = await checkPhoneDuplication(formattedPhone);
+if (!isPhoneAvailable) {
+  Alert.alert("중복 번호", "이미 사용 중인 전화번호입니다.");
+  setLoading(false);
+  return;
+}
+
+
+  if (idImage && idImage.uri) {
+    imageUrl = await uploadImageToFirebase(idImage);
+  }
 
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
@@ -201,6 +264,7 @@ const formattedPhone = `+82${cleanedPhone.slice(1)}`;
     setLoading(false);
   }
 };
+
 
 
   return (

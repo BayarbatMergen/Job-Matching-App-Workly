@@ -391,5 +391,64 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+router.post('/check-name', async (req, res) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ message: '이름을 입력하세요.' });
+  }
+
+  try {
+    const snapshot = await db.collection('users').where('name', '==', name).get();
+
+    if (snapshot.empty) {
+      return res.status(200).json({ available: true }); // 사용 가능
+    } else {
+      return res.status(200).json({ available: false }); // 중복
+    }
+  } catch (error) {
+    console.error('이름 중복 확인 오류:', error);
+    return res.status(500).json({ message: '서버 오류 발생' });
+  }
+});
+
+router.post('/check-phone', async (req, res) => {
+  try {
+    const { phone } = req.body;
+
+    if (!phone) {
+      return res.status(400).json({ message: '전화번호가 제공되지 않았습니다.' });
+    }
+
+    const snapshot = await db.collection('users')
+      .where('phone', '==', phone)
+      .get();
+
+    return res.status(200).json({ available: snapshot.empty });
+  } catch (error) {
+    console.error("전화번호 중복 확인 실패:", error);
+    return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+router.post('/check-email', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: '이메일이 제공되지 않았습니다.' });
+    }
+
+    const snapshot = await db.collection('users')
+      .where('email', '==', email)
+      .get();
+
+    return res.status(200).json({ available: snapshot.empty }); // true: 사용 가능
+  } catch (error) {
+    console.error("이메일 중복 확인 실패:", error);
+    return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
   return router;
 };
