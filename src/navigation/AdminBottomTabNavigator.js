@@ -142,11 +142,30 @@ function AdminScheduleStack() {
 // 채팅 스택
 function AdminChatStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#007AFF' }, headerTintColor: '#fff', headerTitleAlign: 'center' }}>
-      <Stack.Screen name="AdminChatList" component={AdminChatListScreen} options={{ headerTitle: '채팅 목록' }} />
-      <Stack.Screen name="AdminChatScreen" component={AdminChatScreen} options={({ route }) => ({
-        headerTitle: route.params?.roomName || '채팅방'
-      })} />
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: "#007AFF" },
+        headerTintColor: "#fff",
+        headerTitleAlign: "center",
+      }}
+    >
+      <Stack.Screen
+        name="AdminChatList"
+        component={AdminChatListScreen}
+        options={{ headerTitle: "채팅 목록" }}
+      />
+      <Stack.Screen
+        name="AdminChatScreen"
+        component={AdminChatScreen}
+        options={({ route }) => ({
+          headerTitle: route.params?.roomName || "채팅방",
+        })}
+      />
+      <Stack.Screen
+        name="UserDetailScreen" // ✅ 여기 추가
+        component={UserDetailScreen}
+        options={{ headerTitle: "사용자 상세 정보" }}
+      />
     </Stack.Navigator>
   );
 }

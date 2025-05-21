@@ -194,13 +194,16 @@ const handleRegister = async () => {
     return;
   }
 
-  if (!isPasswordValid(password)) {
-    Alert.alert("비밀번호 오류", "비밀번호는 최소 6자 이상이며, 특수문자를 포함해야 합니다.");
-    return;
-  }
+if (!idImage || !idImage.uri) {
+  Alert.alert("신분증 사진 누락", "회원가입을 위해 신분증 사진을 업로드해야 합니다.");
+  return;
+}
 
-  setLoading(true);
-  let imageUrl = "";
+// ✅ 등록 전 사용자에게 수정 불가능 안내
+Alert.alert("안내", "신분증 사진은 등록 후 수정이 불가능하니 정확하게 올려주세요.");
+
+setLoading(true);
+let imageUrl = "";
 
 try {
     const isEmailAvailable = await checkEmailDuplication(email);
