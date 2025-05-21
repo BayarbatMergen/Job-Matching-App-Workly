@@ -18,13 +18,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchUserData, saveUserData, resetPasswordWithBackend } from "../services/authService";
 import API_BASE_URL from "../config/apiConfig";
 import Checkbox from 'expo-checkbox';
+import { Ionicons } from "@expo/vector-icons";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [autoLoginChecked, setAutoLoginChecked] = useState(false);
-
+const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
     const tryAutoLogin = async () => {
       try {
@@ -138,20 +139,31 @@ return (
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="비밀번호"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
+
+          {/* 비밀번호 입력 + 아이콘 */}
+<View style={styles.passwordContainer}>
+  <TextInput
+    style={styles.passwordInput}
+    placeholder="비밀번호"
+    placeholderTextColor="#aaa"
+    secureTextEntry={!showPassword}
+    value={password}
+    onChangeText={setPassword}
+  />
+  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+    <Ionicons
+      name={showPassword ? "eye-off" : "eye"}
+      size={22}
+      color="#666"
+    />
+  </TouchableOpacity>
+</View>
 
           <View style={styles.checkboxContainer}>
             <Checkbox
               value={autoLoginChecked}
               onValueChange={setAutoLoginChecked}
-              color={autoLoginChecked ? '#007AFF' : undefined}
+              color={autoLoginChecked ? "#007AFF" : undefined}
             />
             <Text style={styles.checkboxLabel}>자동 로그인</Text>
           </View>
@@ -182,7 +194,6 @@ return (
     </TouchableWithoutFeedback>
   </KeyboardAvoidingView>
 );
-
 };
 
 const styles = StyleSheet.create({
@@ -216,6 +227,23 @@ formContainer: {
   flexGrow: 1,
   justifyContent: "flex-start",
   alignItems: "center",
+},
+passwordContainer: {
+  flexDirection: "row",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "#ddd",
+  borderRadius: 8,
+  paddingHorizontal: 15,
+  marginBottom: 12,
+  height: 50,
+  width: "100%",
+  justifyContent: "space-between",
+},
+passwordInput: {
+  flex: 1,
+  fontSize: 16,
+  color: "#333",
 },
 });
 
