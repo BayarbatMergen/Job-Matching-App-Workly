@@ -101,6 +101,8 @@ export default function AdminJobFormScreen({ navigation }) {
           style={styles.input}
           value={form.startDate}
           onChangeText={(text) => setForm({ ...form, startDate: text })}
+          placeholder="예: 2024-06-01"
+          placeholderTextColor="#999"
         />
 
         <Text style={styles.label}>근무 종료일 (YYYY-MM-DD)</Text>
@@ -108,6 +110,8 @@ export default function AdminJobFormScreen({ navigation }) {
           style={styles.input}
           value={form.endDate}
           onChangeText={(text) => setForm({ ...form, endDate: text })}
+          placeholder="예: 2024-06-30"
+          placeholderTextColor="#999"
         />
 
         <Text style={styles.label}>근무 요일 (쉼표로 구분)</Text>
@@ -116,6 +120,7 @@ export default function AdminJobFormScreen({ navigation }) {
           value={form.workDays}
           onChangeText={(text) => setForm({ ...form, workDays: text })}
           placeholder="예: 월, 화, 금"
+          placeholderTextColor="#999"
         />
 
         <Text style={styles.label}>근무 시간</Text>
@@ -124,6 +129,7 @@ export default function AdminJobFormScreen({ navigation }) {
           value={form.workHours}
           onChangeText={(text) => setForm({ ...form, workHours: text })}
           placeholder="예: 09:00 ~ 18:00"
+          placeholderTextColor="#999"
         />
 
 <Text style={styles.label}>업종</Text>
