@@ -18,7 +18,13 @@ const UserManagementScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+const [refreshing, setRefreshing] = useState(false);
 
+const handleRefresh = async () => {
+  setRefreshing(true);
+  await fetchUsers();
+  setRefreshing(false);
+};
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -111,6 +117,8 @@ const filteredUsers = users.filter((user) => {
         keyExtractor={(item) => item.userId}
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 20 }}
+         refreshing={refreshing}
+  onRefresh={handleRefresh}
         ListEmptyComponent={
           <Text style={{ textAlign: "center", marginTop: 20 }}>
             검색된 사용자가 없습니다.

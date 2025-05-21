@@ -6,6 +6,21 @@ import { collection, onSnapshot, query, orderBy, doc, updateDoc } from 'firebase
 export default function AdminNotificationScreen({ navigation }) {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+const [refreshing, setRefreshing] = useState(false);
+
+const handleRefresh = () => {
+  setRefreshing(true);
+  // 새로고침을 위해 전체 다시 불러오기
+  const q = query(collection(db, 'notifications'), orderBy('createdAt', 'desc'));
+  onSnapshot(q, snapshot => {
+    const newData = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setNotifications(newData);
+    setRefreshing(false);
+  });
+};
 
   useEffect(() => {
     const q = query(collection(db, 'notifications'), orderBy('createdAt', 'desc'));
@@ -80,6 +95,8 @@ export default function AdminNotificationScreen({ navigation }) {
           data={notifications}
           keyExtractor={item => item.id}
           renderItem={renderItem}
+          refreshing={refreshing}
+onRefresh={handleRefresh}
         />
       )}
     </View>

@@ -10,6 +10,9 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  ScrollView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchUserData, saveUserData, resetPasswordWithBackend } from "../services/authService";
@@ -107,66 +110,79 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <View style={styles.innerContainer}>
-        <Image source={require("../../assets/images/thechingu.png")} style={styles.logo} />
-
-        <Text style={styles.title}>로그인</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="이메일"
-          placeholderTextColor="#aaa"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="비밀번호" 
-          placeholderTextColor="#aaa"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-
-        <View style={styles.checkboxContainer}>
-          <Checkbox
-            value={autoLoginChecked}
-            onValueChange={setAutoLoginChecked}
-            color={autoLoginChecked ? '#007AFF' : undefined}
-          />
-          <Text style={styles.checkboxLabel}>자동 로그인</Text>
+return (
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={{ flex: 1, backgroundColor: "#fff" }}
+  >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{ flex: 1 }}>
+        {/* 상단 고정 영역 */}
+        <View style={styles.header}>
+          <Image source={require("../../assets/images/thechingu.png")} style={styles.logo} />
+          <Text style={styles.title}>로그인</Text>
         </View>
 
-        <TouchableOpacity
-          style={[styles.loginButton, loading && styles.disabledButton]}
-          onPress={() => handleLogin()}
-          disabled={loading}
+        {/* 입력창 + 버튼만 스크롤 가능 */}
+        <ScrollView
+          contentContainerStyle={styles.formContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          {loading ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <Text style={styles.loginButtonText}>로그인</Text>
-          )}
-        </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="이메일"
+            placeholderTextColor="#aaa"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="비밀번호"
+            placeholderTextColor="#aaa"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
 
-        <View style={styles.footerContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            <Text style={styles.registerText}>회원가입</Text>
+          <View style={styles.checkboxContainer}>
+            <Checkbox
+              value={autoLoginChecked}
+              onValueChange={setAutoLoginChecked}
+              color={autoLoginChecked ? '#007AFF' : undefined}
+            />
+            <Text style={styles.checkboxLabel}>자동 로그인</Text>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.loginButton, loading && styles.disabledButton]}
+            onPress={() => handleLogin()}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.loginButtonText}>로그인</Text>
+            )}
           </TouchableOpacity>
-          <Text style={styles.separator}> | </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("ResetPasswordRequest")}>
-            <Text style={styles.forgotPasswordText}>비밀번호 찾기</Text>
-          </TouchableOpacity>
-        </View>
+
+          <View style={styles.footerContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+              <Text style={styles.registerText}>회원가입</Text>
+            </TouchableOpacity>
+            <Text style={styles.separator}> | </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("ResetPasswordRequest")}>
+              <Text style={styles.forgotPasswordText}>비밀번호 찾기</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
-    </KeyboardAvoidingView>
-  );
+    </TouchableWithoutFeedback>
+  </KeyboardAvoidingView>
+);
+
 };
 
 const styles = StyleSheet.create({
@@ -190,6 +206,17 @@ const styles = StyleSheet.create({
   separator: { fontSize: 16, color: "#333", marginHorizontal: 10 },
   checkboxContainer: { flexDirection: "row", alignItems: "center", alignSelf: "flex-start", marginTop: 5 },
   checkboxLabel: { marginLeft: 8, fontSize: 15, color: "#555" },
+  header: {
+  alignItems: "center",
+  marginTop: 200,
+  marginBottom: 20,
+},
+formContainer: {
+  paddingHorizontal: 30,
+  flexGrow: 1,
+  justifyContent: "flex-start",
+  alignItems: "center",
+},
 });
 
 export default LoginScreen;

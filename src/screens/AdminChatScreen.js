@@ -24,6 +24,12 @@ export default function AdminChatScreen({ route, navigation }) {
   const [messageText, setMessageText] = useState("");
   const [currentUserId, setCurrentUserId] = useState("");
 const [participants, setParticipants] = useState([]);
+const [refreshing, setRefreshing] = useState(false);
+const handleRefresh = async () => {
+  setRefreshing(true);
+  await fetchMessagesAndParticipants(); // 이미 있는 함수 재사용
+  setRefreshing(false);
+};
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const drawerAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
@@ -216,6 +222,8 @@ setParticipants(users.map((user) => ({
         ref={flatListRef}
         data={messages}
         keyExtractor={(item) => item.id}
+        refreshing={refreshing}
+onRefresh={handleRefresh}
         renderItem={({ item }) => (
           <View
             style={[

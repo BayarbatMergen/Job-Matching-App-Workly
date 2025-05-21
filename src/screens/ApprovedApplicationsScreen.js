@@ -6,7 +6,12 @@ import { db } from '../config/firebase';
 export default function ApprovedApplicationsScreen() {
   const [approvedApplications, setApprovedApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-
+const [refreshing, setRefreshing] = useState(false);
+const handleRefresh = async () => {
+  setRefreshing(true);
+  await fetchApprovedApplications();
+  setRefreshing(false);
+};
   const fetchApprovedApplications = async () => {
     try {
       const q = query(collection(db, 'applications'), where('status', '==', 'approved'));
@@ -44,6 +49,8 @@ export default function ApprovedApplicationsScreen() {
       <FlatList
         data={approvedApplications}
         keyExtractor={(item) => item.id}
+        refreshing={refreshing}
+onRefresh={handleRefresh}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.boldText}>지원자: {item.userEmail}</Text>

@@ -17,7 +17,12 @@ import API_BASE_URL from "../config/apiConfig"; // ←  default export에 맞는
 export default function ApplicationApprovalScreen() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-
+const [refreshing, setRefreshing] = useState(false);
+const handleRefresh = async () => {
+  setRefreshing(true);
+  await fetchApplicationRequests();
+  setRefreshing(false);
+};
   const fetchApplicationRequests = async () => {
     try {
       const snapshot = await getDocs(collection(db, "applications"));
@@ -115,8 +120,11 @@ const handleApprove = async (applicationId) => {
     <View style={styles.container}>
       <Text style={styles.header}>지원 승인 대기 목록</Text>
       <FlatList
+      
         data={requests}
         keyExtractor={(item) => item.id}
+        refreshing={refreshing}
+onRefresh={handleRefresh}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.userInfo}>지원자: {item.userName ?? item.userEmail ?? "N/A"}</Text>
