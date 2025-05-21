@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
+  KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import API_BASE_URL from "../config/apiConfig";
@@ -115,64 +116,72 @@ export default function ChatScreen({ route }) {
     );
   }
 
-  return (
-    <SafeAreaView style={styles.safeContainer}>
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        refreshing={refreshing}
-        onRefresh={handleRefresh}
-        renderItem={({ item }) => (
-          <View
-            style={[
-              styles.messageBubble,
-              item.senderId === currentUserId
-                ? styles.myMessageBubble
-                : styles.otherMessageBubble,
-              item.system && styles.systemMessage,
-            ]}
-          >
-            <Text style={styles.messageText}>{item.text}</Text>
-            {!item.system && (
-              <Text style={styles.timestamp}>
-                {item.createdAt && item.createdAt._seconds
-                  ? new Date(item.createdAt._seconds * 1000).toLocaleString("ko-KR", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      timeZone: "Asia/Seoul",
-                    })
-                  : ""}
-              </Text>
-            )}
+return (
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={{ flex: 1 }}
+    keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+  >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.safeContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          renderItem={({ item }) => (
+            <View
+              style={[
+                styles.messageBubble,
+                item.senderId === currentUserId
+                  ? styles.myMessageBubble
+                  : styles.otherMessageBubble,
+                item.system && styles.systemMessage,
+              ]}
+            >
+              <Text style={styles.messageText}>{item.text}</Text>
+              {!item.system && (
+                <Text style={styles.timestamp}>
+                  {item.createdAt && item.createdAt._seconds
+                    ? new Date(item.createdAt._seconds * 1000).toLocaleString("ko-KR", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        timeZone: "Asia/Seoul",
+                      })
+                    : ""}
+                </Text>
+              )}
+            </View>
+          )}
+          contentContainerStyle={{ paddingTop: 15, paddingBottom: 80 }}
+          showsVerticalScrollIndicator={false}
+        />
+
+        {roomType === "notice" ? (
+          <View style={styles.noticeBanner}>
+            <Text style={styles.noticeText}>관리자만 메시지를 보낼 수 있습니다.</Text>
+          </View>
+        ) : (
+          <View style={styles.chatInputContainer}>
+            <TextInput
+              style={styles.chatInput}
+              placeholder="메시지를 입력하세요..."
+              value={messageText}
+              onChangeText={setMessageText}
+            />
+            <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+              <Ionicons name="send" size={24} color="#fff" />
+            </TouchableOpacity>
           </View>
         )}
-        contentContainerStyle={{ paddingTop: 15, paddingBottom: 80 }}
-        showsVerticalScrollIndicator={false}
-      />
-
-      {roomType === "notice" ? (
-        <View style={styles.noticeBanner}>
-          <Text style={styles.noticeText}>관리자만 메시지를 보낼 수 있습니다.</Text>
-        </View>
-      ) : (
-        <View style={styles.chatInputContainer}>
-          <TextInput
-            style={styles.chatInput}
-            placeholder="메시지를 입력하세요..."
-            value={messageText}
-            onChangeText={setMessageText}
-          />
-          <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-            <Ionicons name="send" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      )}
-    </SafeAreaView>
-  );
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
+  </KeyboardAvoidingView>
+);
 }
 
 const styles = StyleSheet.create({

@@ -7,7 +7,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
-  Alert
+  Alert,
+  TextInput,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
@@ -16,6 +17,7 @@ import API_BASE_URL from "../config/apiConfig";
 const UserManagementScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -23,48 +25,52 @@ const UserManagementScreen = ({ navigation }) => {
 
   const fetchUsers = async () => {
     try {
-      const token = await SecureStore.getItemAsync("token"); // ⬅️ 토큰 가져오기
-      console.log("🔑 토큰:", token); //  이 줄 추가
+      const token = await SecureStore.getItemAsync("token");
       const response = await fetch(`${API_BASE_URL}/admin/users`, {
         headers: {
-          Authorization: `Bearer ${token}`, // ⬅️ 토큰 포함
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-  
+
       if (!response.ok) {
         throw new Error("사용자 목록을 불러오지 못했습니다.");
       }
-  
+
       const data = await response.json();
-  
       const sortedUsers = data.sort((a, b) =>
         a.role === "admin" ? -1 : b.role === "admin" ? 1 : 0
       );
       setUsers(sortedUsers);
     } catch (error) {
-      console.error(" 사용자 가져오기 오류:", error);
+      console.error("사용자 가져오기 오류:", error);
       Alert.alert("오류", error.message);
     } finally {
       setLoading(false);
     }
   };
-  
+
+const filteredUsers = users.filter((user) => {
+  const nameMatch = user.name?.toLowerCase().includes(searchQuery.toLowerCase());
+  const emailMatch = user.email?.toLowerCase().includes(searchQuery.toLowerCase());
+
+  // 🔄 전화번호 처리: +8210 → 010 변환 후 비교
+  const normalizedPhone = user.phone?.replace(/^\+82/, "0");
+  const phoneMatch = normalizedPhone?.includes(searchQuery);
+
+  return nameMatch || emailMatch || phoneMatch;
+});
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.userItem}
       onPress={() => {
-        
         navigation.navigate("UserDetailScreen", { userId: item.userId });
       }}
     >
       <View style={styles.profileContainer}>
         {item.idImage ? (
-          <Image
-            source={{ uri: item.idImage }}
-            style={styles.profileImage}
-          />
+          <Image source={{ uri: item.idImage }} style={styles.profileImage} />
         ) : (
           <Ionicons name="person-circle-outline" size={48} color="#007AFF" />
         )}
@@ -73,7 +79,9 @@ const UserManagementScreen = ({ navigation }) => {
         <Text style={styles.userName}>{item.name}</Text>
         <Text style={styles.userEmail}>{item.email}</Text>
         <Text style={styles.userRole}>역할: {item.role}</Text>
-        <Text style={styles.userPhone}>전화번호: {item.phone}</Text>
+<Text style={styles.userPhone}>
+  전화번호: {item.phone?.replace(/^\+82/, "0") || '없음'}
+</Text>
       </View>
     </TouchableOpacity>
   );
@@ -88,14 +96,24 @@ const UserManagementScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#888" style={{ marginRight: 8 }} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="이름, 이메일 또는 전화번호로 검색"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+
       <FlatList
-        data={users}
+        data={filteredUsers}
         keyExtractor={(item) => item.userId}
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 20 }}
         ListEmptyComponent={
           <Text style={{ textAlign: "center", marginTop: 20 }}>
-            사용자 없음
+            검색된 사용자가 없습니다.
           </Text>
         }
       />
@@ -106,6 +124,24 @@ const UserManagementScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F8F8F8" },
   loaderContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    margin: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: "#333",
+  },
   userItem: {
     flexDirection: "row",
     backgroundColor: "#fff",

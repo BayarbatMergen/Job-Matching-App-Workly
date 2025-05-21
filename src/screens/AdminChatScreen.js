@@ -17,13 +17,14 @@ import * as SecureStore from "expo-secure-store";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-export default function AdminChatScreen({ route }) {
+export default function AdminChatScreen({ route, navigation }) {
   const { roomId, roomName, roomType } = route.params;
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [messageText, setMessageText] = useState("");
   const [currentUserId, setCurrentUserId] = useState("");
-  const [participantNames, setParticipantNames] = useState([]);
+const [participants, setParticipants] = useState([]);
+
   const [drawerVisible, setDrawerVisible] = useState(false);
   const drawerAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
   const flatListRef = useRef();
@@ -101,7 +102,7 @@ export default function AdminChatScreen({ route }) {
 
         const namePromises = participantIds.map(async (uid) => {
           try {
-            const res = await fetch(`${API_BASE_URL}/chat/users/${uid}`, {
+const res = await fetch(`${API_BASE_URL}/admin/user/${uid}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) {
@@ -116,9 +117,24 @@ export default function AdminChatScreen({ route }) {
           }
         });
     
-        const users = await Promise.all(namePromises);
-        
-        setParticipantNames(users.map((user) => user.name || "알 수 없음"));
+const users = await Promise.all(namePromises);
+// 기존: setParticipantNames(users.map((user) => user.name || "알 수 없음"))
+setParticipants(users.map((user) => ({
+  name: user.name || "알 수 없음",
+  userId: user.userId,
+})));
+
+<Text style={styles.roomTitle}>참여자 {participants.length}명</Text>
+
+{participants.map((user, idx) => (
+  <TouchableOpacity
+    key={idx}
+    onPress={() => navigation.navigate("UserDetailScreen", { userId: user.userId })}
+  >
+    <Text style={styles.participantItem}>• {user.name}</Text>
+  </TouchableOpacity>
+))}
+
       } catch (error) {
         console.error(" 데이터 로딩 실패:", error);
       } finally {
@@ -190,7 +206,7 @@ export default function AdminChatScreen({ route }) {
   return (
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.topBar}>
-        <Text style={styles.roomTitle}>참여자 {participantNames.length}명</Text>
+<Text style={styles.roomTitle}>참여자 {participants.length}명</Text>
         <TouchableOpacity onPress={openDrawer}>
           <Ionicons name="people-outline" size={24} color="#fff" />
         </TouchableOpacity>
@@ -254,14 +270,21 @@ export default function AdminChatScreen({ route }) {
           ]}
         >
           <Text style={styles.drawerTitle}>참여자 목록</Text>
-          {participantNames.map((name, idx) => (
-            <Text key={idx} style={styles.participantItem}>
-              • {name}
-            </Text>
-          ))}
-          <TouchableOpacity style={styles.drawerCloseButton} onPress={closeDrawer}>
-            <Text style={{ color: "#007AFF", fontWeight: "bold" }}>닫기</Text>
-          </TouchableOpacity>
+{participants.map((user, idx) => (
+  <TouchableOpacity
+    key={idx}
+    onPress={() => {
+      closeDrawer();
+      navigation.navigate("AdminMyPage", {
+        screen: "UserDetailScreen",
+        params: { userId: user.userId },
+      });
+    }}
+  >
+    <Text style={styles.participantItem}>• {user.name}</Text>
+  </TouchableOpacity>
+))}
+
         </Animated.View>
       )}
     </SafeAreaView>

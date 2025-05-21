@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import API_BASE_URL from "../config/apiConfig";
-
+import { TouchableOpacity, Modal } from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
 export default function UserDetailScreen({ route }) {
   const { userId } = route.params;
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-
+const [modalVisible, setModalVisible,] = useState(false);
   const fetchUserDetails = async () => {
     try {
       
@@ -50,7 +51,9 @@ export default function UserDetailScreen({ route }) {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         {userData.idImage ? (
-          <Image source={{ uri: userData.idImage }} style={styles.profileImage} />
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+  <Image source={{ uri: userData.idImage }} style={styles.profileImage} />
+</TouchableOpacity>
         ) : (
           <Ionicons name="person-circle-outline" size={120} color="#007AFF" />
         )}
@@ -84,6 +87,16 @@ export default function UserDetailScreen({ route }) {
           );
         })}
       </View>
+<Modal visible={modalVisible} transparent={true} onRequestClose={() => setModalVisible(false)}>
+  <ImageViewer
+    imageUrls={[{ url: userData.idImage }]}
+    enableSwipeDown={true}
+    onSwipeDown={() => setModalVisible(false)}
+    onCancel={() => setModalVisible(false)}
+    backgroundColor="black"
+    renderIndicator={() => null}
+  />
+</Modal>
     </ScrollView>
   );
 }
@@ -100,5 +113,16 @@ const styles = StyleSheet.create({
   detailRow: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 8 },
   detailKey: { fontWeight: 'bold', color: '#444', fontSize: 15 },
   detailValue: { color: '#555', fontSize: 15, maxWidth: '60%', textAlign: 'right' },
+  modalContainer: {
+  flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.9)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+fullImage: {
+  width: '90%',
+  height: '80%',
+  borderRadius: 10,
+},
 });
 
