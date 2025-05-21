@@ -232,8 +232,8 @@ export default function AdminBottomTabNavigator() {
       <Tab.Screen name="AdminHome" component={AdminHomeStack} />
       <Tab.Screen name="AdminSchedule" component={AdminScheduleStack} />
       <Tab.Screen name="AdminChat" component={AdminChatStack} />
-      <Tab.Screen name="AdminMyPage" component={AdminMyPageStack} />
-      <Tab.Screen name="AdminGlobal" component={AdminGlobalStack} />
+<Tab.Screen name="AdminGlobal" component={AdminGlobalStack} />
+<Tab.Screen name="AdminMyPage" component={AdminMyPageStack} />
     </Tab.Navigator>
   );
 }
