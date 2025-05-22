@@ -42,8 +42,13 @@ const panResponder = useRef(
 ).current;
 const handleRefresh = async () => {
   setRefreshing(true);
-  await fetchMessagesAndParticipants(); // 이미 있는 함수 재사용
-  setRefreshing(false);
+  setLoading(true);
+  try {
+    await fetchMessagesAndParticipants();
+  } finally {
+    setRefreshing(false);
+    setLoading(false);
+  }
 };
 
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -322,6 +327,9 @@ renderItem={({ item }) => {
     flatListRef.current?.scrollToEnd({ animated: true });
   }}
   keyboardShouldPersistTaps="handled"
+  refreshing={refreshing}
+onRefresh={handleRefresh}
+
 />
 
 

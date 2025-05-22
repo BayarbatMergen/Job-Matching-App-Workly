@@ -24,42 +24,42 @@ export default function ChatScreen({ route }) {
   const flatListRef = useRef();
 
   // 메시지 불러오기
-  const fetchMessages = async () => {
-    try {
-      const userId = await SecureStore.getItemAsync("userId");
-      const token = await SecureStore.getItemAsync("token");
-      if (!userId || !token) return [];
-  
-      setCurrentUserId(userId);
-  
-      const res = await fetch(`${API_BASE_URL}/chat/rooms/${roomId}/messages`, {
-        headers: { Authorization: `Bearer ${token}` },
+const fetchMessages = async (skipSetUserId = false) => {
+  try {
+    const userId = await SecureStore.getItemAsync("userId");
+    const token = await SecureStore.getItemAsync("token");
+    if (!userId || !token) return [];
+
+    if (!skipSetUserId) setCurrentUserId(userId);
+
+    const res = await fetch(`${API_BASE_URL}/chat/rooms/${roomId}/messages`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const msgData = await res.json();
+
+    // 읽음 처리
+    const unreadMessages = msgData.filter(
+      (msg) => msg.senderId !== userId && (!msg.readBy || !msg.readBy.includes(userId))
+    );
+
+    for (const msg of unreadMessages) {
+      await fetch(`${API_BASE_URL}/chat/rooms/${roomId}/messages/${msg.id}/read`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
       });
-      const msgData = await res.json();
-  
-      // 읽음 처리
-      const unreadMessages = msgData.filter(
-        (msg) => msg.senderId !== userId && (!msg.readBy || !msg.readBy.includes(userId))
-      );
-  
-      for (const msg of unreadMessages) {
-        await fetch(`${API_BASE_URL}/chat/rooms/${roomId}/messages/${msg.id}/read`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId }),
-        });
-      }
-  
-      return msgData;
-    } catch (err) {
-      console.error("📛 메시지 로딩 실패:", err);
-      return [];
     }
-  };
-  
+
+    return msgData;
+  } catch (err) {
+    console.error("📛 메시지 로딩 실패:", err);
+    return [];
+  }
+};
+
 
   useEffect(() => {
     const load = async () => {
@@ -70,12 +70,13 @@ export default function ChatScreen({ route }) {
     load();
   }, [roomId]);
   
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    const newData = await fetchMessages();
-    setMessages(newData);
-    setRefreshing(false);
-  };
+const handleRefresh = async () => {
+  setRefreshing(true);
+  const newData = await fetchMessages(true); // userId 덮어쓰기 방지
+  setMessages(newData);
+  setRefreshing(false);
+};
+
   
 
   const sendMessage = async () => {
