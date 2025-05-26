@@ -12,9 +12,10 @@ import { storage } from '../config/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import uuid from 'react-native-uuid';
 
+
 const RegisterScreen = ({ navigation, route }) => {
   const { marketingConsent = false, termsAgreedAt = null, termsVersion = null } = route.params || {};
-
+const [accountHolder, setAccountHolder] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -118,27 +119,45 @@ const formatPhoneNumber = (phone) => {
     },
   };
 
-  const pickImage = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      Alert.alert('갤러리 접근 권한이 필요합니다.');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+const pickImage = () => {
+  Alert.alert(
+    "안내",
+    "신분증 사진은 등록 후 수정이 불가능하니 정확하게 올려주세요.",
+    [
+      {
+        text: "취소",
+        style: "cancel",
+      },
+      {
+        text: "확인",
+        onPress: async () => {
+          const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (!permissionResult.granted) {
+            Alert.alert('갤러리 접근 권한이 필요합니다.');
+            return;
+          }
 
-    if (!result.canceled) {
-      setIdImage({
-        uri: result.assets[0].uri,
-        name: `photo-${Date.now()}.jpg`,
-        type: 'image/jpeg'
-      });
-    }
-  };
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+          });
+
+          if (!result.canceled) {
+            setIdImage({
+              uri: result.assets[0].uri,
+              name: `photo-${Date.now()}.jpg`,
+              type: 'image/jpeg'
+            });
+          }
+        },
+      },
+    ],
+    { cancelable: true }
+  );
+};
+
 
 const uploadImageToFirebase = async (image) => {
   try {
@@ -194,6 +213,11 @@ const handleRegister = async () => {
     return;
   }
 
+if (!/^[a-zA-Z가-힣\s]+$/.test(accountHolder)) {
+  Alert.alert("예금자 명 오류", "예금자 명은 한글 또는 영문으로만 입력해주세요.");
+  return;
+}
+
 if (!idImage || !idImage.uri) {
   Alert.alert("신분증 사진 누락", "회원가입을 위해 신분증 사진을 업로드해야 합니다.");
   return;
@@ -242,6 +266,7 @@ if (!isPhoneAvailable) {
         phone: formattedPhone,
         gender,
         bank,
+        accountHolder, 
         accountNumber: accountNumber.replace(/-/g, ''),
         idImageUrl: imageUrl,
         marketingConsent,
@@ -438,6 +463,13 @@ if (!isPhoneAvailable) {
               />
             </View>
           </View>
+<TextInput
+  style={styles.input}
+  placeholder="예금자 명 (한글 또는 영문)"
+  placeholderTextColor="#aaa"
+  value={accountHolder}
+  onChangeText={setAccountHolder}
+/>
 
           <TextInput
             style={styles.input}
@@ -450,6 +482,7 @@ if (!isPhoneAvailable) {
               const formatted = digits.replace(/(\d{3})(\d{3,4})(\d{4,7})/, "$1-$2-$3");
               setAccountNumber(formatted);
             }}
+            
           />
 
           <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>

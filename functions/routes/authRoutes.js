@@ -57,7 +57,7 @@ const formatPhoneNumber = (phone) => {
 
 router.post('/register', upload.single('idImage'), async (req, res) => {
   try {
-    let { email, password, name, phone, gender, bank, accountNumber, role, idImageUrl } = req.body;
+    let { email, password, name, phone, gender, bank, accountHolder, accountNumber, role, idImageUrl } = req.body;
 
     // [1] 필수 입력값 확인
     if (!email || !password || !name || !phone || !gender) {
@@ -103,6 +103,7 @@ router.post('/register', upload.single('idImage'), async (req, res) => {
       phone: formattedPhone,
       gender,
       bank: bank || "은행 미선택",
+      accountHolder,
       accountNumber: accountNumber || "0000-0000-0000",
       role,
       idImage: imageUrl,

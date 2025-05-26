@@ -46,15 +46,20 @@ const onRefresh = async () => {
         const data = docSnap.data();
         if (data.status === "pending") {
           const userDoc = await getDoc(doc(db, "users", data.userId));
-          const userData = userDoc.exists() ? userDoc.data() : { name: "알 수 없음" };
+const userData = userDoc.exists()
+  ? userDoc.data()
+  : { name: "알 수 없음", bank: "-", accountNumber: "-", accountHolder: "-" };
 
-          pendingRequests.push({
-            id: docSnap.id,
-            userId: data.userId,
-            userName: userData.name,
-            totalWage: data.totalWage,
-            requestedAt: data.requestedAt,
-          });
+pendingRequests.push({
+  id: docSnap.id,
+  userId: data.userId,
+  userName: userData.name,
+  totalWage: data.totalWage,
+  requestedAt: data.requestedAt,
+  bank: userData.bank || "-",
+  accountNumber: userData.accountNumber || "-",
+  accountHolder: userData.accountHolder || "-",
+});
         }
       }
 
@@ -139,7 +144,11 @@ return (
             <View key={item.id} style={styles.card}>
               <Text style={styles.userName}>{item.userName}</Text>
               <Text>요청 금액: {Number(item.totalWage).toLocaleString()}원</Text>
-              <Text>
+              
+<Text>은행명: {item.bank}</Text>
+<Text>계좌번호: {item.accountNumber}</Text>
+<Text>예금자명: {item.accountHolder}</Text>
+<Text>
   요청 날짜: {new Date(item.requestedAt.seconds * 1000).toLocaleString("ko-KR", {
     timeZone: "Asia/Seoul", // 한국 시간대로 설정
     year: "numeric",
@@ -151,7 +160,6 @@ return (
     hour12: true,
   })}
 </Text>
-
 <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={styles.approveButton}
