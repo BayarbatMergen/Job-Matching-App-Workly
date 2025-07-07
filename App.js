@@ -120,6 +120,17 @@ export default function App() {
           }}
         />
         <Stack.Screen
+  name="AttendanceStatusScreen"
+  component={require('./src/screens/AttendanceStatusScreen').default}
+  options={{
+    headerShown: true,
+    title: '출근 현황 보기',
+    headerStyle: { backgroundColor: '#007AFF' },
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center',
+  }}
+/>
+        <Stack.Screen
           name="SettlementApprovalScreen"
           component={SettlementApprovalScreen}
           options={{

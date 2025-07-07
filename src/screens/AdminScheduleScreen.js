@@ -9,7 +9,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query  } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useNavigation } from '@react-navigation/native';
 
@@ -28,6 +28,8 @@ export default function AdminScheduleScreen() {
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedSchedules, setSelectedSchedules] = useState([]);
+  const [allAttendanceList, setAllAttendanceList] = useState([]);
+  const [selectedAttendanceList, setSelectedAttendanceList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [allSchedules, setAllSchedules] = useState([]);
@@ -83,20 +85,42 @@ export default function AdminScheduleScreen() {
     }
   };
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchJobs();
-  }, []);
-
-  const handleDayPress = (day) => {
-    const selected = day.dateString;
-    setSelectedDate(selected);
-    setSelectedSchedules(allSchedules[selected] || []);
+useEffect(() => {
+  const init = async () => {
+    setLoading(true);
+    await fetchJobs();
+    await fetchAttendance();
+    setLoading(false);
   };
+  init();
+}, []);
+
+const onRefresh = useCallback(() => {
+  setRefreshing(true);
+  Promise.all([fetchJobs(), fetchAttendance()])
+    .then(() => setRefreshing(false))
+    .catch(() => setRefreshing(false));
+}, []);
+
+
+const fetchAttendance = async () => {
+  try {
+    const q = query(collection(db, "attendance"));
+    const snapshot = await getDocs(q);
+    const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    list.sort((a, b) => new Date(b.date) - new Date(a.date));
+    setAllAttendanceList(list);
+  } catch (err) {
+    console.error("출근 현황 불러오기 오류:", err);
+  }
+};
+
+const handleDayPress = (day) => {
+  const selected = day.dateString;
+  setSelectedDate(selected);
+  setSelectedSchedules(allSchedules[selected] || []);
+};
+
 
   if (loading) {
     return (
@@ -157,6 +181,15 @@ export default function AdminScheduleScreen() {
         >
           <Text style={styles.buttonText}>공고 승인 내역 보기</Text>
         </TouchableOpacity>
+<TouchableOpacity
+  style={styles.button}
+  onPress={() => navigation.navigate('AttendanceStatusScreen', { date: selectedDate })}
+  disabled={!selectedDate}
+>
+  <Text style={styles.buttonText}>
+    {selectedDate ? `${selectedDate} 출근 현황 보기` : '날짜를 선택하세요'}
+  </Text>
+</TouchableOpacity>
       </View>
     </ScrollView>
   );
