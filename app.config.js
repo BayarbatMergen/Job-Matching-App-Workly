@@ -7,29 +7,33 @@ export default {
     version: "1.0.0",
     entryPoint: "index.js",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/thechingu.png",
     scheme: "myapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-    
+    owner: "mrgnnn1",
+
     ios: {
-      bundleIdentifier: "com.company.jobmatchapp", 
+      bundleIdentifier: "com.company.jobmatchapp",
       supportsTablet: true,
-      googleServicesFile: "./GoogleService-Info.plist" 
+      googleServicesFile: "./GoogleService-Info.plist",
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false
+      }
     },
 
     android: {
-      package: "com.anonymous.jobmatchingapp", 
+      package: "com.anonymous.jobmatchingapp",
       adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon.png",
+        foregroundImage: "./assets/images/thechingu.png",
         backgroundColor: "#ffffff"
       },
-      googleServicesFile: "./google-services.json" 
+      googleServicesFile: "./google-services.json"
     },
 
     web: {
       bundler: "metro",
-      favicon: "./assets/images/favicon.png"
+      favicon: "./assets/images/thechingu.png"
     },
 
     plugins: [
@@ -37,13 +41,13 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
+          image: "./assets/images/thechingu.png",
           imageWidth: 200,
           resizeMode: "contain",
           backgroundColor: "#ffffff"
         }
       ]
-    ],    
+    ],
 
     experiments: {
       typedRoutes: true

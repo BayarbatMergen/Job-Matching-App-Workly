@@ -24,7 +24,8 @@
     "formdata-polyfill": "^4.0.10",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.10.1"
+    "nodemailer": "^6.10.1",
+    "xlsx": "^0.18.5"
   },
   "private": true
 }

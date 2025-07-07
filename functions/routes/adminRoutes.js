@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../middlewares/authMiddleware');
+const { generateUsersExcelBuffer } = require('../services/exportService');
 const adminOnlyMiddleware = require('../middlewares/adminOnlyMiddleware');
 
 module.exports = ({ db, admin, storage  }) => {
@@ -441,6 +442,18 @@ router.get('/users', verifyToken, async (req, res) => {
   }
 });
 
+router.get('/export-users', async (req, res) => {
+  try {
+    const buffer = await generateUsersExcelBuffer();
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=users.xlsx');
+    res.send(buffer);
+  } catch (error) {
+    console.error('[엑셀 생성 오류]', error);
+    res.status(500).json({ message: '엑셀 파일 생성 중 오류 발생' });
+  }
+});
 
   return router;
 };

@@ -486,7 +486,7 @@ if (!isPhoneAvailable) {
           />
 
           <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-            <Text style={styles.uploadButtonText}>신분증 사진 업로드</Text>
+            <Text style={styles.uploadButtonText}>신분증 / 여권 사진 업로드</Text>
           </TouchableOpacity>
           
           {idImage && <Image source={{ uri: idImage.uri }} style={styles.profileImage} />}
