@@ -48,6 +48,7 @@ import ChatScreen from './src/screens/ChatScreen';
 
 // 일정 관리
 import ScheduleNavigator from './src/navigation/ScheduleNavigator';
+import ContractScreen from './src/screens/ContractScreen';
 
 // 메인
 import MainScreen from './src/screens/MainScreen';
@@ -129,6 +130,18 @@ export default function App() {
             headerTitleAlign: 'center'
           }}
         />
+<Stack.Screen
+  name="Contract"
+  component={ContractScreen}
+  options={{
+    headerShown: true,
+    title: '출근 서약서',
+    headerStyle: { backgroundColor: '#007AFF' }, // 파란색
+    headerTintColor: '#fff',                     // 제목 글씨 흰색
+    headerTitleAlign: 'center'                   // 가운데 정렬
+  }}
+/>
+
 
         {/* 사용자 기능 */}
         <Stack.Screen name="BankInfo" component={BankInfoScreen}   options={{

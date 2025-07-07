@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import { fetchUserData } from '../services/authService';
 import { fetchUserSchedules } from '../services/scheduleService';
 import { collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from '../config/firebase';
 import API_BASE_URL from '../config/apiConfig';
 
@@ -25,9 +26,16 @@ export default function ScheduleScreen({ navigation }) {
   const [totalWage, setTotalWage] = useState(0);
   const [allTotalWage, setAllTotalWage] = useState(0);
   const [userId, setUserId] = useState(null);
+    const [userName, setUserName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [hasPendingSettlement, setHasPendingSettlement] = useState(false);
+  const isWithinCheckinTime = () => {
+  const now = new Date();
+  const hours = now.getHours();
+
+  return hours >= 8 && hours < 10;
+};
 
   useEffect(() => {
     const initializeUser = async () => {
@@ -39,7 +47,8 @@ export default function ScheduleScreen({ navigation }) {
           return;
         }
         const user = await fetchUserData();
-        setUserId(user?.userId); // 수정된 부분
+        setUserId(user?.userId);
+        setUserName(user?.name);
       } catch (error) {
         Alert.alert("오류", "인증이 필요합니다.", [
           { text: "확인", onPress: () => navigation.navigate("Login") },
@@ -58,6 +67,20 @@ export default function ScheduleScreen({ navigation }) {
       checkPendingSettlement(userId);
     }
   }, [userId]);
+
+  useEffect(() => {
+  // 앱 들어가면 자동으로 오늘 날짜 선택
+  const todayStr = new Date().toISOString().split("T")[0];
+  setSelectedDate(todayStr);
+  if (scheduleData[todayStr]) {
+    setSelectedSchedules(scheduleData[todayStr]);
+    const total = scheduleData[todayStr].reduce((sum, s) => sum + (Number(s.wage) || 0), 0);
+    setTotalWage(total);
+  } else {
+    setSelectedSchedules([]);
+    setTotalWage(0);
+  }
+}, [scheduleData]);
 
   const checkPendingSettlement = async (uid) => {
     try {
@@ -159,6 +182,40 @@ export default function ScheduleScreen({ navigation }) {
     }
   };
 
+const handleCheckIn = async () => {
+  if (selectedSchedules.length === 0) {
+    Alert.alert("출근 불가", "오늘은 근무 일정이 없습니다.");
+    return;
+  }
+  if (!isWithinCheckinTime()) {
+    Alert.alert("출근 시간 아님", "출근 가능한 시간은 7:00 ~ 14:00 입니다.");
+    return;
+  }
+
+  try {
+    const docRef = doc(db, "attendance", `${selectedDate}_${userId}`);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      Alert.alert("출근 실패", "오늘 이미 출근하셨습니다.");
+      return;
+    }
+
+    // 여기서 Alert 없이 Contract 화면으로 이동
+    navigation.navigate("Contract", {
+      userId,
+      selectedDate,
+      schedules: selectedSchedules,
+      name: userName
+    });
+
+  } catch (error) {
+    console.error("출근 오류:", error);
+    Alert.alert("출근 실패", "출근 처리 중 오류가 발생했습니다.");
+  }
+};
+
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     if (userId) {
@@ -215,7 +272,22 @@ export default function ScheduleScreen({ navigation }) {
         <View style={styles.allTotalWageContainer}>
           <Text style={styles.allTotalWageText}>총 급여 합산: {allTotalWage.toLocaleString()}원</Text>
         </View>
+{selectedSchedules.length > 0 && (
+<TouchableOpacity
+  style={[
+    styles.attendanceButton,
+    !isWithinCheckinTime() && { backgroundColor: '#ccc' }
+  ]}
+  onPress={handleCheckIn}
+  disabled={!isWithinCheckinTime()}
+>
+  <Text style={styles.attendanceButtonText}>
+    {isWithinCheckinTime() ? "출근" : "출근 시간 아님"}
+  </Text>
+</TouchableOpacity>
 
+
+)}
         <TouchableOpacity
           style={[
             styles.settlementButton,
@@ -247,4 +319,18 @@ const styles = StyleSheet.create({
   allTotalWageText: { fontSize: 20, fontWeight: 'bold', color: '#333' },
   settlementButton: { backgroundColor: '#007AFF', padding: 15, borderRadius: 8, alignItems: 'center', marginVertical: 20, marginHorizontal: 20 },
   settlementButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
+  attendanceButton: {
+  backgroundColor: '#4CAF50',
+  padding: 15,
+  borderRadius: 8,
+  alignItems: 'center',
+  marginVertical: 10,
+  marginHorizontal: 20
+},
+attendanceButtonText: {
+  color: 'white',
+  fontSize: 18,
+  fontWeight: 'bold'
+}
+
 });
