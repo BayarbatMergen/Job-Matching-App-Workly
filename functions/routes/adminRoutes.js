@@ -455,5 +455,56 @@ router.get('/export-users', async (req, res) => {
   }
 });
 
+router.post('/chats/create-or-get', verifyToken, async (req, res) => {
+  const { userId } = req.body;
+  const adminId = req.user.userId;
+
+  console.log("💥 [create-or-get] 요청 받음:", { userId, adminId });
+
+  try {
+    // adminId, userId 둘 다 포함된 방 검색
+    const existingRoomsSnap = await db.collection('chats')
+      .where('participants', 'array-contains-any', [adminId, userId])
+      .get();
+
+    let roomId;
+    for (const doc of existingRoomsSnap.docs) {
+      const data = doc.data();
+      if (data.participants && 
+          data.participants.length === 2 && 
+          data.participants.includes(adminId) && 
+          data.participants.includes(userId)) {
+        roomId = doc.id;
+        break;
+      }
+    }
+
+    // 없다면 새로 생성
+    if (!roomId) {
+      // 사용자 이름 가져오기
+      const userDoc = await db.collection('users').doc(userId).get();
+      const userData = userDoc.exists ? userDoc.data() : {};
+      const userName = userData.name || "Unknown";
+
+      const newRoom = await db.collection('chats').add({
+        participants: [adminId, userId],
+        createdAt: new Date(),
+        lastMessage: "",
+        roomType: "inquiry",
+        name: `관리자 상담 (${userName})`
+      });
+      roomId = newRoom.id;
+      console.log("✅ 새 채팅방 생성:", roomId);
+    }
+
+    return res.json({ roomId });
+  } catch (error) {
+    console.error("❌ 채팅방 생성 오류:", error);
+    return res.status(500).json({ message: "채팅방 생성 실패", error: error.message });
+  }
+});
+
+
   return router;
 };
+

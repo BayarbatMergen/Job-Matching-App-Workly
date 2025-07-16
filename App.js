@@ -35,6 +35,9 @@ import CustomerInquiryScreen from './src/screens/CustomerInquiryScreen';
 import NoticeDetailScreen from './src/screens/NoticeDetailScreen';
 import ApprovedApplicationsScreen from './src/screens/ApprovedApplicationsScreen';
 import SettlementApprovalScreen from './src/screens/SettlementApprovalScreen';
+import SelectUserScreen from './src/screens/SelectUserScreen';
+import AdminChatScreen from './src/screens/AdminChatScreen';
+import UserDetailScreen from './src/screens/UserDetailScreen';
 
 // 사용자 기능
 import BankInfoScreen from './src/screens/BankInfoScreen';
@@ -190,7 +193,17 @@ export default function App() {
     headerTitleAlign: 'center',
   }}
 />
-
+<Stack.Screen
+  name="AdminChatScreen"
+  component={AdminChatScreen}
+  options={({ route }) => ({
+    headerShown: true,
+    title: route.params?.roomName || '관리자 채팅',
+    headerStyle: { backgroundColor: '#007AFF' },
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center'
+  })}
+/>
         {/* 채팅 */}
         <Stack.Screen name="ChatList" component={ChatListScreen} options={{ headerShown: true, title: '채팅방 목록' }} />
         <Stack.Screen
@@ -201,7 +214,28 @@ export default function App() {
             title: route.params?.roomName || '단톡방',
           })}
         />
-
+<Stack.Screen
+  name="UserDetailScreen"
+  component={UserDetailScreen}
+  options={{
+    headerShown: true,
+    title: '사용자 상세정보',
+    headerStyle: { backgroundColor: '#007AFF' },
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center'
+  }}
+/>
+<Stack.Screen
+  name="SelectUserScreen"
+  component={SelectUserScreen}
+  options={{
+    headerShown: true,
+    title: '메시지 보낼 사용자 선택',
+    headerStyle: { backgroundColor: '#007AFF' },
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center'
+  }}
+/>
         {/* 일정 */}
         <Stack.Screen name="Schedule" component={ScheduleNavigator} options={{ headerShown: true, title: '일정 관리' }} />
       </Stack.Navigator>

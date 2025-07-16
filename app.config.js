@@ -13,13 +13,16 @@ export default {
     newArchEnabled: true,
     owner: "mrgnnn1",
 
-    ios: {
-      bundleIdentifier: "com.company.jobmatchapp",
-      supportsTablet: true,
-      googleServicesFile: "./GoogleService-Info.plist",
-      infoPlist: {
-        ITSAppUsesNonExemptEncryption: false
-      }
+ios: {
+  bundleIdentifier: "com.company.jobmatchapp",
+  supportsTablet: true,
+  googleServicesFile: "./GoogleService-Info.plist",
+  infoPlist: {
+    ITSAppUsesNonExemptEncryption: false,
+    NSPhotoLibraryUsageDescription: "사진을 선택하기 위해 사진 라이브러리에 접근합니다.",
+    NSCameraUsageDescription: "사진을 촬영하기 위해 카메라를 사용합니다.",
+    NSPhotoLibraryAddUsageDescription: "사진을 저장하기 위해 사진 라이브러리에 접근합니다."
+  }
     },
 
     android: {

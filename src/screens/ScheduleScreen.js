@@ -187,8 +187,16 @@ const handleCheckIn = async () => {
     Alert.alert("출근 불가", "오늘은 근무 일정이 없습니다.");
     return;
   }
+
+  // ⬇️ 오늘 날짜인지 확인
+  const todayStr = new Date().toISOString().split("T")[0];
+  if (selectedDate !== todayStr) {
+    Alert.alert("출근 불가", "출근은 오늘 날짜에만 가능합니다.");
+    return;
+  }
+
   if (!isWithinCheckinTime()) {
-    Alert.alert("출근 시간 아님", "출근 가능한 시간은 7:00 ~ 14:00 입니다.");
+    Alert.alert("출근 시간 아님", "출근 가능한 시간은 8:00 ~ 18:00 입니다.");
     return;
   }
 
@@ -201,7 +209,6 @@ const handleCheckIn = async () => {
       return;
     }
 
-    // 여기서 Alert 없이 Contract 화면으로 이동
     navigation.navigate("Contract", {
       userId,
       selectedDate,
@@ -214,7 +221,6 @@ const handleCheckIn = async () => {
     Alert.alert("출근 실패", "출근 처리 중 오류가 발생했습니다.");
   }
 };
-
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

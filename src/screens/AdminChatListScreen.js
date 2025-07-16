@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -16,7 +16,7 @@ import { Swipeable } from "react-native-gesture-handler";
 import { db } from "../config/firebase";
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { RefreshControl } from "react-native";
-
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function AdminChatListScreen({ navigation }) {
   const [chatRooms, setChatRooms] = useState([]);
@@ -146,7 +146,11 @@ export default function AdminChatListScreen({ navigation }) {
   useEffect(() => {
     fetchAdminChatRooms();
   }, []);
-
+useFocusEffect(
+  useCallback(() => {
+    fetchAdminChatRooms();
+  }, [])
+);
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -157,6 +161,21 @@ export default function AdminChatListScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <TouchableOpacity
+    style={{
+      backgroundColor: "#007AFF",
+      padding: 12,
+      margin: 20,
+      borderRadius: 10,
+      alignItems: "center"
+    }}
+    onPress={() => navigation.navigate("SelectUserScreen")}
+  >
+    <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>
+      + 새 메시지 보내기
+    </Text>
+  </TouchableOpacity>
+  
       <FlatList
         contentContainerStyle={{
           padding: 20,
