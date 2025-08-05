@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import API_BASE_URL from '../config/apiConfig';
+import { useTranslation } from 'react-i18next';
 
 export default function ChangePasswordScreen() {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,12 +21,12 @@ export default function ChangePasswordScreen() {
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert('입력 오류', '모든 필드를 입력해주세요.');
+      Alert.alert(t('changePassword.inputErrorTitle'), t('changePassword.inputErrorMessage'));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert('오류', '새 비밀번호가 일치하지 않습니다.');
+      Alert.alert(t('changePassword.mismatchTitle'), t('changePassword.mismatchMessage'));
       return;
     }
 
@@ -48,16 +50,16 @@ export default function ChangePasswordScreen() {
       const result = await response.json();
 
       if (response.ok) {
-        Alert.alert('성공', '비밀번호가 성공적으로 변경되었습니다.');
+        Alert.alert(t('changePassword.successTitle'), t('changePassword.successMessage'));
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
       } else {
-        Alert.alert('실패', result.message || '비밀번호 변경에 실패했습니다.');
+        Alert.alert(t('changePassword.failureTitle'), result.message || t('changePassword.failureMessage'));
       }
     } catch (error) {
-      console.error('비밀번호 변경 오류:', error);
-      Alert.alert('서버 오류', '잠시 후 다시 시도해주세요.');
+      console.error(t('changePassword.errorLog'), error);
+      Alert.alert(t('changePassword.serverErrorTitle'), t('changePassword.serverErrorMessage'));
     } finally {
       setLoading(false);
     }
@@ -65,33 +67,33 @@ export default function ChangePasswordScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>현재 비밀번호</Text>
+      <Text style={styles.label}>{t('changePassword.currentPassword')}</Text>
       <TextInput
         style={styles.input}
         secureTextEntry
         value={currentPassword}
         onChangeText={setCurrentPassword}
-        placeholder="현재 비밀번호"
+        placeholder={t('changePassword.currentPasswordPlaceholder')}
         placeholderTextColor="#999"
       />
 
-      <Text style={styles.label}>새 비밀번호</Text>
+      <Text style={styles.label}>{t('changePassword.newPassword')}</Text>
       <TextInput
         style={styles.input}
         secureTextEntry
         value={newPassword}
         onChangeText={setNewPassword}
-        placeholder="새 비밀번호"
+        placeholder={t('changePassword.newPasswordPlaceholder')}
         placeholderTextColor="#999"
       />
 
-      <Text style={styles.label}>새 비밀번호 확인</Text>
+      <Text style={styles.label}>{t('changePassword.confirmPassword')}</Text>
       <TextInput
         style={styles.input}
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
-        placeholder="새 비밀번호 확인"
+        placeholder={t('changePassword.confirmPasswordPlaceholder')}
         placeholderTextColor="#999"
       />
 
@@ -103,7 +105,7 @@ export default function ChangePasswordScreen() {
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.saveButtonText}>비밀번호 변경</Text>
+          <Text style={styles.saveButtonText}>{t('changePassword.submitButton')}</Text>
         )}
       </TouchableOpacity>
     </View>

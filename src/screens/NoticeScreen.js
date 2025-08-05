@@ -2,11 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { db } from '../config/firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
 export default function NoticeScreen({ navigation }) {
+  const { t } = useTranslation();
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false); //  새로고침 상태 추가
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchNotices = async () => {
     try {
@@ -17,7 +19,7 @@ export default function NoticeScreen({ navigation }) {
       }));
       setNotices(fetchedNotices);
     } catch (error) {
-      console.error('공지사항 가져오기 오류:', error);
+      console.error(t('notice.fetchError'), error);
     } finally {
       setLoading(false);
     }
@@ -27,7 +29,6 @@ export default function NoticeScreen({ navigation }) {
     fetchNotices();
   }, []);
 
-  //  새로고침 함수
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchNotices();
@@ -61,7 +62,7 @@ export default function NoticeScreen({ navigation }) {
         }
         ListEmptyComponent={(
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>공지사항이 없습니다.</Text>
+            <Text style={styles.emptyText}>{t('notice.empty')}</Text>
           </View>
         )}
       />
@@ -75,13 +76,6 @@ const styles = StyleSheet.create({
   noticeItem: { padding: 15, borderBottomWidth: 1, borderBottomColor: '#ddd' },
   title: { fontSize: 16, fontWeight: 'bold', marginBottom: 5 },
   date: { fontSize: 14, color: 'gray' },
-  emptyContainer: {
-    marginTop: 50,
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#888',
-  },
-  
+  emptyContainer: { marginTop: 50, alignItems: 'center' },
+  emptyText: { fontSize: 16, color: '#888' },
 });

@@ -157,6 +157,67 @@ mypage: {
   logoutConfirmText: "현재 계정에서 로그아웃합니다.",
   cancel: "취소",
   confirm: "로그아웃"
+},
+bankInfo: {
+  currentTitle: "기존 등록된 계좌",
+  newTitle: "새 계좌 등록",
+  bank: "은행명",
+  accountNumber: "계좌번호",
+  noBankInfo: "등록된 계좌 없음",
+  placeholder: {
+    bank: "새 은행명을 입력하세요",
+    account: "새 계좌번호를 입력하세요"
+  },
+  saveButton: "새 계좌 저장",
+  inputErrorTitle: "입력 오류",
+  inputErrorMessage: "새 계좌 정보를 모두 입력해주세요.",
+  successTitle: "저장 완료",
+  saveError: "계좌 정보 저장에 실패했습니다.",
+  fetchError: "계좌 정보를 불러오는 중 오류가 발생했습니다."
+},
+changePassword: {
+  currentPassword: "현재 비밀번호",
+  newPassword: "새 비밀번호",
+  confirmPassword: "새 비밀번호 확인",
+  currentPasswordPlaceholder: "현재 비밀번호",
+  newPasswordPlaceholder: "새 비밀번호",
+  confirmPasswordPlaceholder: "새 비밀번호 확인",
+  submitButton: "비밀번호 변경",
+  inputErrorTitle: "입력 오류",
+  inputErrorMessage: "모든 필드를 입력해주세요.",
+  mismatchTitle: "오류",
+  mismatchMessage: "새 비밀번호가 일치하지 않습니다.",
+  successTitle: "성공",
+  successMessage: "비밀번호가 성공적으로 변경되었습니다.",
+  failureTitle: "실패",
+  failureMessage: "비밀번호 변경에 실패했습니다.",
+  serverErrorTitle: "서버 오류",
+  serverErrorMessage: "잠시 후 다시 시도해주세요.",
+  errorLog: "비밀번호 변경 오류:"
+},
+notice: {
+  fetchError: "공지사항 가져오기 오류:",
+  empty: "공지사항이 없습니다."
+},
+support: {
+  label: "문의 내용",
+  placeholder: "문의 내용을 입력하세요",
+  send: "보내기",
+  inputErrorTitle: "입력 오류",
+  inputErrorMessage: "문의 내용을 입력해주세요.",
+  successTitle: "문의 완료",
+  successMessage: "고객센터에 문의가 접수되었습니다.",
+  errorTitle: "오류",
+  errorMessage: "문의 전송 중 문제가 발생했습니다.",
+  saveErrorLog: "문의 저장 오류:",
+  guest: "비회원"
+},
+inquiries: {
+  fetchError: "내 문의 내역 가져오기 실패:",
+  questionLabel: "문의 내용:",
+  adminReply: "관리자 답변:",
+  pending: "답변 대기 중입니다.",
+  empty: "문의 내역이 없습니다."
 }
   },
 
@@ -318,7 +379,69 @@ mypage: {
   logoutConfirmText: "Одоогийн бүртгэлээс гарна.",
   cancel: "Цуцлах",
   confirm: "Гарах"
+},
+bankInfo: {
+  currentTitle: "Бүртгэлтэй банкны данс",
+  newTitle: "Шинэ данс бүртгүүлэх",
+  bank: "Банкны нэр",
+  accountNumber: "Дансны дугаар",
+  noBankInfo: "Бүртгэлтэй данс байхгүй",
+  placeholder: {
+    bank: "Шинэ банкны нэрийг оруулна уу",
+    account: "Шинэ дансны дугаарыг оруулна уу"
+  },
+  saveButton: "Шинэ данс хадгалах",
+  inputErrorTitle: "Оруулгын алдаа",
+  inputErrorMessage: "Банкны нэр болон дансны дугаарыг оруулна уу.",
+  successTitle: "Амжилттай хадгалагдлаа",
+  saveError: "Банкны мэдээллийг хадгалахад алдаа гарлаа.",
+  fetchError: "Банкны мэдээллийг уншихад алдаа гарлаа."
+},
+changePassword: {
+  currentPassword: "Одоогийн нууц үг",
+  newPassword: "Шинэ нууц үг",
+  confirmPassword: "Шинэ нууц үгийг баталгаажуулах",
+  currentPasswordPlaceholder: "Одоогийн нууц үгээ оруулна уу",
+  newPasswordPlaceholder: "Шинэ нууц үгээ оруулна уу",
+  confirmPasswordPlaceholder: "Шинэ нууц үгээ дахин оруулна уу",
+  submitButton: "Нууц үг өөрчлөх",
+  inputErrorTitle: "Оруулгын алдаа",
+  inputErrorMessage: "Бүх талбарыг бөглөнө үү.",
+  mismatchTitle: "Алдаа",
+  mismatchMessage: "Шинэ нууц үг хоорондоо таарахгүй байна.",
+  successTitle: "Амжилттай",
+  successMessage: "Нууц үг амжилттай өөрчлөгдлөө.",
+  failureTitle: "Амжилтгүй",
+  failureMessage: "Нууц үг өөрчлөхөд амжилтгүй боллоо.",
+  serverErrorTitle: "Серверийн алдаа",
+  serverErrorMessage: "Дахин оролдоно уу.",
+  errorLog: "Нууц үг солих үед алдаа гарлаа:"
+},
+notice: {
+  fetchError: "Зарлал татаж чадсангүй:",
+  empty: "Зарлал алга байна."
+},
+support: {
+  label: "Асуулт",
+  placeholder: "Асуултаа оруулна уу",
+  send: "Илгээх",
+  inputErrorTitle: "Оруулахад алдаа",
+  inputErrorMessage: "Асуултаа оруулна уу.",
+  successTitle: "Амжилттай",
+  successMessage: "Таны асуулт харилцагчийн төвд илгээгдлээ.",
+  errorTitle: "Алдаа",
+  errorMessage: "Асуулт илгээхэд алдаа гарлаа.",
+  saveErrorLog: "Асуулт хадгалах алдаа:",
+  guest: "Зочин"
+},inquiries: {
+  fetchError: "Асуулт татаж чадсангүй:",
+  questionLabel: "Асуулт:",
+  adminReply: "Админы хариу:",
+  pending: "Хариуг хүлээж байна.",
+  empty: "Асуулт олдсонгүй."
 }
+
+
   },
 
 
@@ -479,7 +602,67 @@ notification: {
   logoutConfirmText: "You will be logged out of your account.",
   cancel: "Cancel",
   confirm: "Log Out"
+},
+bankInfo: {
+  currentTitle: "Existing Bank Account",
+  newTitle: "Register New Account",
+  bank: "Bank Name",
+  accountNumber: "Account Number",
+  noBankInfo: "No registered account",
+  placeholder: {
+    bank: "Enter new bank name",
+    account: "Enter new account number"
+  },
+  saveButton: "Save New Account",
+  inputErrorTitle: "Input Error",
+  inputErrorMessage: "Please enter both bank name and account number.",
+  successTitle: "Saved Successfully",
+  saveError: "Failed to save bank information.",
+  fetchError: "An error occurred while fetching bank information."
+},
+changePassword: {
+  currentPassword: "Current Password",
+  newPassword: "New Password",
+  confirmPassword: "Confirm New Password",
+  currentPasswordPlaceholder: "Enter current password",
+  newPasswordPlaceholder: "Enter new password",
+  confirmPasswordPlaceholder: "Re-enter new password",
+  submitButton: "Change Password",
+  inputErrorTitle: "Input Error",
+  inputErrorMessage: "Please fill out all fields.",
+  mismatchTitle: "Error",
+  mismatchMessage: "New passwords do not match.",
+  successTitle: "Success",
+  successMessage: "Password changed successfully.",
+  failureTitle: "Failure",
+  failureMessage: "Failed to change password.",
+  serverErrorTitle: "Server Error",
+  serverErrorMessage: "Please try again later.",
+  errorLog: "Password change error:"
+},
+notice: {
+  fetchError: "Error fetching notices:",
+  empty: "No notices available."
+},
+support: {
+  label: "Inquiry",
+  placeholder: "Please enter your inquiry",
+  send: "Send",
+  inputErrorTitle: "Input Error",
+  inputErrorMessage: "Please enter your inquiry.",
+  successTitle: "Submitted",
+  successMessage: "Your inquiry has been submitted to customer support.",
+  errorTitle: "Error",
+  errorMessage: "An error occurred while sending your inquiry.",
+  saveErrorLog: "Error saving inquiry:",
+  guest: "Guest"
+},
+inquiries: {
+  fetchError: "Failed to load inquiries:",
+  questionLabel: "Inquiry:",
+  adminReply: "Admin Reply:",
+  pending: "Awaiting response.",
+  empty: "No inquiries found."
 }
-
   },
 };

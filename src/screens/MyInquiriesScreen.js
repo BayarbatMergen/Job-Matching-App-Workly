@@ -3,10 +3,12 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-nativ
 import { db } from '../config/firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import * as SecureStore from 'expo-secure-store';
+import { useTranslation } from 'react-i18next';
 
 export default function MyInquiriesScreen() {
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchInquiries = async () => {
@@ -28,7 +30,7 @@ export default function MyInquiriesScreen() {
 
         setInquiries(data);
       } catch (error) {
-        console.error(' 내 문의 내역 가져오기 실패:', error);
+        console.error(t('inquiries.fetchError'), error);
       } finally {
         setLoading(false);
       }
@@ -52,7 +54,7 @@ export default function MyInquiriesScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.inquiryBox}>
-            <Text style={styles.label}>문의 내용:</Text>
+            <Text style={styles.label}>{t('inquiries.questionLabel')}</Text>
             <Text style={styles.message}>{item.message}</Text>
 
             {item.createdAt && (
@@ -63,15 +65,15 @@ export default function MyInquiriesScreen() {
 
             {item.reply ? (
               <View style={styles.replyBox}>
-                <Text style={styles.replyLabel}>관리자 답변:</Text>
+                <Text style={styles.replyLabel}>{t('inquiries.adminReply')}</Text>
                 <Text style={styles.replyContent}>{item.reply}</Text>
               </View>
             ) : (
-              <Text style={styles.pending}>답변 대기 중입니다.</Text>
+              <Text style={styles.pending}>{t('inquiries.pending')}</Text>
             )}
           </View>
         )}
-        ListEmptyComponent={<Text style={styles.emptyText}>문의 내역이 없습니다.</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>{t('inquiries.empty')}</Text>}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
       />
