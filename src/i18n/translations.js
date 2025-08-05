@@ -105,7 +105,6 @@ export const translations = {
     notice: "공지사항",
     customerSupport: "고객센터 문의"
 },
-// locales/ko.js
 calendar: {
   selectDate: "날짜를 선택하세요"
 },
@@ -136,6 +135,28 @@ checkin: {
   fail: "출근 실패",
   error: "출근 처리 중 오류가 발생했습니다.",
   timeLimit: "출근 가능한 시간은 8:00 ~ 18:00 입니다."
+},
+mypage: {
+  title: "마이페이지",
+  inquiries: "내 문의 내역 보기",
+  changePassword: "비밀번호 변경",
+  changeBankInfo: "계좌 정보 변경",
+  notice: "공지사항",
+  customerSupport: "고객센터 문의",
+  name: { none: "이름 없음" },
+  email: { none: "이메일 없음" },
+  menu: {
+    bank: "계좌 정보 변경",
+    password: "비밀번호 변경",
+    notice: "공지사항",
+    support: "고객센터 문의하기",
+    inquiries: "내 문의 내역 보기"
+  },
+  logout: "로그아웃",
+  logoutConfirmTitle: "로그아웃 하시겠습니까?",
+  logoutConfirmText: "현재 계정에서 로그아웃합니다.",
+  cancel: "취소",
+  confirm: "로그아웃"
 }
   },
 
@@ -276,6 +297,28 @@ checkin: {
     error: "Ажил эхлүүлэх үед алдаа гарлаа.",
     timeLimit: "Ажил эхлэх боломжтой цаг: 8:00 - 18:00"
   },
+  mypage: {
+  title: "Миний хуудас",
+  inquiries: "Миний асуулгууд",
+  changePassword: "Нууц үг солих",
+  changeBankInfo: "Банкны мэдээлэл өөрчлөх",
+  notice: "Зарлал",
+  customerSupport: "Хэрэглэгчийн дэмжлэг",
+  name: { none: "Нэр байхгүй" },
+  email: { none: "И-мэйл байхгүй" },
+  menu: {
+    bank: "Дансны мэдээллийг шинэчлэх",
+    password: "Нууц үг өөрчлөх",
+    notice: "Мэдэгдэл",
+    support: "Хэрэглэгчийн дэмжлэг",
+    inquiries: "Миний асуултууд"
+  },
+  logout: "Гарах",
+  logoutConfirmTitle: "Та гарах уу?",
+  logoutConfirmText: "Одоогийн бүртгэлээс гарна.",
+  cancel: "Цуцлах",
+  confirm: "Гарах"
+}
   },
 
 
@@ -415,6 +458,28 @@ notification: {
     error: "An error occurred during check-in.",
     timeLimit: "Check-in is available from 8:00 to 18:00."
   },
+  mypage: {
+  title: "My Page",
+  inquiries: "My Inquiries",
+  changePassword: "Change Password",
+  changeBankInfo: "Change Bank Info",
+  notice: "Notice",
+  customerSupport: "Customer Support",
+  name: { none: "No name" },
+  email: { none: "No email" },
+  menu: {
+    bank: "Update Bank Info",
+    password: "Change Password",
+    notice: "Notices",
+    support: "Contact Support",
+    inquiries: "My Inquiries"
+  },
+  logout: "Log Out",
+  logoutConfirmTitle: "Do you want to log out?",
+  logoutConfirmText: "You will be logged out of your account.",
+  cancel: "Cancel",
+  confirm: "Log Out"
+}
 
   },
 };

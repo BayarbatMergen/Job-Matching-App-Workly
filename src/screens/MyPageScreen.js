@@ -7,8 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 import { logout } from "../services/authService";
 import API_BASE_URL from "../config/apiConfig";
+import { useTranslation } from 'react-i18next';
 
-//  기본 이미지 처리 함수
 const getValidImageUrl = (url) => {
   if (!url || url === 'null') {
     return 'https://via.placeholder.com/100x100?text=No+Image';
@@ -17,6 +17,7 @@ const getValidImageUrl = (url) => {
 };
 
 export default function MyPageScreen({ navigation }) {
+  const { t } = useTranslation();
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
@@ -26,8 +27,8 @@ export default function MyPageScreen({ navigation }) {
     try {
       const token = await SecureStore.getItemAsync("token");
       if (!token) {
-        Alert.alert("인증 오류", "로그인이 필요합니다.", [
-          { text: "확인", onPress: () => navigation.replace("Login") },
+        Alert.alert(t("alert.authErrorTitle"), t("alert.loginRequiredMessage"), [
+          { text: t("common.ok"), onPress: () => navigation.replace("Login") },
         ]);
         return;
       }
@@ -42,15 +43,15 @@ export default function MyPageScreen({ navigation }) {
 
       const errorData = await response.text();
       if (!response.ok) {
-        throw new Error(JSON.parse(errorData).message || "서버 오류");
+        throw new Error(JSON.parse(errorData).message || t("alert.authErrorMessage"));
       }
 
       const userInfo = JSON.parse(errorData);
       setUserData(userInfo);
     } catch (error) {
       console.error("사용자 정보 오류:", error);
-      Alert.alert("오류", error.message || "사용자 정보를 불러올 수 없습니다.", [
-        { text: "확인", onPress: () => navigation.replace("Login") },
+      Alert.alert(t("alert.authErrorTitle"), error.message || t("mypage.error.fetchFail"), [
+        { text: t("common.ok"), onPress: () => navigation.replace("Login") },
       ]);
     } finally {
       setIsLoading(false);
@@ -68,7 +69,7 @@ export default function MyPageScreen({ navigation }) {
       setLogoutModalVisible(false);
       navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
     } catch (error) {
-      Alert.alert("오류", "로그아웃에 실패했습니다.");
+      Alert.alert(t("alert.authErrorTitle"), t("mypage.error.logoutFail"));
     }
   };
 
@@ -87,56 +88,52 @@ export default function MyPageScreen({ navigation }) {
 
   return (
     <FlatList
-      data={[userData]} // dummy data to enable FlatList
+      data={[userData]}
       keyExtractor={() => 'user-info'}
       renderItem={() => (
         <>
-          {/* 프로필 영역 */}
           <View style={styles.profileContainer}>
             <Image
               source={{ uri: getValidImageUrl(userData?.idImage) }}
               style={styles.profileImage}
             />
-            <Text style={styles.userName}>{userData?.name || "이름 없음"}</Text>
-            <Text style={styles.userEmail}>{userData?.email || "이메일 없음"}</Text>
+            <Text style={styles.userName}>{userData?.name || t("mypage.name.none")}</Text>
+            <Text style={styles.userEmail}>{userData?.email || t("mypage.email.none")}</Text>
           </View>
 
-          {/* 설정 메뉴 */}
           <View style={styles.section}>
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('BankInfo')}>
               <Ionicons name="card-outline" size={26} color="#007AFF" />
-              <Text style={styles.menuText}>계좌 정보 변경</Text>
+              <Text style={styles.menuText}>{t("mypage.menu.bank")}</Text>
               <Ionicons name="chevron-forward" size={22} color="#A0A0A0" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ChangePassword', { email: userData.email })}>
               <Ionicons name="key-outline" size={26} color="#007AFF" />
-              <Text style={styles.menuText}>비밀번호 변경</Text>
+              <Text style={styles.menuText}>{t("mypage.menu.password")}</Text>
               <Ionicons name="chevron-forward" size={22} color="#A0A0A0" />
             </TouchableOpacity>
           </View>
 
-          {/* 기타 메뉴 */}
           <View style={styles.section}>
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notice')}>
               <Ionicons name="megaphone-outline" size={26} color="#007AFF" />
-              <Text style={styles.menuText}>공지사항</Text>
+              <Text style={styles.menuText}>{t("mypage.menu.notice")}</Text>
               <Ionicons name="chevron-forward" size={22} color="#A0A0A0" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('CustomerSupport')}>
               <Ionicons name="help-circle-outline" size={26} color="#007AFF" />
-              <Text style={styles.menuText}>고객센터 문의하기</Text>
+              <Text style={styles.menuText}>{t("mypage.menu.support")}</Text>
               <Ionicons name="chevron-forward" size={22} color="#A0A0A0" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('MyInquiriesScreen')}>
               <Ionicons name="chatbox-ellipses-outline" size={26} color="#007AFF" />
-              <Text style={styles.menuText}>내 문의 내역 보기</Text>
+              <Text style={styles.menuText}>{t("mypage.menu.inquiries")}</Text>
               <Ionicons name="chevron-forward" size={22} color="#A0A0A0" />
             </TouchableOpacity>
           </View>
 
-          {/* 로그아웃 버튼 */}
           <TouchableOpacity style={styles.logoutButton} onPress={() => setLogoutModalVisible(true)}>
-            <Text style={styles.logoutText}>로그아웃</Text>
+            <Text style={styles.logoutText}>{t("mypage.logout")}</Text>
           </TouchableOpacity>
         </>
       )}
@@ -149,14 +146,14 @@ export default function MyPageScreen({ navigation }) {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
               <Ionicons name="log-out-outline" size={40} color="#FF3B30" />
-              <Text style={styles.modalTitle}>로그아웃 하시겠습니까?</Text>
-              <Text style={styles.modalText}>현재 계정에서 로그아웃합니다.</Text>
+              <Text style={styles.modalTitle}>{t("mypage.logoutConfirmTitle")}</Text>
+              <Text style={styles.modalText}>{t("mypage.logoutConfirmDesc")}</Text>
               <View style={styles.buttonRow}>
                 <TouchableOpacity style={styles.cancelButton} onPress={() => setLogoutModalVisible(false)}>
-                  <Text style={styles.cancelButtonText}>취소</Text>
+                  <Text style={styles.cancelButtonText}>{t("common.cancel")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.confirmButton} onPress={handleLogout}>
-                  <Text style={styles.confirmButtonText}>로그아웃</Text>
+                  <Text style={styles.confirmButtonText}>{t("mypage.logout")}</Text>
                 </TouchableOpacity>
               </View>
             </View>
