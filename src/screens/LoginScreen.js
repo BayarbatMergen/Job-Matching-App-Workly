@@ -19,8 +19,10 @@ import { fetchUserData, saveUserData, resetPasswordWithBackend } from "../servic
 import API_BASE_URL from "../config/apiConfig";
 import Checkbox from 'expo-checkbox';
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from 'react-i18next';
 
 const LoginScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,7 +57,7 @@ const [showPassword, setShowPassword] = useState(false);
     const loginPassword = overridePassword || password;
 
     if (!loginEmail || !loginPassword) {
-      Alert.alert("입력 오류", "이메일과 비밀번호를 입력하세요.");
+      Alert.alert(t('error.input'), t('error.emptyFields'));
       return;
     }
 
@@ -101,11 +103,11 @@ const [showPassword, setShowPassword] = useState(false);
           navigation.replace("Main");
         }
       } else {
-        if (!autoTrigger) Alert.alert("로그인 실패", result.message || "이메일 또는 비밀번호 오류");
+        if (!autoTrigger) Alert.alert(t('error.loginFailed'), result.message || t('error.invalidCredentials'));
       }
     } catch (err) {
       console.error("로그인 중 오류:", err);
-      Alert.alert("서버 오류", err.message || "잠시 후 다시 시도해주세요.");
+      Alert.alert(t('error.serverError'), err.message || t('error.tryAgainLater'));
     } finally {
       setLoading(false);
     }
@@ -121,10 +123,10 @@ return (
         {/* 상단 고정 영역 */}
         <View style={styles.header}>
           <Image source={require("../../assets/images/thechingu.png")} style={styles.logo} />
-          <Text style={styles.title}>로그인</Text>
+          <Text style={styles.title}>{t('common.login')}</Text>
         </View>
 
-        {/* 입력창 + 버튼만 스크롤 가능 */}
+        {/* 스크롤 가능한 영역 */}
         <ScrollView
           contentContainerStyle={styles.formContainer}
           keyboardShouldPersistTaps="handled"
@@ -132,7 +134,7 @@ return (
         >
           <TextInput
             style={styles.input}
-            placeholder="이메일"
+            placeholder={t('auth.email')}
             placeholderTextColor="#aaa"
             value={email}
             onChangeText={setEmail}
@@ -140,24 +142,23 @@ return (
             autoCapitalize="none"
           />
 
-          {/* 비밀번호 입력 + 아이콘 */}
-<View style={styles.passwordContainer}>
-  <TextInput
-    style={styles.passwordInput}
-    placeholder="비밀번호"
-    placeholderTextColor="#aaa"
-    secureTextEntry={!showPassword}
-    value={password}
-    onChangeText={setPassword}
-  />
-  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-    <Ionicons
-      name={showPassword ? "eye-off" : "eye"}
-      size={22}
-      color="#666"
-    />
-  </TouchableOpacity>
-</View>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder={t('auth.password')}
+              placeholderTextColor="#aaa"
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={22}
+                color="#666"
+              />
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.checkboxContainer}>
             <Checkbox
@@ -165,7 +166,7 @@ return (
               onValueChange={setAutoLoginChecked}
               color={autoLoginChecked ? "#007AFF" : undefined}
             />
-            <Text style={styles.checkboxLabel}>자동 로그인</Text>
+            <Text style={styles.checkboxLabel}>{t('auth.autoLogin')}</Text>
           </View>
 
           <TouchableOpacity
@@ -176,20 +177,43 @@ return (
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text style={styles.loginButtonText}>로그인</Text>
+              <Text style={styles.loginButtonText}>{t('common.login')}</Text>
             )}
           </TouchableOpacity>
 
           <View style={styles.footerContainer}>
             <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-              <Text style={styles.registerText}>회원가입</Text>
+              <Text style={styles.registerText}>{t('auth.register')}</Text>
             </TouchableOpacity>
             <Text style={styles.separator}> | </Text>
             <TouchableOpacity onPress={() => navigation.navigate("ResetPasswordRequest")}>
-              <Text style={styles.forgotPasswordText}>비밀번호 찾기</Text>
+              <Text style={styles.forgotPasswordText}>{t('auth.forgotPassword')}</Text>
             </TouchableOpacity>
           </View>
+           <View style={styles.languageSelector}>
+<Text style={{ fontSize: 16, marginBottom: 10 }}>Language</Text>
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <TouchableOpacity onPress={() => i18n.changeLanguage('ko')}>
+              <Text style={[styles.langButton, i18n.language === 'ko' && styles.langActive]}>
+                🇰🇷 KO
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => i18n.changeLanguage('mn')}>
+              <Text style={[styles.langButton, i18n.language === 'mn' && styles.langActive]}>
+                🇲🇳 MN
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => i18n.changeLanguage('en')}>
+              <Text style={[styles.langButton, i18n.language === 'en' && styles.langActive]}>
+                🇺🇸 EN
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         </ScrollView>
+
+        {/* 🌐 언어 선택은 스크롤 바깥으로 */}
+       
       </View>
     </TouchableWithoutFeedback>
   </KeyboardAvoidingView>
@@ -239,6 +263,30 @@ passwordContainer: {
   height: 50,
   width: "100%",
   justifyContent: "space-between",
+},
+languageSelector: {
+  alignItems: "center",
+  marginVertical: 10,     // ✅ 위아래 여백
+  paddingBottom: 10,      // ✅ 홈 인디케이터와 겹치지 않도록 아래 패딩 추가
+  position: "absolute",   // ✅ 아래에 고정하지 말고
+  bottom: 30,             // ✅ 살짝 위로 올림
+  width: "100%",          // ✅ 가운데 정렬
+},
+langButton: {
+  fontSize: 16,
+  marginHorizontal: 2,
+  paddingVertical: 4,
+  paddingHorizontal: 8,
+  color: "#333",
+},
+langActive: {
+  fontWeight: "bold",
+  color: "#007AFF",
+},
+languageSelectorTop: {
+  alignItems: "center",
+  marginTop: 50,
+  marginBottom: 20,
 },
 passwordInput: {
   flex: 1,

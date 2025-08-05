@@ -1,4 +1,6 @@
 // App.js
+import './src/i18n';
+
 import 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 enableScreens();
