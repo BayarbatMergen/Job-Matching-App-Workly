@@ -1,15 +1,14 @@
-// App.js
-import './src/i18n';
-
 import 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 enableScreens();
+import React, { useEffect, useState } from 'react';
+import { View, ActivityIndicator } from 'react-native'; // ✅ 추가해야 함
 
-import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import { app } from './src/config/firebase';
 import {
@@ -60,30 +59,48 @@ import MainScreen from './src/screens/MainScreen';
 
 const Stack = createNativeStackNavigator();
 
+import './src/i18n'; // 유지
+import { initI18n } from './src/i18n'; // 추가
+
 export default function App() {
-  useEffect(() => {
+  const [isI18nReady, setIsI18nReady] = useState(false);
+ useEffect(() => {
+  const initialize = async () => {
     try {
-      initializeAuth(app, {
-        persistence: getReactNativePersistence(AsyncStorage),
-      });
-    } catch (e) {
-      console.log('Auth already initialized or failed:', e.message);
-    }
+      await initI18n(); // ✅ 다국어 먼저 초기화
+      setIsI18nReady(true); // 여기까지만 먼저!
 
-    testAsyncStorage();
+      // ✅ 그 다음에 나머지 초기화
+      try {
+        initializeAuth(app, {
+          persistence: getReactNativePersistence(AsyncStorage),
+        });
+      } catch (e) {
+        console.log('Auth already initialized or failed:', e.message);
+      }
 
-    const setupPush = async () => {
+      testAsyncStorage();
+
       const userId = await SecureStore.getItemAsync("userId");
       if (userId) {
         await registerForPushNotificationsAsync(userId);
       }
-
       sendTestNotification("앱 실행됨", "이건 에뮬레이터 확인용 테스트 알림입니다.");
-    };
+    } catch (err) {
+      console.log('초기화 오류:', err);
+    }
+  };
 
-    setupPush();
-  }, []);
-
+  initialize();
+}, []);
+  if (!isI18nReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
+  
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>

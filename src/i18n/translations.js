@@ -31,7 +31,10 @@ export const translations = {
       genderSelect: "성별 선택",
       male: "남성",
       female: "여성",
-      termsRequiredPrefix: "[필수]"
+      termsRequiredPrefix: "[필수]",
+      bankLabel: "은행 선택",
+      sendResetLink: "재설정 링크 받기",
+      backToLogin: "로그인 화면으로 돌아가기",
     },
     error: {
       input: "입력 오류",
@@ -63,8 +66,39 @@ export const translations = {
       idMissing: "회원가입을 위해 신분증 사진을 업로드해야 합니다.",
       noticeTitle: "안내",
       uploadOnceWarning: "신분증 사진은 등록 후 수정이 불가능하니 정확하게 올려주세요."
-    }
+    },
+    jobList: {
+  headerTitle: "모집 공고",
+  loading: "공고 불러오는 중...",
+  noPeriod: "기간 정보 없음",
+  noJobs: "모집 공고가 없습니다",
+  notifyNew: "새로운 공고가 등록되면 알려드릴게요!",
+  fetchFail: "공고 불러오기 실패:",
+  fetchError: "공고 불러오기 오류:",
+  detailTitle: "공고 상세"
+},
+  notification: {
+    title: "알림"
   },
+    chat: {
+    listTitle: "채팅방 목록",
+    defaultRoomTitle: "채팅방"
+  },
+  mypage: {
+    title: "마이페이지",
+    inquiries: "내 문의 내역 보기",
+    changePassword: "비밀번호 변경",
+    changeBankInfo: "계좌 정보 변경",
+    notice: "공지사항",
+    customerSupport: "고객센터 문의"
+  },
+  schedule: {
+  title: '일정 확인',
+},
+
+  },
+
+
   mn: {
     common: {
       login: "Нэвтрэх",
@@ -97,6 +131,9 @@ export const translations = {
       male: "Эрэгтэй",
       female: "Эмэгтэй",
       termsRequiredPrefix: "[Шаардлагатай]",
+      bankLabel: "Банк сонгох",
+      sendResetLink: "Сэргээх холбоос авах",
+      backToLogin: "Нэвтрэх дэлгэц рүү буцах",
     },
     error: {
       input: "Алдаа",
@@ -128,8 +165,38 @@ export const translations = {
       idMissing: "Бүртгүүлэхийн тулд зураг байршуулах шаардлагатай.",
       noticeTitle: "Анхааруулга",
       uploadOnceWarning: "Үнэмлэхийн зургийг зөвхөн нэг удаа байршуулж болно. Шалгаж байршуулаарай."
-    }
+    },
+    jobList: {
+  headerTitle: "Ажлын зар",
+  loading: "Заруудыг ачааллаж байна...",
+  noPeriod: "Хугацааны мэдээлэл байхгүй",
+  noJobs: "Одоогоор ажлын зар алга байна",
+  notifyNew: "Шинэ зар нийтлэгдвэл мэдэгдэнэ!",
+  fetchFail: "Зар ачаалж чадсангүй:",
+  fetchError: "Зар ачааллахад алдаа гарлаа:",
+  detailTitle: "Ажлын дэлгэрэнгүй"
+},
+  notification: {
+    title: 'Мэдэгдэл',
   },
+  chat: {
+    listTitle: 'Чатын өрөөний жагсаалт',
+    defaultRoomTitle: 'Чат өрөө',
+  },
+  mypage: {
+    title: 'Миний хуудас',
+    inquiries: 'Миний асуулгууд',
+    changePassword: 'Нууц үг солих',
+    changeBankInfo: 'Банкны мэдээлэл өөрчлөх',
+    notice: 'Зарлал',
+    customerSupport: 'Хэрэглэгчийн дэмжлэг',
+  },
+  schedule: {
+  title: 'Хуваарь шалгах',
+},
+  },
+
+
   en: {
     common: {
       login: "Login",
@@ -162,6 +229,9 @@ export const translations = {
       male: "Male",
       female: "Female",
       termsRequiredPrefix: "[Required]",
+      bankLabel: "Select Bank",
+      sendResetLink: "Get Reset Link",
+       backToLogin: "Back to Login Screen",
     },
     error: {
       input: "Input Error",
@@ -193,6 +263,34 @@ export const translations = {
       idMissing: "You must upload an ID photo to register.",
       noticeTitle: "Notice",
       uploadOnceWarning: "ID photo cannot be changed after uploading. Please upload carefully."
-    }
-  }
+    },
+    jobList: {
+  headerTitle: "Job Listings",
+  loading: "Loading job listings...",
+  noPeriod: "No date information",
+  noJobs: "No job listings available",
+  notifyNew: "We'll notify you when new jobs are posted!",
+  fetchFail: "Failed to load job listings:",
+  fetchError: "Error while fetching job listings:",
+  detailTitle: 'Job Details',
+},
+notification: {
+    title: 'Notifications',
+  },
+  chat: {
+    listTitle: 'Chat Room List',
+    defaultRoomTitle: 'Chat Room',
+  },
+  mypage: {
+    title: 'My Page',
+    inquiries: 'My Inquiries',
+    changePassword: 'Change Password',
+    changeBankInfo: 'Change Bank Info',
+    notice: 'Notice',
+    customerSupport: 'Customer Support',
+  },
+  schedule: {
+    title: 'Check Schedule',
+  },
+  },
 };

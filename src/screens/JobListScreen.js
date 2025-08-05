@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import * as SecureStore from 'expo-secure-store';
 import { fetchUserData } from '../services/authService';
 import API_BASE_URL from '../config/apiConfig';
@@ -14,6 +15,7 @@ export default function JobListScreen({ navigation, hasNotifications }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [userId, setUserId] = useState(null);
+  const { t } = useTranslation();
 
   const fetchJobs = async (uid) => {
     try {
@@ -22,10 +24,10 @@ export default function JobListScreen({ navigation, hasNotifications }) {
       if (response.ok) {
         setJobListings(data);
       } else {
-        console.error("공고 불러오기 실패:", data.message);
+        console.error(t("jobList.fetchFail"), data.message);
       }
     } catch (error) {
-      console.error("공고 불러오기 오류:", error);
+      console.error(t("jobList.fetchError"), error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -49,20 +51,18 @@ export default function JobListScreen({ navigation, hasNotifications }) {
   useFocusEffect(
     useCallback(() => {
       navigation.setOptions({
-        headerTitle: '모집 공고',
+        headerTitle: t("jobList.headerTitle"), // ✅ 문자열만 반환
         headerRight: () => (
           <TouchableOpacity
             onPress={() => navigation.navigate('Notification')}
             style={{ marginRight: 15, position: 'relative' }}
           >
             <Ionicons name="notifications-outline" size={24} color="#fff" />
-            {hasNotifications && (
-              <View style={styles.notificationDot} />
-            )}
+            {hasNotifications && <View style={styles.notificationDot} />}
           </TouchableOpacity>
         )
       });
-    }, [hasNotifications])
+    }, [hasNotifications, t])
   );
 
   const onRefresh = useCallback(async () => {
@@ -75,7 +75,7 @@ export default function JobListScreen({ navigation, hasNotifications }) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text>공고 불러오는 중...</Text>
+        <Text>{t("jobList.loading")}</Text>
       </View>
     );
   }
@@ -95,7 +95,7 @@ export default function JobListScreen({ navigation, hasNotifications }) {
             <Text style={styles.date}>
               {item.startDate && item.endDate
                 ? `${item.startDate} ~ ${item.endDate}`
-                : '기간 정보 없음'}
+                : t("jobList.noPeriod")}
             </Text>
             <Text style={styles.location}>📍 {item.location}</Text>
           </TouchableOpacity>
@@ -103,8 +103,8 @@ export default function JobListScreen({ navigation, hasNotifications }) {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons name="briefcase-outline" size={50} color="#ccc" />
-            <Text style={styles.emptyTextTitle}>모집 공고가 없습니다</Text>
-            <Text style={styles.emptyTextSub}>새로운 공고가 등록되면 알려드릴게요!</Text>
+            <Text style={styles.emptyTextTitle}>{t("jobList.noJobs")}</Text>
+            <Text style={styles.emptyTextSub}>{t("jobList.notifyNew")}</Text>
           </View>
         }
         refreshControl={

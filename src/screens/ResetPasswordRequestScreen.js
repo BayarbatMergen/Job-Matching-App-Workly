@@ -11,15 +11,17 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { useTranslation } from "react-i18next"; // ✅ i18n 훅
 import { resetPasswordWithBackend } from "../services/authService";
 
 const ResetPasswordRequestScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation(); // ✅ i18n 훅 사용
 
   const handleReset = async () => {
     if (!email) {
-      Alert.alert("입력 오류", "이메일을 입력하세요.");
+      Alert.alert(t("error.input"), t("error.emptyFields")); // ✅ 번역
       return;
     }
 
@@ -27,14 +29,14 @@ const ResetPasswordRequestScreen = ({ navigation }) => {
     try {
       const { message } = await resetPasswordWithBackend(email);
 
-      Alert.alert("재설정 안내", message, [
+      Alert.alert(t("auth.successTitle"), message, [
         {
-          text: "확인",
+          text: t("common.confirm"),
           onPress: () => navigation.replace("Login"),
         },
       ]);
     } catch (error) {
-      Alert.alert("오류", error.message || "서버 오류");
+      Alert.alert(t("error.serverError"), error.message || t("error.tryAgainLater"));
     } finally {
       setLoading(false);
     }
@@ -50,10 +52,10 @@ const ResetPasswordRequestScreen = ({ navigation }) => {
           source={require("../../assets/images/thechingu.png")}
           style={styles.logo}
         />
-        <Text style={styles.title}>비밀번호 재설정</Text>
+        <Text style={styles.title}>{t("auth.forgotPassword")}</Text>
         <TextInput
           style={styles.input}
-          placeholder="이메일 입력"
+          placeholder={t("auth.email")}
           placeholderTextColor="#aaa"
           value={email}
           onChangeText={setEmail}
@@ -68,12 +70,12 @@ const ResetPasswordRequestScreen = ({ navigation }) => {
           {loading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <Text style={styles.resetButtonText}>재설정 링크 받기</Text>
+            <Text style={styles.resetButtonText}>{t("auth.sendResetLink")}</Text> // ✅ 새 키 필요
           )}
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={styles.backText}>← 로그인 화면으로 돌아가기</Text>
+         <Text style={styles.backText}>{`← ${t("auth.backToLogin")}`}</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

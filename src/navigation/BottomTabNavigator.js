@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Text } from 'react-native';
 import { db } from '../config/firebase';
+import { useTranslation } from 'react-i18next';
 import {
   collection,
   onSnapshot,
@@ -37,6 +38,7 @@ const defaultScreenOptions = {
 };
 
 function HomeStack({ hasNotifications }) {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator screenOptions={defaultScreenOptions}>
       <Stack.Screen
@@ -45,7 +47,11 @@ function HomeStack({ hasNotifications }) {
           <JobListScreen {...props} hasNotifications={hasNotifications} />
         )}
         options={({ navigation }) => ({
-          headerTitle: '모집 공고',
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('jobList.headerTitle')}
+            </Text>
+          ),
           headerLeft: () => null,
           headerRight: () => (
             <TouchableOpacity
@@ -58,21 +64,56 @@ function HomeStack({ hasNotifications }) {
           ),
         })}
       />
-      <Stack.Screen name="JobDetail" component={JobDetailScreen} options={{ headerTitle: '공고 상세' }} />
-      <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerTitle: '알림' }} />
+      <Stack.Screen
+        name="JobDetail"
+        component={JobDetailScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('jobList.detailTitle')}
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Notification"
+        component={NotificationScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('notification.title')}
+            </Text>
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 }
 
 function ChatNavigator() {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator screenOptions={defaultScreenOptions}>
-      <Stack.Screen name="ChatList" component={ChatListScreen} options={{ headerTitle: '채팅방 목록' }} />
+      <Stack.Screen
+        name="ChatList"
+        component={ChatListScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('chat.listTitle')}
+            </Text>
+          ),
+        }}
+      />
       <Stack.Screen
         name="ChatScreen"
         component={ChatScreen}
         options={({ route }) => ({
-          headerTitle: route.params?.roomName || '채팅방',
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {route.params?.roomName || t('chat.defaultRoomTitle')}
+            </Text>
+          ),
         })}
       />
     </Stack.Navigator>
@@ -80,22 +121,83 @@ function ChatNavigator() {
 }
 
 function MyPageNavigator() {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator screenOptions={defaultScreenOptions}>
-      <Stack.Screen name="MyPageScreen" component={MyPageScreen} options={{ headerTitle: '마이페이지' }} />
-      <Stack.Screen name="MyInquiriesScreen" component={MyInquiriesScreen} options={{ headerTitle: '내 문의 내역 보기' }} />
-      <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} options={{ headerTitle: '비밀번호 변경', }} />
-      <Stack.Screen name="BankInfoScreen" component={BankInfoScreen} options={{ headerTitle: '계좌 정보 변경' }} />
-      <Stack.Screen name="NoticeScreen" component={NoticeScreen} options={{ headerTitle: '공지사항' }} />
-      <Stack.Screen name="CustomerSupportScreen" component={CustomerSupportScreen} options={{ headerTitle: '고객센터 문의' }} />
+      <Stack.Screen
+        name="MyPageScreen"
+        component={MyPageScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('mypage.title')}
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="MyInquiriesScreen"
+        component={MyInquiriesScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('mypage.inquiries')}
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="ChangePasswordScreen"
+        component={ChangePasswordScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('mypage.changePassword')}
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="BankInfoScreen"
+        component={BankInfoScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('mypage.changeBankInfo')}
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="NoticeScreen"
+        component={NoticeScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('mypage.notice')}
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="CustomerSupportScreen"
+        component={CustomerSupportScreen}
+        options={{
+          headerTitle: () => (
+            <Text style={{ color: 'white', fontSize: 18 }}>
+              {t('mypage.customerSupport')}
+            </Text>
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 }
 
-
 export default function BottomTabNavigator() {
   const [hasNotifications, setHasNotifications] = useState(false);
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let unsubscribePersonal;
