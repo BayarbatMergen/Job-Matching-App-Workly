@@ -5,7 +5,8 @@ export const translations = {
       login: "로그인",
       logout: "로그아웃",
       confirm: "확인",
-      cancel: "취소"
+      cancel: "취소",
+        ok: "확인"
     },
     auth: {
       email: "이메일",
@@ -65,7 +66,11 @@ export const translations = {
       idMissingTitle: "신분증 사진 누락",
       idMissing: "회원가입을 위해 신분증 사진을 업로드해야 합니다.",
       noticeTitle: "안내",
-      uploadOnceWarning: "신분증 사진은 등록 후 수정이 불가능하니 정확하게 올려주세요."
+      uploadOnceWarning: "신분증 사진은 등록 후 수정이 불가능하니 정확하게 올려주세요.",
+        loginRequiredTitle: "로그인 필요",
+  loginRequiredMessage: "로그인이 필요합니다.",
+  authErrorTitle: "오류",
+  authErrorMessage: "인증이 필요합니다.",
     },
     jobList: {
   headerTitle: "모집 공고",
@@ -91,11 +96,39 @@ export const translations = {
     changeBankInfo: "계좌 정보 변경",
     notice: "공지사항",
     customerSupport: "고객센터 문의"
-  },
-  schedule: {
-  title: '일정 확인',
 },
-
+// locales/ko.js
+calendar: {
+  selectDate: "날짜를 선택하세요"
+},
+schedule: {
+  title: "일정 확인",
+  label: "일정",
+  wage: "급여",
+  none: "해당 날짜에 일정이 없습니다."
+},
+wage: {
+  total: "총 급여 합산"
+},
+settlement: {
+  request: "정산 요청",
+  pending: "승인 대기 중",
+  noData: "정산할 일정이 없습니다.",
+  fail: "정산 요청 실패",
+  complete: "정산 요청 완료",
+  completeMessage: "총 급여 {{amount}}원 요청 완료.",
+  serverError: "서버 오류 발생"
+},
+checkin: {
+  available: "출근",
+  notAvailable: "출근 시간 아님",
+  notToday: "출근은 오늘 날짜에만 가능합니다.",
+  noSchedule: "오늘은 근무 일정이 없습니다.",
+  alreadyCheckedIn: "오늘 이미 출근하셨습니다.",
+  fail: "출근 실패",
+  error: "출근 처리 중 오류가 발생했습니다.",
+  timeLimit: "출근 가능한 시간은 8:00 ~ 18:00 입니다."
+}
   },
 
 
@@ -104,7 +137,8 @@ export const translations = {
       login: "Нэвтрэх",
       logout: "Гарах",
       confirm: "Батлах",
-      cancel: "Цуцлах"
+      cancel: "Цуцлах",
+      ok: "Болсон"
     },
     auth: {
       email: "И-мэйл",
@@ -164,7 +198,11 @@ export const translations = {
       idMissingTitle: "Иргэний үнэмлэх зураг дутуу",
       idMissing: "Бүртгүүлэхийн тулд зураг байршуулах шаардлагатай.",
       noticeTitle: "Анхааруулга",
-      uploadOnceWarning: "Үнэмлэхийн зургийг зөвхөн нэг удаа байршуулж болно. Шалгаж байршуулаарай."
+      uploadOnceWarning: "Үнэмлэхийн зургийг зөвхөн нэг удаа байршуулж болно. Шалгаж байршуулаарай.",
+          loginRequiredTitle: "Нэвтрэлт шаардлагатай",
+    loginRequiredMessage: "Та нэвтрэх шаардлагатай.",
+    authErrorTitle: "Алдаа",
+    authErrorMessage: "Баталгаажуулалт шаардлагатай."
     },
     jobList: {
   headerTitle: "Ажлын зар",
@@ -191,9 +229,37 @@ export const translations = {
     notice: 'Зарлал',
     customerSupport: 'Хэрэглэгчийн дэмжлэг',
   },
+ calendar: {
+    selectDate: "Огноо сонгоно уу"
+  },
   schedule: {
-  title: 'Хуваарь шалгах',
-},
+    label: "Ажлын хуваарь",
+    wage: "Цалин",
+    none: "Энэ өдөрт ажлын хуваарь байхгүй байна.",
+    title: 'Хуваарь шалгах',
+  },
+  wage: {
+    total: "Нийт цалин"
+  },
+  settlement: {
+    request: "Тооцооны хүсэлт",
+    pending: "Хянагдаж байна",
+    noData: "Тооцоолох ажил байхгүй байна.",
+    fail: "Тооцооны хүсэлт амжилтгүй",
+    complete: "Тооцооны хүсэлт илгээгдлээ",
+    completeMessage: "Нийт {{amount}}₮ цалингийн хүсэлт илгээгдлээ.",
+    serverError: "Серверийн алдаа гарлаа"
+  },
+  checkin: {
+    available: "Ажилд орсон",
+    notAvailable: "Ажил эхлэх цаг биш байна",
+    notToday: "Зөвхөн өнөөдөрт ажилд орох боломжтой.",
+    noSchedule: "Өнөөдөр ажил төлөвлөгдөөгүй байна.",
+    alreadyCheckedIn: "Та өнөөдөр аль хэдийн ажилд орсон байна.",
+    fail: "Ажил эхлэх амжилтгүй",
+    error: "Ажил эхлүүлэх үед алдаа гарлаа.",
+    timeLimit: "Ажил эхлэх боломжтой цаг: 8:00 - 18:00"
+  },
   },
 
 
@@ -202,7 +268,8 @@ export const translations = {
       login: "Login",
       logout: "Logout",
       confirm: "Confirm",
-      cancel: "Cancel"
+      cancel: "Cancel",
+      ok: "OK"
     },
     auth: {
       email: "Email",
@@ -262,7 +329,11 @@ export const translations = {
       idMissingTitle: "Missing ID Photo",
       idMissing: "You must upload an ID photo to register.",
       noticeTitle: "Notice",
-      uploadOnceWarning: "ID photo cannot be changed after uploading. Please upload carefully."
+      uploadOnceWarning: "ID photo cannot be changed after uploading. Please upload carefully.",
+          loginRequiredTitle: "Login Required",
+    loginRequiredMessage: "You must be logged in.",
+    authErrorTitle: "Error",
+    authErrorMessage: "Authentication is required."
     },
     jobList: {
   headerTitle: "Job Listings",
@@ -289,8 +360,37 @@ notification: {
     notice: 'Notice',
     customerSupport: 'Customer Support',
   },
+  calendar: {
+    selectDate: "Please select a date"
+  },
   schedule: {
+    label: "Schedule",
+    wage: "Wage",
+    none: "No schedule on this date.",
     title: 'Check Schedule',
   },
+  wage: {
+    total: "Total Wage"
+  },
+  settlement: {
+    request: "Request Settlement",
+    pending: "Pending Approval",
+    noData: "No schedule available for settlement.",
+    fail: "Settlement Request Failed",
+    complete: "Settlement Request Sent",
+    completeMessage: "Requested a total wage of ₩{{amount}}.",
+    serverError: "Server error occurred"
+  },
+  checkin: {
+    available: "Check In",
+    notAvailable: "Not Check-in Time",
+    notToday: "Check-in is only allowed for today.",
+    noSchedule: "No work schedule for today.",
+    alreadyCheckedIn: "You have already checked in today.",
+    fail: "Check-in Failed",
+    error: "An error occurred during check-in.",
+    timeLimit: "Check-in is available from 8:00 to 18:00."
+  },
+
   },
 };

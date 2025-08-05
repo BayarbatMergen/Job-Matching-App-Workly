@@ -8,6 +8,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from '../config/firebase';
 import API_BASE_URL from '../config/apiConfig';
+import { useTranslation } from 'react-i18next';
 
 LocaleConfig.locales['kr'] = {
   monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
@@ -19,6 +20,7 @@ LocaleConfig.locales['kr'] = {
 LocaleConfig.defaultLocale = 'kr';
 
 export default function ScheduleScreen({ navigation }) {
+  const { t } = useTranslation();
   const [scheduleData, setScheduleData] = useState({});
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedSchedules, setSelectedSchedules] = useState([]);
@@ -38,25 +40,25 @@ export default function ScheduleScreen({ navigation }) {
 };
 
   useEffect(() => {
-    const initializeUser = async () => {
-      try {
-        const token = await SecureStore.getItemAsync("token");
-        if (!token) {
-          Alert.alert("로그인 필요", "로그인이 필요합니다.");
-          navigation.replace("Login");
-          return;
-        }
-        const user = await fetchUserData();
-        setUserId(user?.userId);
-        setUserName(user?.name);
-      } catch (error) {
-        Alert.alert("오류", "인증이 필요합니다.", [
-          { text: "확인", onPress: () => navigation.navigate("Login") },
-        ]);
-      } finally {
-        setIsLoading(false);
+  const initializeUser = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("token");
+      if (!token) {
+        Alert.alert(t("alert.loginRequiredTitle"), t("alert.loginRequiredMessage"));
+        navigation.replace("Login");
+        return;
       }
-    };
+      const user = await fetchUserData();
+      setUserId(user?.userId);
+      setUserName(user?.name);
+    } catch (error) {
+      Alert.alert(t("alert.authErrorTitle"), t("alert.authErrorMessage"), [
+        { text: t("common.ok"), onPress: () => navigation.navigate("Login") },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
     initializeUser();
   }, [navigation]);
@@ -153,10 +155,10 @@ export default function ScheduleScreen({ navigation }) {
   };
 
   const handleSettlementRequest = async () => {
-    if (allTotalWage === 0) {
-      Alert.alert("정산 요청 실패", "정산할 일정이 없습니다.");
-      return;
-    }
+if (allTotalWage === 0) {
+  Alert.alert(t("settlement.fail"), t("settlement.noData"));
+  return;
+}
 
     try {
       const token = await SecureStore.getItemAsync("token");
@@ -171,12 +173,14 @@ export default function ScheduleScreen({ navigation }) {
 
       const result = await response.json();
 
-      if (response.ok) {
-        Alert.alert("정산 요청 완료", `총 급여 ${allTotalWage.toLocaleString()}원 요청 완료.`);
-        setHasPendingSettlement(true);
-      } else {
-        Alert.alert("정산 요청 실패", result.message || "서버 오류");
-      }
+if (response.ok) {
+  Alert.alert(t("settlement.complete"), t("settlement.completeMessage", {
+    amount: allTotalWage.toLocaleString()
+  }));
+  setHasPendingSettlement(true);
+} else {
+  Alert.alert(t("settlement.fail"), result.message || t("settlement.serverError"));
+}
     } catch (error) {
       Alert.alert("정산 요청 실패", "서버 오류 발생");
     }
@@ -184,19 +188,19 @@ export default function ScheduleScreen({ navigation }) {
 
 const handleCheckIn = async () => {
   if (selectedSchedules.length === 0) {
-    Alert.alert("출근 불가", "오늘은 근무 일정이 없습니다.");
+    Alert.alert(t("checkin.fail"), t("checkin.noSchedule"));
     return;
   }
 
   // ⬇️ 오늘 날짜인지 확인
   const todayStr = new Date().toISOString().split("T")[0];
   if (selectedDate !== todayStr) {
-    Alert.alert("출근 불가", "출근은 오늘 날짜에만 가능합니다.");
+    Alert.alert(t("checkin.fail"), t("checkin.notToday"));
     return;
   }
 
   if (!isWithinCheckinTime()) {
-    Alert.alert("출근 시간 아님", "출근 가능한 시간은 8:00 ~ 18:00 입니다.");
+    Alert.alert(t("checkin.notAvailable"), t("checkin.timeLimit"));
     return;
   }
 
@@ -205,7 +209,7 @@ const handleCheckIn = async () => {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      Alert.alert("출근 실패", "오늘 이미 출근하셨습니다.");
+      Alert.alert(t("checkin.fail"), t("checkin.alreadyCheckedIn"));
       return;
     }
 
@@ -217,9 +221,8 @@ const handleCheckIn = async () => {
     });
 
   } catch (error) {
-    console.error("출근 오류:", error);
-    Alert.alert("출근 실패", "출근 처리 중 오류가 발생했습니다.");
-  }
+  Alert.alert(t("checkin.fail"), t("checkin.error"));
+}
 };
 
   const onRefresh = useCallback(async () => {
@@ -262,21 +265,31 @@ const handleCheckIn = async () => {
         />
 
         <View style={styles.selectedScheduleContainer}>
-          <Text style={styles.selectedDateText}>{selectedDate || '날짜를 선택하세요'}</Text>
+          <Text style={styles.selectedDateText}>
+  {selectedDate || t("calendar.selectDate")}
+</Text>
           {selectedSchedules.length > 0 ? (
             selectedSchedules.map((s, i) => (
               <View key={i} style={styles.scheduleDetail}>
-                <Text style={styles.scheduleDetailText}>일정: {s.name}</Text>
-                <Text>급여: {Number(s.wage).toLocaleString()}원</Text>
+                <Text style={styles.scheduleDetailText}>
+  {t("schedule.label")}: {s.name}
+</Text>
+<Text>
+  {t("schedule.wage")}: {Number(s.wage).toLocaleString()}원
+</Text>
               </View>
             ))
           ) : (
-            <Text style={styles.noScheduleText}>해당 날짜에 일정이 없습니다.</Text>
+           <Text style={styles.noScheduleText}>
+  {t("schedule.none")}
+</Text>
           )}
         </View>
 
         <View style={styles.allTotalWageContainer}>
-          <Text style={styles.allTotalWageText}>총 급여 합산: {allTotalWage.toLocaleString()}원</Text>
+          <Text style={styles.allTotalWageText}>
+  {t("wage.total")}: {allTotalWage.toLocaleString()}원
+</Text>
         </View>
 {selectedSchedules.length > 0 && (
 <TouchableOpacity
@@ -287,9 +300,9 @@ const handleCheckIn = async () => {
   onPress={handleCheckIn}
   disabled={!isWithinCheckinTime()}
 >
-  <Text style={styles.attendanceButtonText}>
-    {isWithinCheckinTime() ? "출근" : "출근 시간 아님"}
-  </Text>
+<Text style={styles.attendanceButtonText}>
+  {isWithinCheckinTime() ? t("checkin.available") : t("checkin.notAvailable")}
+</Text>
 </TouchableOpacity>
 
 
@@ -302,9 +315,9 @@ const handleCheckIn = async () => {
           onPress={handleSettlementRequest}
           disabled={hasPendingSettlement}
         >
-          <Text style={styles.settlementButtonText}>
-            {hasPendingSettlement ? "승인 대기 중" : "정산 요청"}
-          </Text>
+<Text style={styles.settlementButtonText}>
+  {hasPendingSettlement ? t("settlement.pending") : t("settlement.request")}
+</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
