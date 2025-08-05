@@ -191,7 +191,7 @@ return (
             </TouchableOpacity>
           </View>
            <View style={styles.languageSelector}>
-<Text style={{ fontSize: 16, marginBottom: 10 }}>Language</Text>
+
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <TouchableOpacity onPress={() => i18n.changeLanguage('ko')}>
               <Text style={[styles.langButton, i18n.language === 'ko' && styles.langActive]}>
