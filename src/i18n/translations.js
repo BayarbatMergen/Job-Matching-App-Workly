@@ -12,7 +12,26 @@ export const translations = {
       password: "비밀번호",
       autoLogin: "자동 로그인",
       register: "회원가입",
-      forgotPassword: "비밀번호 찾기"
+      forgotPassword: "비밀번호 찾기",
+      passwordHint: "비밀번호 (6자 이상, 특수문자 포함)",
+      passwordConfirm: "비밀번호 확인",
+      nameHint: "이름 (한글만)",
+      phoneHint: "전화번호 (010-XXXX-XXXX)",
+      selectBank: "은행을 선택하세요",
+      accountHolder: "예금자 명 (한글 또는 영문)",
+      accountNumber: "계좌번호 (숫자만)",
+      uploadId: "신분증 / 여권 사진 업로드",
+      alreadyHaveAccount: "이미 계정이 있나요? 로그인",
+      termsLink: "이용약관 및 개인정보 처리방침",
+      termsRequired: "※ 이용약관에 동의해야 회원가입이 가능합니다.",
+      fillAllFields: "모든 필드를 입력하세요.",
+      successTitle: "회원가입 완료",
+      successMessage: "로그인 해주세요!",
+      failTitle: "회원가입 실패",
+      genderSelect: "성별 선택",
+      male: "남성",
+      female: "여성",
+      termsRequiredPrefix: "[필수]"
     },
     error: {
       input: "입력 오류",
@@ -20,10 +39,32 @@ export const translations = {
       loginFailed: "로그인 실패",
       invalidCredentials: "이메일 또는 비밀번호 오류",
       serverError: "서버 오류",
-      tryAgainLater: "잠시 후 다시 시도해주세요."
+      tryAgainLater: "잠시 후 다시 시도해주세요.",
+      duplicateEmail: "중복 이메일",
+      emailTaken: "이미 사용 중인 이메일입니다.",
+      duplicateNameTitle: "중복 이름",
+      duplicateName: "이미 사용 중인 이름입니다.",
+      duplicatePhoneTitle: "중복 전화번호",
+      duplicatePhone: "이미 사용 중인 전화번호입니다."
+    },
+    alert: {
+      terms: "약관 동의",
+      phoneTitle: "전화번호 오류",
+      phoneInvalid: "010으로 시작하는 11자리 숫자를 입력하세요.",
+      emailTitle: "이메일 오류",
+      emailInvalid: "유효한 이메일 형식이 아닙니다.",
+      nameTitle: "이름 오류",
+      nameInvalid: "이름은 한글만 입력 가능합니다.",
+      passwordMismatchTitle: "비밀번호 불일치",
+      passwordMismatch: "비밀번호가 일치하지 않습니다.",
+      accountHolderTitle: "예금자 명 오류",
+      accountHolderInvalid: "예금자 명은 한글 또는 영문으로만 입력해주세요.",
+      idMissingTitle: "신분증 사진 누락",
+      idMissing: "회원가입을 위해 신분증 사진을 업로드해야 합니다.",
+      noticeTitle: "안내",
+      uploadOnceWarning: "신분증 사진은 등록 후 수정이 불가능하니 정확하게 올려주세요."
     }
   },
-
   mn: {
     common: {
       login: "Нэвтрэх",
@@ -36,43 +77,59 @@ export const translations = {
       password: "Нууц үг",
       autoLogin: "Автоматаар нэвтрэх",
       register: "Бүртгүүлэх",
-      forgotPassword: "Нууц үг сэргээх"
+      forgotPassword: "Нууц үг сэргээх",
+      passwordHint: "Нууц үг (6-аас дээш тэмдэгт, тусгай тэмдэг)",
+      passwordConfirm: "Нууц үг баталгаажуулах",
+      nameHint: "Нэр (зөвхөн солонгос хэлээр)",
+      phoneHint: "Утасны дугаар (010-XXXX-XXXX)",
+      selectBank: "Банк сонгоно уу",
+      accountHolder: "Данс эзэмшигчийн нэр (монгол эсвэл англи)",
+      accountNumber: "Дансны дугаар (зөвхөн тоо)",
+      uploadId: "Үнэмлэх / Паспортын зураг байршуулах",
+      alreadyHaveAccount: "Та бүртгэлтэй юу? Нэвтрэх",
+      termsLink: "Үйлчилгээний нөхцөл ба нууцлалын бодлого",
+      termsRequired: "※ Үйлчилгээний нөхцөлд зөвшөөрөх шаардлагатай.",
+      fillAllFields: "Бүх талбарыг бөглөнө үү.",
+      successTitle: "Бүртгэл амжилттай",
+      successMessage: "Нэвтэрнэ үү!",
+      failTitle: "Бүртгэл амжилтгүй",
+      genderSelect: "Хүйсээ сонгоно уу",
+      male: "Эрэгтэй",
+      female: "Эмэгтэй",
+      termsRequiredPrefix: "[Шаардлагатай]",
     },
     error: {
-      input: "Оруулалтын алдаа",
+      input: "Алдаа",
       emptyFields: "И-мэйл болон нууц үгээ оруулна уу.",
       loginFailed: "Нэвтрэх амжилтгүй",
       invalidCredentials: "И-мэйл эсвэл нууц үг буруу байна",
       serverError: "Серверийн алдаа",
-      tryAgainLater: "Дараа дахин оролдоно уу."
+      tryAgainLater: "Дараа дахин оролдоно уу.",
+      duplicateEmail: "Ижил и-мэйл",
+      emailTaken: "Энэ и-мэйлийг аль хэдийн ашиглаж байна.",
+      duplicateNameTitle: "Ижил нэр",
+      duplicateName: "Энэ нэрийг аль хэдийн ашиглаж байна.",
+      duplicatePhoneTitle: "Ижил утасны дугаар",
+      duplicatePhone: "Энэ утасны дугаарыг аль хэдийн ашиглаж байна."
     },
-    home: {
-      jobPostings: "Ажлын зар",
-      viewDetails: "Дэлгэрэнгүй харах",
-      apply: "Өргөдөл гаргах"
-    },
-    schedule: {
-      title: "Төлөвлөгөө шалгах",
-      noSchedule: "Тухайн өдөрт ажил төлөвлөгдөөгүй байна.",
-      totalPay: "Нийт цалин",
-      requestPay: "Тооцоо хийх хүсэлт"
-    },
-    chat: {
-      chatRooms: "Чатын өрөөний жагсаалт",
-      noChatRooms: "Та одоогоор ямар ч чатын өрөөнд холбогдоогүй байна.",
-      contactAdmin: "Админтай холбогдох"
-    },
-    mypage: {
-      title: "Миний хуудас",
-      changeAccount: "Банкны мэдээлэл өөрчлөх",
-      changePassword: "Нууц үг өөрчлөх",
-      notices: "Мэдэгдэл / Зарлал",
-      contact: "Тусламж хүсэх / Холбогдох",
-      inquiryHistory: "Миний асуулгын түүх харах",
-      logout: "Гарах"
+    alert: {
+      terms: "Нөхцөл зөвшөөрөх",
+      phoneTitle: "Утасны дугаар алдаа",
+      phoneInvalid: "010-оор эхэлсэн 11 оронтой дугаар оруулна уу.",
+      emailTitle: "И-мэйл алдаа",
+      emailInvalid: "Зөв и-мэйл хаяг оруулна уу.",
+      nameTitle: "Нэр алдаа",
+      nameInvalid: "Нэрийг зөвхөн солонгос хэлээр оруулна уу.",
+      passwordMismatchTitle: "Нууц үг таарахгүй",
+      passwordMismatch: "Нууц үг ижил биш байна.",
+      accountHolderTitle: "Данс эзэмшигчийн нэр алдаа",
+      accountHolderInvalid: "Нэрийг зөвхөн монгол эсвэл англи хэлээр оруулна уу.",
+      idMissingTitle: "Иргэний үнэмлэх зураг дутуу",
+      idMissing: "Бүртгүүлэхийн тулд зураг байршуулах шаардлагатай.",
+      noticeTitle: "Анхааруулга",
+      uploadOnceWarning: "Үнэмлэхийн зургийг зөвхөн нэг удаа байршуулж болно. Шалгаж байршуулаарай."
     }
   },
-
   en: {
     common: {
       login: "Login",
@@ -85,7 +142,26 @@ export const translations = {
       password: "Password",
       autoLogin: "Auto Login",
       register: "Register",
-      forgotPassword: "Forgot Password"
+      forgotPassword: "Forgot Password",
+      passwordHint: "Password (min. 6 characters, include symbol)",
+      passwordConfirm: "Confirm Password",
+      nameHint: "Name (Korean only)",
+      phoneHint: "Phone Number (010-XXXX-XXXX)",
+      selectBank: "Select a bank",
+      accountHolder: "Account holder name (Korean or English)",
+      accountNumber: "Account number (numbers only)",
+      uploadId: "Upload ID / Passport Photo",
+      alreadyHaveAccount: "Already have an account? Login",
+      termsLink: "Terms & Privacy Policy",
+      termsRequired: "※ You must agree to the terms to register.",
+      fillAllFields: "Please fill out all fields.",
+      successTitle: "Registration Complete",
+      successMessage: "Please log in!",
+      failTitle: "Registration Failed",
+      genderSelect: "Select Gender",
+      male: "Male",
+      female: "Female",
+      termsRequiredPrefix: "[Required]",
     },
     error: {
       input: "Input Error",
@@ -93,32 +169,30 @@ export const translations = {
       loginFailed: "Login Failed",
       invalidCredentials: "Incorrect email or password",
       serverError: "Server Error",
-      tryAgainLater: "Please try again later."
+      tryAgainLater: "Please try again later.",
+      duplicateEmail: "Duplicate Email",
+      emailTaken: "Email already in use.",
+      duplicateNameTitle: "Duplicate Name",
+      duplicateName: "Name already in use.",
+      duplicatePhoneTitle: "Duplicate Phone",
+      duplicatePhone: "Phone number already in use."
     },
-    home: {
-      jobPostings: "Job Postings",
-      viewDetails: "View Details",
-      apply: "Apply"
-    },
-    schedule: {
-      title: "Check Schedule",
-      noSchedule: "No schedule for this date.",
-      totalPay: "Total Pay",
-      requestPay: "Request Settlement"
-    },
-    chat: {
-      chatRooms: "Chat Room List",
-      noChatRooms: "You are not in any chat rooms yet.",
-      contactAdmin: "Contact Admin"
-    },
-    mypage: {
-      title: "My Page",
-      changeAccount: "Change Account Info",
-      changePassword: "Change Password",
-      notices: "Notices",
-      contact: "Contact Support",
-      inquiryHistory: "View My Inquiries",
-      logout: "Logout"
+    alert: {
+      terms: "Terms Agreement",
+      phoneTitle: "Phone Number Error",
+      phoneInvalid: "Enter an 11-digit number starting with 010.",
+      emailTitle: "Email Error",
+      emailInvalid: "Invalid email format.",
+      nameTitle: "Name Error",
+      nameInvalid: "Name must be in Korean only.",
+      passwordMismatchTitle: "Password Mismatch",
+      passwordMismatch: "Passwords do not match.",
+      accountHolderTitle: "Account Holder Name Error",
+      accountHolderInvalid: "Enter name in Korean or English only.",
+      idMissingTitle: "Missing ID Photo",
+      idMissing: "You must upload an ID photo to register.",
+      noticeTitle: "Notice",
+      uploadOnceWarning: "ID photo cannot be changed after uploading. Please upload carefully."
     }
   }
 };

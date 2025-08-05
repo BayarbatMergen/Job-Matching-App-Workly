@@ -11,9 +11,10 @@ import RNPickerSelect from 'react-native-picker-select';
 import { storage } from '../config/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import uuid from 'react-native-uuid';
-
+import { useTranslation } from 'react-i18next';
 
 const RegisterScreen = ({ navigation, route }) => {
+  const { t } = useTranslation();
   const { marketingConsent = false, termsAgreedAt = null, termsVersion = null } = route.params || {};
 const [accountHolder, setAccountHolder] = useState('');
   const [email, setEmail] = useState('');
@@ -120,20 +121,17 @@ const formatPhoneNumber = (phone) => {
   };
 
 const pickImage = () => {
-  Alert.alert(
-    "안내",
-    "신분증 사진은 등록 후 수정이 불가능하니 정확하게 올려주세요.",
+Alert.alert(
+  t('alert.noticeTitle'),       // 예: '안내'
+  t('alert.uploadOnceWarning'),
     [
+{ text: t('common.cancel'), style: "cancel" },
       {
-        text: "취소",
-        style: "cancel",
-      },
-      {
-        text: "확인",
+        text: t('common.confirm'),
         onPress: async () => {
           const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
           if (!permissionResult.granted) {
-            Alert.alert('갤러리 접근 권한이 필요합니다.');
+            Alert.alert(t('alert.galleryPermission'));
             return;
           }
 
@@ -181,50 +179,50 @@ const uploadImageToFirebase = async (image) => {
 
 const handleRegister = async () => {
   if (!agreeTerms) {
-    Alert.alert("약관 동의", "이용약관에 동의해야 회원가입이 가능합니다.");
+    Alert.alert(t('alert.terms'), t('auth.termsRequired'));
     return;
   }
 
   const cleanedPhone = phone.replace(/\D/g, '');
   if (cleanedPhone.length !== 11 || !cleanedPhone.startsWith('010')) {
-    Alert.alert("전화번호 오류", "010으로 시작하는 11자리 숫자를 입력하세요.");
+    Alert.alert(t('alert.phoneTitle'), t('alert.phoneInvalid'));
     return;
   }
 
   const formattedPhone = `+82${cleanedPhone.slice(1)}`;
 
   if (!email || !password || !confirmPassword || !name || !phone || !gender || !bank || !accountNumber) {
-    Alert.alert('입력 오류', '모든 필드를 입력하세요.');
+    Alert.alert(t('error.input'), t('auth.fillAllFields'));
     return;
   }
 
   if (!isEmailValid(email)) {
-    Alert.alert("이메일 오류", "유효한 이메일 형식이 아닙니다.");
+    Alert.alert(t('alert.emailTitle'), t('alert.emailInvalid'));
     return;
   }
 
   if (!isKoreanOnly(name)) {
-    Alert.alert("이름 오류", "이름은 한글만 입력 가능합니다.");
+    Alert.alert(t('alert.nameTitle'), t('alert.nameInvalid'));
     return;
   }
 
   if (password !== confirmPassword) {
-    Alert.alert("비밀번호 불일치", "비밀번호가 일치하지 않습니다.");
+    Alert.alert(t('alert.passwordMismatchTitle'), t('alert.passwordMismatch'));
     return;
   }
 
 if (!/^[a-zA-Z가-힣\s]+$/.test(accountHolder)) {
-  Alert.alert("예금자 명 오류", "예금자 명은 한글 또는 영문으로만 입력해주세요.");
+  Alert.alert(t('alert.accountHolderTitle'), t('alert.accountHolderInvalid'));
   return;
 }
 
 if (!idImage || !idImage.uri) {
-  Alert.alert("신분증 사진 누락", "회원가입을 위해 신분증 사진을 업로드해야 합니다.");
+  Alert.alert(t('alert.idMissingTitle'), t('alert.idMissing'))
   return;
 }
 
 // ✅ 등록 전 사용자에게 수정 불가능 안내
-Alert.alert("안내", "신분증 사진은 등록 후 수정이 불가능하니 정확하게 올려주세요.");
+Alert.alert(t('alert.noticeTitle'), t('alert.uploadOnceWarning'));
 
 setLoading(true);
 let imageUrl = "";
@@ -232,21 +230,21 @@ let imageUrl = "";
 try {
     const isEmailAvailable = await checkEmailDuplication(email);
   if (!isEmailAvailable) {
-    Alert.alert("중복 이메일", "이미 사용 중인 이메일입니다.");
+    Alert.alert(t('error.duplicateEmail'), t('error.emailTaken'))
     setLoading(false);
     return;
   }
 
   const isNameAvailable = await checkNameDuplication(name);
   if (!isNameAvailable) {
-    Alert.alert("중복 이름", "이미 사용 중인 이름입니다.");
+Alert.alert(t('error.duplicateNameTitle'), t('error.duplicateName'));
     setLoading(false);
     return;
   }
 
 const isPhoneAvailable = await checkPhoneDuplication(formattedPhone);
 if (!isPhoneAvailable) {
-  Alert.alert("중복 번호", "이미 사용 중인 전화번호입니다.");
+Alert.alert(t('error.duplicatePhoneTitle'), t('error.duplicatePhone'));
   setLoading(false);
   return;
 }
@@ -279,15 +277,15 @@ if (!isPhoneAvailable) {
     const result = await response.json();
 
     if (response.ok) {
-      Alert.alert("회원가입 완료", "로그인 해주세요!");
+      Alert.alert(t('auth.successTitle'), t('auth.successMessage'))
       navigation.replace("Login");
     } else {
-      Alert.alert("회원가입 실패", result.message || "서버 오류");
+      Alert.alert(t('auth.failTitle'), result.message || t('error.serverError'))
     }
 
   } catch (error) {
     console.error("등록 실패:", error);
-    Alert.alert("회원가입 실패", error.message || "알 수 없는 오류가 발생했습니다.");
+    Alert.alert(t('auth.failTitle'), error.message || t('error.unknown'));
   } finally {
     setLoading(false);
   }
@@ -308,11 +306,11 @@ if (!isPhoneAvailable) {
           showsVerticalScrollIndicator={false}
         >
           <Image source={require('../../assets/images/thechingu.png')} style={styles.logo} />
-          <Text style={styles.title}>회원가입</Text>
+          <Text style={styles.title}>{t('auth.register')}</Text>
 
           <TextInput
             style={styles.input}
-            placeholder="이메일"
+            placeholder={t('auth.email')}
             placeholderTextColor="#aaa"
             value={email}
             onChangeText={setEmail}
@@ -322,7 +320,7 @@ if (!isPhoneAvailable) {
 
           <TextInput
             style={styles.input}
-            placeholder="비밀번호 (6자 이상, 특수문자 포함)"
+            placeholder={t('auth.passwordHint')}
             placeholderTextColor="#aaa"
             secureTextEntry
             value={password}
@@ -331,7 +329,7 @@ if (!isPhoneAvailable) {
 
           <TextInput
             style={styles.input}
-            placeholder="비밀번호 확인"
+            placeholder={t('auth.passwordConfirm')}
             placeholderTextColor="#aaa"
             secureTextEntry
             value={confirmPassword}
@@ -340,14 +338,14 @@ if (!isPhoneAvailable) {
 
           <TextInput
             style={styles.input}
-            placeholder="이름 (한글만)"
+            placeholder={t('auth.nameHint')}
             placeholderTextColor="#aaa"
             value={name}
             onChangeText={setName}
           />
           
           <View style={styles.genderContainer}>
-            <Text style={styles.label}>성별 선택:</Text>
+            <Text style={styles.label}>{t('auth.genderSelect')}</Text>
             <View style={styles.genderButtons}>
               <TouchableOpacity
                 style={[
@@ -362,7 +360,7 @@ if (!isPhoneAvailable) {
                     gender === "male" && styles.selectedGenderText,
                   ]}
                 >
-                  남성
+                  {t('auth.male')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -378,7 +376,7 @@ if (!isPhoneAvailable) {
                     gender === "female" && styles.selectedGenderText,
                   ]}
                 >
-                  여성
+                  {t('auth.female')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -386,7 +384,7 @@ if (!isPhoneAvailable) {
 
           <TextInput
             style={styles.input}
-            placeholder="전화번호 (010-XXXX-XXXX)"
+            placeholder={t('auth.phoneHint')}
             placeholderTextColor="#aaa"
             value={phone}
             keyboardType="numeric"
@@ -405,12 +403,12 @@ if (!isPhoneAvailable) {
           />
 
           <View style={styles.pickerContainer}>
-            <Text style={styles.label}>은행 선택:</Text>
+            <Text style={styles.label}>{t('auth.bankLabel')}</Text>
             <View style={styles.pickerWrapper}>
               <RNPickerSelect
                 onValueChange={(value) => setBank(value)}
                 value={bank}
-                placeholder={{ label: "은행을 선택하세요", value: "" }}
+                placeholder={{ label: t('auth.selectBank'), value: "" }}
                 items={[
                   { label: "국민은행", value: "국민은행" },
                   { label: "신한은행", value: "신한은행" },
@@ -465,7 +463,7 @@ if (!isPhoneAvailable) {
           </View>
 <TextInput
   style={styles.input}
-  placeholder="예금자 명 (한글 또는 영문)"
+  placeholder={t('auth.accountHolder')}
   placeholderTextColor="#aaa"
   value={accountHolder}
   onChangeText={setAccountHolder}
@@ -473,7 +471,7 @@ if (!isPhoneAvailable) {
 
           <TextInput
             style={styles.input}
-            placeholder="계좌번호 (숫자만)"
+            placeholder={t('auth.accountNumber')}
             placeholderTextColor="#aaa"
             value={accountNumber}
             keyboardType="numeric"
@@ -486,31 +484,31 @@ if (!isPhoneAvailable) {
           />
 
           <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-            <Text style={styles.uploadButtonText}>신분증 / 여권 사진 업로드</Text>
+            <Text style={styles.uploadButtonText}>{t('auth.uploadId')}</Text>
           </TouchableOpacity>
           
           {idImage && <Image source={{ uri: idImage.uri }} style={styles.profileImage} />}
 
           <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-            {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.registerButtonText}>회원가입</Text>}
+            {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.registerButtonText}>{t('auth.register')}</Text>}
           </TouchableOpacity>
 
           <View style={styles.checkboxContainer}>
             <Checkbox value={agreeTerms} onValueChange={setAgreeTerms} color={agreeTerms ? '#007AFF' : undefined} />
             <Text style={styles.checkboxLabel}>
-              [필수]{' '}
+  {t('auth.termsRequiredPrefix')}{' '}
               <Text onPress={() => navigation.navigate("ConsentScreen")} style={styles.linkText}>
-                이용약관 및 개인정보 처리방침
+                 {t('auth.termsLink')}
               </Text>
             </Text>
           </View>
 
           {!agreeTerms && (
-            <Text style={styles.noticeText}>※ 이용약관에 동의해야 회원가입이 가능합니다.</Text>
+            <Text style={styles.noticeText}>{t('auth.termsRequired')}</Text>
           )}
 
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.loginText}>이미 계정이 있나요? 로그인</Text>
+            <Text style={styles.loginText}>{t('auth.alreadyHaveAccount')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
