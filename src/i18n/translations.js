@@ -218,6 +218,12 @@ inquiries: {
   adminReply: "관리자 답변:",
   pending: "답변 대기 중입니다.",
   empty: "문의 내역이 없습니다."
+},
+screens: {
+  bankInfo: "계좌 정보 변경",
+  changePassword: "비밀번호 변경",
+  notice: "공지사항",
+  customerSupport: "고객센터 문의하기"
 }
   },
 
@@ -439,9 +445,13 @@ support: {
   adminReply: "Админы хариу:",
   pending: "Хариуг хүлээж байна.",
   empty: "Асуулт олдсонгүй."
+},
+screens: {
+  bankInfo: "Банкны мэдээлэл өөрчлөх",
+  changePassword: "Нууц үг шинэчлэх",
+  notice: "Зар мэдээ",
+  customerSupport: "Хэрэглэгчийн дэмжлэг"
 }
-
-
   },
 
 
@@ -663,6 +673,12 @@ inquiries: {
   adminReply: "Admin Reply:",
   pending: "Awaiting response.",
   empty: "No inquiries found."
+},
+screens: {
+  bankInfo: "Update Bank Info",
+  changePassword: "Change Password",
+  notice: "Notice",
+  customerSupport: "Customer Support"
 }
   },
 };

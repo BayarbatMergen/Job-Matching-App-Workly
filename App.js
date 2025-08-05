@@ -3,7 +3,7 @@ import { enableScreens } from 'react-native-screens';
 enableScreens();
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native'; // ✅ 추가해야 함
-
+import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SecureStore from 'expo-secure-store';
@@ -64,13 +64,12 @@ import { initI18n } from './src/i18n'; // 추가
 
 export default function App() {
   const [isI18nReady, setIsI18nReady] = useState(false);
- useEffect(() => {
-  const initialize = async () => {
-    try {
-      await initI18n(); // ✅ 다국어 먼저 초기화
-      setIsI18nReady(true); // 여기까지만 먼저!
 
-      // ✅ 그 다음에 나머지 초기화
+  useEffect(() => {
+    const initialize = async () => {
+      await initI18n();
+      setIsI18nReady(true);
+
       try {
         initializeAuth(app, {
           persistence: getReactNativePersistence(AsyncStorage),
@@ -80,19 +79,14 @@ export default function App() {
       }
 
       testAsyncStorage();
-
       const userId = await SecureStore.getItemAsync("userId");
-      if (userId) {
-        await registerForPushNotificationsAsync(userId);
-      }
+      if (userId) await registerForPushNotificationsAsync(userId);
       sendTestNotification("앱 실행됨", "이건 에뮬레이터 확인용 테스트 알림입니다.");
-    } catch (err) {
-      console.log('초기화 오류:', err);
-    }
-  };
+    };
 
-  initialize();
-}, []);
+    initialize();
+  }, []);
+
   if (!isI18nReady) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -100,7 +94,11 @@ export default function App() {
       </View>
     );
   }
-  
+
+  return <AppInner />; // ✅ 여기서 AppInner 렌더링
+}
+function AppInner() {
+  const { t } = useTranslation();
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -177,10 +175,13 @@ export default function App() {
 
 
         {/* 사용자 기능 */}
-        <Stack.Screen name="BankInfo" component={BankInfoScreen}   options={{
+<Stack.Screen
+  name="BankInfo"
+  component={BankInfoScreen}
+  options={{
     headerShown: true,
-    title: '계좌 정보 변경',
-    headerStyle: { backgroundColor: '#007AFF' }, // ✅ 파란색으로 지정
+    title: t('screens.bankInfo'),  // ✅ 다국어 key
+    headerStyle: { backgroundColor: '#007AFF' },
     headerTintColor: '#fff',
     headerTitleAlign: 'center',
   }}
@@ -190,28 +191,35 @@ export default function App() {
   component={ChangePasswordScreen}
   options={{
     headerShown: true,
-    title: '비밀번호 변경',
-    headerStyle: { backgroundColor: '#007AFF' }, // ✅ 파란색으로 지정
+    title: t('screens.changePassword'),
+    headerStyle: { backgroundColor: '#007AFF' },
     headerTintColor: '#fff',
     headerTitleAlign: 'center',
   }}
 />
-        <Stack.Screen name="Notice" component={NoticeScreen}   options={{
+<Stack.Screen
+  name="Notice"
+  component={NoticeScreen}
+  options={{
     headerShown: true,
-    title: '공지사항',
-    headerStyle: { backgroundColor: '#007AFF' }, // ✅ 파란색으로 지정
+    title: t('screens.notice'),
+    headerStyle: { backgroundColor: '#007AFF' },
     headerTintColor: '#fff',
     headerTitleAlign: 'center',
   }}
 />
-        <Stack.Screen name="CustomerSupport" component={CustomerSupportScreen}   options={{
+<Stack.Screen
+  name="CustomerSupport"
+  component={CustomerSupportScreen}
+  options={{
     headerShown: true,
-    title: '고객센터 문의하기',
-    headerStyle: { backgroundColor: '#007AFF' }, // ✅ 파란색으로 지정
+    title: t('screens.customerSupport'),
+    headerStyle: { backgroundColor: '#007AFF' },
     headerTintColor: '#fff',
     headerTitleAlign: 'center',
   }}
 />
+
 <Stack.Screen
   name="AdminChatScreen"
   component={AdminChatScreen}
