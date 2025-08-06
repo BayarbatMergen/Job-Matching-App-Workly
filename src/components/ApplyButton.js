@@ -4,10 +4,12 @@ import * as SecureStore from "expo-secure-store";
 import { db } from "../config/firebase";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import API_BASE_URL from "../config/apiConfig";
+import { useTranslation } from "react-i18next";
 
 const jwtDecode = require("jwt-decode");
 
 const ApplyButton = ({ job, navigation }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState(null);
   const [token, setToken] = useState(null);
@@ -21,7 +23,7 @@ const ApplyButton = ({ job, navigation }) => {
         const storedToken = await SecureStore.getItemAsync("token");
 
         if (!storedUserId || !storedToken) {
-          console.warn("저장된 데이터가 없음");
+          console.warn(t("apply.noStoredData"));
           navigation.navigate("Login");
           return;
         }
@@ -33,7 +35,7 @@ const ApplyButton = ({ job, navigation }) => {
         setToken(storedToken);
         setUserEmail(email);
       } catch (error) {
-        console.error("사용자 정보 불러오기 오류:", error);
+        console.error(t("apply.loadUserError"), error);
         navigation.navigate("Login");
       }
     };
@@ -55,7 +57,7 @@ const ApplyButton = ({ job, navigation }) => {
           setHasApplied(true);
         }
       } catch (error) {
-        console.error("중복 지원 확인 오류:", error);
+        console.error(t("apply.duplicateCheckError"), error);
       }
     };
 
@@ -64,8 +66,8 @@ const ApplyButton = ({ job, navigation }) => {
 
   const handleApply = async () => {
     if (!userId || !token || !userEmail) {
-      Alert.alert("인증 오류", "로그인이 필요합니다.", [
-        { text: "확인", onPress: () => navigation.navigate("Login") },
+      Alert.alert(t("apply.authErrorTitle"), t("apply.authErrorMessage"), [
+        { text: t("common.confirm"), onPress: () => navigation.navigate("Login") },
       ]);
       return;
     }
@@ -100,23 +102,23 @@ const ApplyButton = ({ job, navigation }) => {
           jobId: job.id,
           jobTitle: job.title,
           userEmail: userEmail,
-          message: `${userName} 님이 "${job.title}" 공고에 지원했습니다.`,
+          message: t("apply.notifyAdmin", { userName, jobTitle: job.title }),
         });
 
-        Alert.alert("지원 완료", `${job.title}에 지원 요청이 전송되었습니다.`);
+        Alert.alert(t("apply.successTitle"), t("apply.successMessage", { jobTitle: job.title }));
         setHasApplied(true);
         navigation.replace("JobList");
       } else {
         if (data.message === "이미 해당 공고에 지원하셨습니다.") {
           setHasApplied(true);
-          Alert.alert("⚠️ 중복 지원", data.message);
+          Alert.alert(t("apply.duplicateAlertTitle"), data.message);
         } else {
-          throw new Error(data.message || "지원 요청 실패");
+          throw new Error(data.message || t("apply.failedRequest"));
         }
       }
     } catch (error) {
-      console.error("지원 요청 오류:", error.message);
-      Alert.alert("오류 발생", error.message);
+      console.error(t("apply.requestError"), error.message);
+      Alert.alert(t("common.errorOccurred"), error.message);
     } finally {
       setLoading(false);
     }
@@ -134,7 +136,7 @@ const ApplyButton = ({ job, navigation }) => {
         disabled
       >
         <Text style={{ color: "#FFF", fontSize: 16 }}>
-          이미 지원한 공고입니다
+          {t("apply.alreadyApplied")}
         </Text>
       </TouchableOpacity>
     );
@@ -155,7 +157,7 @@ const ApplyButton = ({ job, navigation }) => {
         <ActivityIndicator color="#FFF" />
       ) : (
         <Text style={{ color: "#FFF", fontSize: 18, fontWeight: "bold" }}>
-          지원하기
+          {t("apply.button")}
         </Text>
       )}
     </TouchableOpacity>

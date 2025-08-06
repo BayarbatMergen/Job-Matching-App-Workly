@@ -1,9 +1,15 @@
+// ✅ i18n 적용 완료된 JobDetailScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import {
+  View, Text, StyleSheet, ScrollView,
+  ActivityIndicator, Alert
+} from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import ApplyButton from '../components/ApplyButton';
+import { useTranslation } from 'react-i18next';
 
 export default function JobDetailScreen({ route, navigation }) {
+  const { t } = useTranslation();
   const { job } = route.params ?? {};
   const [userId, setUserId] = useState(null);
 
@@ -13,25 +19,19 @@ export default function JobDetailScreen({ route, navigation }) {
         const storedUserId = await SecureStore.getItemAsync('userId');
         if (storedUserId) {
           setUserId(storedUserId);
-          
         }
       } catch (error) {
         console.error(" 사용자 ID 불러오기 오류:", error);
       }
     };
-
     fetchUserData();
   }, []);
-
-  useEffect(() => {
-    
-  }, [job]);
 
   if (!job) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text>공고 정보를 불러오는 중...</Text>
+        <Text>{t('job.loading')}</Text>
       </View>
     );
   }
@@ -42,23 +42,23 @@ export default function JobDetailScreen({ route, navigation }) {
         <Text style={styles.detailTitle}>{job.title}</Text>
 
         <View style={styles.infoBox}>
-          <Text style={styles.detailSubTitle}> 근무 조건</Text>
-          <Text style={styles.detailText}><Text style={styles.bold}>근무 기간:</Text> {job.startDate && job.endDate ? `${job.startDate} ~ ${job.endDate}` : "미정"}</Text>
-          <Text style={styles.detailText}><Text style={styles.bold}>급여:</Text> {job.wage ? `${Number(job.wage).toLocaleString()}원` : "미정"}</Text>
-          <Text style={styles.detailText}><Text style={styles.bold}>근무 요일:</Text> {Array.isArray(job.workDays) ? job.workDays.join(", ") : job.workDays || "미정"}</Text>
-          <Text style={styles.detailText}><Text style={styles.bold}>근무 시간:</Text> {job.workHours || "미정"}</Text>
-          <Text style={styles.detailText}><Text style={styles.bold}>업직종:</Text> {job.industry || "미정"}</Text>
-          <Text style={styles.detailText}><Text style={styles.bold}>고용 형태:</Text> {job.employmentType || "미정"}</Text>
-          <Text style={styles.detailText}><Text style={styles.bold}>숙식 제공:</Text> {job.accommodation ? "O" : "X"}</Text>
+          <Text style={styles.detailSubTitle}>{t('job.conditions')}</Text>
+          <Text style={styles.detailText}><Text style={styles.bold}>{t('job.period')}:</Text> {job.startDate && job.endDate ? `${job.startDate} ~ ${job.endDate}` : t('job.undefined')}</Text>
+          <Text style={styles.detailText}><Text style={styles.bold}>{t('job.wage')}:</Text> {job.wage ? `${Number(job.wage).toLocaleString()}원` : t('job.undefined')}</Text>
+          <Text style={styles.detailText}><Text style={styles.bold}>{t('job.days')}:</Text> {Array.isArray(job.workDays) ? job.workDays.join(", ") : job.workDays || t('job.undefined')}</Text>
+          <Text style={styles.detailText}><Text style={styles.bold}>{t('job.hours')}:</Text> {job.workHours || t('job.undefined')}</Text>
+          <Text style={styles.detailText}><Text style={styles.bold}>{t('job.industry')}:</Text> {job.industry || t('job.undefined')}</Text>
+          <Text style={styles.detailText}><Text style={styles.bold}>{t('job.employmentType')}:</Text> {job.employmentType || t('job.undefined')}</Text>
+          <Text style={styles.detailText}><Text style={styles.bold}>{t('job.accommodation')}:</Text> {job.accommodation ? "O" : "X"}</Text>
           <Text style={styles.detailText}>
-            <Text style={styles.bold}>모집 인원:</Text> 남 {job.maleRecruitment || 0}명 / 여 {job.femaleRecruitment || 0}명
+            <Text style={styles.bold}>{t('job.recruitment')}:</Text> {t('job.male')} {job.maleRecruitment || 0}{t('job.people')} / {t('job.female')} {job.femaleRecruitment || 0}{t('job.people')}
           </Text>
-          <Text style={styles.detailText}><Text style={styles.bold}>근무 지역:</Text> {job.location || "미정"}</Text>
+          <Text style={styles.detailText}><Text style={styles.bold}>{t('job.location')}:</Text> {job.location || t('job.undefined')}</Text>
         </View>
 
         <View style={styles.descriptionBox}>
-          <Text style={styles.detailSubTitle}>상세 요강</Text>
-          <Text style={styles.descriptionText}>{job.description || '상세 정보가 등록되지 않았습니다.'}</Text>
+          <Text style={styles.detailSubTitle}>{t('job.descriptionTitle')}</Text>
+          <Text style={styles.descriptionText}>{job.description || t('job.noDescription')}</Text>
         </View>
 
         <ApplyButton job={job} navigation={navigation} />
@@ -66,6 +66,7 @@ export default function JobDetailScreen({ route, navigation }) {
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   scrollContainer: { flexGrow: 1, paddingVertical: 20 },
