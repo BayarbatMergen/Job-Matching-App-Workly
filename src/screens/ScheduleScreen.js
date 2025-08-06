@@ -36,7 +36,7 @@ export default function ScheduleScreen({ navigation }) {
   const now = new Date();
   const hours = now.getHours();
 
-  return hours >= 8 && hours < 10;
+  return hours >= 8 && hours < 11;
 };
 
   useEffect(() => {

@@ -3,85 +3,84 @@ import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaVie
 import Signature from 'react-native-signature-canvas';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { useTranslation } from 'react-i18next';
 
 export default function ContractScreen({ route, navigation }) {
-const { userId, selectedDate, schedules, name: registeredName } = route.params;
+  const { t } = useTranslation();
+  const { userId, selectedDate, schedules, name: registeredName } = route.params;
   const [name, setName] = useState('');
   const [signature, setSignature] = useState(null);
-const signRef = useRef();
+  const signRef = useRef();
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: '출근 서약서'
-    });
-  }, [navigation]);
+React.useLayoutEffect(() => {
+  navigation.setOptions({
+    title: t('contract.title'),
+  });
+}, [navigation, t]);
 
   const handleOK = signatureData => {
-
     setSignature(signatureData);
   };
 
-const handleSubmit = async () => {
-  if (!name || !signature) {
-    Alert.alert('필수 입력', '성명과 서명을 모두 입력해주세요.');
-    return;
-  }
+  const handleSubmit = async () => {
+    if (!name || !signature) {
+      Alert.alert(t('contract.requiredTitle'), t('contract.requiredMessage'));
+      return;
+    }
 
-  if (name !== registeredName) {
-    Alert.alert('성명 불일치', '등록된 성명과 일치하지 않습니다.');
-    return;
-  }
+    if (name !== registeredName) {
+      Alert.alert(t('contract.nameMismatchTitle'), t('contract.nameMismatchMessage'));
+      return;
+    }
 
-  try {
-    await setDoc(doc(db, "attendance", `${selectedDate}_${userId}`), {
-      userId,
-      date: selectedDate,
-      name,
-      signature,
-      time: new Date().toISOString(),
-      schedules,
-      signed: true
-    });
+    try {
+      await setDoc(doc(db, "attendance", `${selectedDate}_${userId}`), {
+        userId,
+        date: selectedDate,
+        name,
+        signature,
+        time: new Date().toISOString(),
+        schedules,
+        signed: true
+      });
 
-    Alert.alert('출근 완료', '출근 서약서가 저장되었습니다.');
-    navigation.popToTop();
-  } catch (err) {
-    console.error(err);
-    Alert.alert('저장 오류', '출근 정보 저장에 실패했습니다.');
-  }
-};
+      Alert.alert(t('contract.successTitle'), t('contract.successMessage'));
+      navigation.popToTop();
+    } catch (err) {
+      console.error(err);
+      Alert.alert(t('contract.errorTitle'), t('contract.errorMessage'));
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View style={styles.card}>
-          <Text style={styles.title}>출 근 서 약 서</Text>
-          <Text style={styles.subtitle}>A Daily Labor Contract / Хөдөлмөрийн гэрээ</Text>
+          <Text style={styles.title}>{t('contract.heading')}</Text>
+          <Text style={styles.subtitle}>{t('contract.subtitle')}</Text>
 
           <TextInput
-            placeholder="성명을 입력하세요"
+            placeholder={t('contract.namePlaceholder')}
             style={styles.input}
             value={name}
             onChangeText={setName}
           />
 
-          <Text style={styles.label}>서명(Signature):</Text>
+          <Text style={styles.label}>{t('contract.signatureLabel')}</Text>
           <View style={styles.signatureBox}>
-<Signature
-  onOK={handleOK}
-  onEnd={() => signRef.current.readSignature()}
-  ref={signRef}
-  descriptionText="여기에 서명하세요"
-  clearText="지우기"
-  confirmText="확인"
-  webStyle={`.m-signature-pad--footer { display: none; margin: 0px; }`}
-/>
-
-
+            <Signature
+              onOK={handleOK}
+              onEnd={() => signRef.current.readSignature()}
+              ref={signRef}
+              descriptionText={t('contract.signatureHint')}
+              clearText={t('contract.clear')}
+              confirmText={t('contract.confirm')}
+              webStyle={`.m-signature-pad--footer { display: none; margin: 0px; }`}
+            />
           </View>
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>서약 제출</Text>
+            <Text style={styles.submitButtonText}>{t('contract.submit')}</Text>
           </TouchableOpacity>
         </View>
       </View>

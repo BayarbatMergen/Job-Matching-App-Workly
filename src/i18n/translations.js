@@ -109,7 +109,7 @@ calendar: {
   selectDate: "날짜를 선택하세요"
 },
 schedule: {
-  title: "일정 확인",
+  title: "일정",
   label: "일정",
   wage: "급여",
   none: "해당 날짜에 일정이 없습니다."
@@ -224,7 +224,26 @@ screens: {
   changePassword: "비밀번호 변경",
   notice: "공지사항",
   customerSupport: "고객센터 문의하기"
-}
+},
+contract: {
+      title: "출근 서약서",
+      heading: "출 근 서 약 서",
+      subtitle: "A Daily Labor Contract / Хөдөлмөрийн гэрээ",
+      namePlaceholder: "성명을 입력하세요",
+      signatureLabel: "서명(Signature):",
+      signatureHint: "여기에 서명하세요",
+      clear: "지우기",
+      confirm: "확인",
+      submit: "서약 제출",
+      requiredTitle: "필수 입력",
+      requiredMessage: "성명과 서명을 모두 입력해주세요.",
+      nameMismatchTitle: "성명 불일치",
+      nameMismatchMessage: "등록된 성명과 일치하지 않습니다.",
+      successTitle: "출근 완료",
+      successMessage: "출근 서약서가 저장되었습니다.",
+      errorTitle: "저장 오류",
+      errorMessage: "출근 정보 저장에 실패했습니다."
+    }
   },
 
 
@@ -322,7 +341,7 @@ screens: {
   adminChatFail: "Чат өрөө үүсгэж чадсангүй",
   withAdmin: "Админтай чат",
   networkError: "Сүлжээ эсвэл серверийн алдаа гарлаа",
-    listTitle: 'Чатын өрөөний жагсаалт',
+    listTitle: 'Чат',
     defaultRoomTitle: 'Чат өрөө',
   },
   mypage: {
@@ -340,7 +359,7 @@ screens: {
     label: "Ажлын хуваарь",
     wage: "Цалин",
     none: "Энэ өдөрт ажлын хуваарь байхгүй байна.",
-    title: 'Хуваарь шалгах',
+    title: 'Хуваарь',
   },
   wage: {
     total: "Нийт цалин"
@@ -355,14 +374,14 @@ screens: {
     serverError: "Серверийн алдаа гарлаа"
   },
   checkin: {
-    available: "Ажилд орсон",
+    available: "Ажилдаа гарсан",
     notAvailable: "Ажил эхлэх цаг биш байна",
     notToday: "Зөвхөн өнөөдөрт ажилд орох боломжтой.",
     noSchedule: "Өнөөдөр ажил төлөвлөгдөөгүй байна.",
-    alreadyCheckedIn: "Та өнөөдөр аль хэдийн ажилд орсон байна.",
-    fail: "Ажил эхлэх амжилтгүй",
+    alreadyCheckedIn: "Та өнөөдөр аль хэдийн ажилд гарсан байна.",
+    fail: "Ажилд гарах амжилтгүй",
     error: "Ажил эхлүүлэх үед алдаа гарлаа.",
-    timeLimit: "Ажил эхлэх боломжтой цаг: 8:00 - 18:00"
+    timeLimit: "Ажил эхлэх боломжтой цаг: 8:00 - 10:00"
   },
   mypage: {
   title: "Миний хуудас",
@@ -451,7 +470,26 @@ screens: {
   changePassword: "Нууц үг шинэчлэх",
   notice: "Зар мэдээ",
   customerSupport: "Хэрэглэгчийн дэмжлэг"
-}
+},
+contract: {
+      title: "Ажлын гэрээ",
+      heading: "Ажлын гэрээ",
+      subtitle: "A Daily Labor Contract / Хөдөлмөрийн гэрээ",
+      namePlaceholder: "Нэрээ оруулна уу",
+      signatureLabel: "Гарын үсэг (Signature):",
+      signatureHint: "Энд гарын үсгээ зурна уу",
+      clear: "Цэвэрлэх",
+      confirm: "Батлах",
+      submit: "Гэрээ илгээх",
+      requiredTitle: "Шаардлагатай талбар",
+      requiredMessage: "Нэр болон гарын үсгээ заавал оруулна уу.",
+      nameMismatchTitle: "Нэр тохирохгүй байна",
+      nameMismatchMessage: "Бүртгэгдсэн нэртэй тохирохгүй байна.",
+      successTitle: "Амжилттай",
+      successMessage: "Гэрээ амжилттай хадгалагдлаа.",
+      errorTitle: "Алдаа гарлаа",
+      errorMessage: "Мэдээллийг хадгалах явцад алдаа гарлаа."
+    }
   },
 
 
@@ -679,6 +717,25 @@ screens: {
   changePassword: "Change Password",
   notice: "Notice",
   customerSupport: "Customer Support"
-}
+},
+ contract: {
+      title: "Work Pledge",
+      heading: "Daily Labor Contract",
+      subtitle: "A Daily Labor Contract / Хөдөлмөрийн гэрээ",
+      namePlaceholder: "Enter your name",
+      signatureLabel: "Signature:",
+      signatureHint: "Sign here",
+      clear: "Clear",
+      confirm: "Confirm",
+      submit: "Submit Pledge",
+      requiredTitle: "Required Fields",
+      requiredMessage: "Please enter your name and signature.",
+      nameMismatchTitle: "Name Mismatch",
+      nameMismatchMessage: "Name does not match the registered one.",
+      successTitle: "Submitted",
+      successMessage: "Your contract has been saved.",
+      errorTitle: "Save Failed",
+      errorMessage: "Failed to save contract information."
+    }
   },
 };
