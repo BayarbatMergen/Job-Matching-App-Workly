@@ -12,7 +12,7 @@ import {
   getDocs
 } from 'firebase/firestore';
 import * as SecureStore from 'expo-secure-store';
-import { useTranslation } from 'react-i18next';
+
 // 화면 import
 import AdminJobListScreen from '../screens/AdminJobListScreen';
 import AdminJobDetailScreen from '../screens/AdminJobDetailScreen';
@@ -196,14 +196,13 @@ function AdminGlobalStack() {
 
 // ✅ 관리자 바텀 탭 네비게이터
 export default function AdminBottomTabNavigator() {
-  const { t } = useTranslation();
   const hasUnreadChat = useUnreadChatCount();
   const unreadNotificationCount = useUnreadNotificationCount();
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarShowLabel: true,
+        tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: { backgroundColor: '#f8f8f8', height: 60, paddingBottom: 10 },
         tabBarIcon: ({ color }) => {

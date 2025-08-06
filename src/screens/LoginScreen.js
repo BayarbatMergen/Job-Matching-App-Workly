@@ -20,9 +20,15 @@ import API_BASE_URL from "../config/apiConfig";
 import Checkbox from 'expo-checkbox';
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from 'react-i18next';
+import { setAppLanguage } from '../i18n';
 
 const LoginScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
+  const [renderKey, setRenderKey] = useState(0);
+  const handleChangeLanguage = async (lang) => {
+  await setAppLanguage(lang);
+  setRenderKey(prev => prev + 1); // ← 강제 리렌더
+};
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -117,6 +123,7 @@ return (
   <KeyboardAvoidingView
     behavior={Platform.OS === "ios" ? "padding" : "height"}
     style={{ flex: 1, backgroundColor: "#fff" }}
+    key={`${i18n.language}-${renderKey}`}
   >
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={{ flex: 1 }}>
@@ -193,21 +200,22 @@ return (
            <View style={styles.languageSelector}>
 
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <TouchableOpacity onPress={() => i18n.changeLanguage('ko')}>
-              <Text style={[styles.langButton, i18n.language === 'ko' && styles.langActive]}>
-                🇰🇷 KO
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => i18n.changeLanguage('mn')}>
-              <Text style={[styles.langButton, i18n.language === 'mn' && styles.langActive]}>
-                🇲🇳 MN
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => i18n.changeLanguage('en')}>
-              <Text style={[styles.langButton, i18n.language === 'en' && styles.langActive]}>
-                🇺🇸 EN
-              </Text>
-            </TouchableOpacity>
+           <TouchableOpacity onPress={() => handleChangeLanguage('ko')}>
+  <Text style={[styles.langButton, i18n.language === 'ko' && styles.langActive]}>
+    🇰🇷 KO
+  </Text>
+</TouchableOpacity>
+<TouchableOpacity onPress={() => handleChangeLanguage('mn')}>
+  <Text style={[styles.langButton, i18n.language === 'mn' && styles.langActive]}>
+    🇲🇳 MN
+  </Text>
+</TouchableOpacity>
+<TouchableOpacity onPress={() => handleChangeLanguage('en')}>
+  <Text style={[styles.langButton, i18n.language === 'en' && styles.langActive]}>
+    🇺🇸 EN
+  </Text>
+</TouchableOpacity>
+
           </View>
         </View>
         </ScrollView>
